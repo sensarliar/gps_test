@@ -1,0 +1,8 @@
+*.o
+moc_mainwindow.cpp
+ui_mainwindow.h
+*.pro.user
+gps_test
+Makefile
+*~
+.*
