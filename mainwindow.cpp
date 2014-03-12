@@ -65,6 +65,11 @@ MainWindow::MainWindow(QWidget *parent) :
       ui->m_receiveEdit->setWordWrapMode(QTextOption::WrapAnywhere);
       ui->m_receiveEdit->document()->setMaximumBlockCount(500);
 
+      ui->m_logFileLe->setText("/media/mmcblk0/cutecom.log");
+      enableLogging(0);
+      enableLogging(1);
+      ConnectButtonClicked();
+
 
 }
 
@@ -88,7 +93,7 @@ void MainWindow::ConnectButtonClicked()
     //connect (TMainForm->TMainFormBase->m_enableLoggingCb,SIGNAL(toggled(bool)),this,SLOT(remoteDataIncoming()));
     //connect (this->m_enableLoggingCb,SIGNAL(toggled(bool)),this,SLOT(remoteDataIncoming()));
 
-    ui->m_logFileLe->setText("/home/root/cutecom.log");
+      ui->m_logFileLe->setText("/media/mmcblk0/cutecom.log");
 
 
 
@@ -167,10 +172,18 @@ void MainWindow::remoteDataIncoming()
     //unsigned char time_hour;
     int time_hour;
     QString adjust_hour;
-    if (read(m_fd, buff, 2*(66+49+29)) <1) {
+
+    int bytesRead=read(m_fd, buff, 2*(66+49+29));
+    if (bytesRead<1) {
         QMessageBox::warning(this, tr("Error"), tr("Receive error!"));
         return;
     }
+
+    if (m_logFile.isOpen())
+    {
+       m_logFile.write(buff, bytesRead);
+    }
+
     QString buff_qs(buff);
 
     ui->m_receiveEdit->append(buff_qs);
