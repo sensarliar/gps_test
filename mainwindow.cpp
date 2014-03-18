@@ -37,6 +37,11 @@
 
 #include <qdir.h>
 #include <qfile.h>
+
+#include <time.h>
+#include <sys/time.h>
+
+
 class QFileDialog;
 /*QPushButton *m_connectButton;
 QPushButton *m_disconnectButton;
@@ -47,7 +52,11 @@ QLineEdit *m_logFileLe;
 QTextEdit *m_sendEdit;
 QTextEdit *m_receiveEdit;
 */
+struct tm tmnow;
+struct timeval st;
 
+
+QString time_stamp_list;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -65,7 +74,29 @@ MainWindow::MainWindow(QWidget *parent) :
       ui->m_receiveEdit->setWordWrapMode(QTextOption::WrapAnywhere);
       ui->m_receiveEdit->document()->setMaximumBlockCount(500);
 
-      ui->m_logFileLe->setText("/media/mmcblk0/cutecom.log");
+      QString time_stamp;
+      gettimeofday(&st, NULL);
+
+      time_stamp_list=time_stamp.setNum(tmnow.tm_year+1900);
+      time_stamp_list+=("_");
+      time_stamp_list+=time_stamp.setNum(tmnow.tm_mon+1);
+      time_stamp_list+=("_");
+      time_stamp_list+=time_stamp.setNum(tmnow.tm_mday);
+      time_stamp_list+=("_");
+      time_stamp_list+=time_stamp.setNum(tmnow.tm_hour);
+      time_stamp_list+=("_");
+      time_stamp_list+=time_stamp.setNum(tmnow.tm_min);
+      time_stamp_list+=("_");
+      time_stamp_list+=time_stamp.setNum(tmnow.tm_sec);
+      time_stamp_list+=("_");
+      time_stamp_list+=time_stamp.setNum(st.tv_usec);
+      QString file_store_name("/media/mmcblk0/cutecom");
+      file_store_name+=time_stamp_list;
+      file_store_name+=(".log");
+        ui->m_logFileLe->setText(file_store_name);
+
+
+//      ui->m_logFileLe->setText("/media/mmcblk0/cutecom.log");
       enableLogging(0);
       enableLogging(1);
       ConnectButtonClicked();
@@ -93,7 +124,7 @@ void MainWindow::ConnectButtonClicked()
     //connect (TMainForm->TMainFormBase->m_enableLoggingCb,SIGNAL(toggled(bool)),this,SLOT(remoteDataIncoming()));
     //connect (this->m_enableLoggingCb,SIGNAL(toggled(bool)),this,SLOT(remoteDataIncoming()));
 
-      ui->m_logFileLe->setText("/media/mmcblk0/cutecom.log");
+
 
 
 
@@ -173,6 +204,19 @@ void MainWindow::remoteDataIncoming()
     int time_hour;
     QString adjust_hour;
 
+//    char* time_stamp;
+
+
+/*    if (NULL != localtime_r(&st.tv_sec, &tmnow))
+    {
+            printf(time_stamp,
+                    "current time = %04d/%02d/%02d, %02d:%02d:%02d,(microsec: %06d)\n",
+                    tmnow.tm_year+1900,tmnow.tm_mday,tmnow.tm_mon+1,
+                    tmnow.tm_hour,tmnow.tm_min,tmnow.tm_sec,
+                    st.tv_usec
+            );
+    }
+*/
     int bytesRead=read(m_fd, buff, 2*(66+49+29));
     if (bytesRead<1) {
         QMessageBox::warning(this, tr("Error"), tr("Receive error!"));
@@ -188,6 +232,11 @@ void MainWindow::remoteDataIncoming()
 
     ui->m_receiveEdit->append(buff_qs);
     ui->m_receiveEdit->append(QString("\n@@@@@@@@@@@@@@@@@@@@\n"));
+
+
+
+    ui->m_receiveEdit->append(time_stamp_list);
+  ui->m_receiveEdit->append(QString("\n**********************\n"));
     index_start=buff_qs.indexOf(STR_GGA);
     if(((buff_qs.length()-42)>=index_start)&&(index_start>=0)&&(buff_qs.length()>=42)){   //num=15
  //gm-d   if(buff_qs.length()>=1){
