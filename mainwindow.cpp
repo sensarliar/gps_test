@@ -55,7 +55,7 @@ QTextEdit *m_receiveEdit;
 struct tm tmnow;
 struct timeval st;
 
-
+QString time_stamp;
 QString time_stamp_list;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -74,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent) :
       ui->m_receiveEdit->setWordWrapMode(QTextOption::WrapAnywhere);
       ui->m_receiveEdit->document()->setMaximumBlockCount(500);
 
-      QString time_stamp;
+
       gettimeofday(&st, NULL);
 
       time_stamp_list=time_stamp.setNum(tmnow.tm_year+1900);
@@ -233,7 +233,21 @@ void MainWindow::remoteDataIncoming()
     ui->m_receiveEdit->append(buff_qs);
     ui->m_receiveEdit->append(QString("\n@@@@@@@@@@@@@@@@@@@@\n"));
 
+    gettimeofday(&st, NULL);
 
+    time_stamp_list=time_stamp.setNum(tmnow.tm_year+1900);
+    time_stamp_list+=("_");
+    time_stamp_list+=time_stamp.setNum(tmnow.tm_mon+1);
+    time_stamp_list+=("_");
+    time_stamp_list+=time_stamp.setNum(tmnow.tm_mday);
+    time_stamp_list+=("_");
+    time_stamp_list+=time_stamp.setNum(tmnow.tm_hour);
+    time_stamp_list+=("_");
+    time_stamp_list+=time_stamp.setNum(tmnow.tm_min);
+    time_stamp_list+=("_");
+    time_stamp_list+=time_stamp.setNum(tmnow.tm_sec);
+    time_stamp_list+=("_");
+    time_stamp_list+=time_stamp.setNum(st.tv_usec);
 
     ui->m_receiveEdit->append(time_stamp_list);
   ui->m_receiveEdit->append(QString("\n**********************\n"));
