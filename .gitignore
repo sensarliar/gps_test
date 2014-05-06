@@ -6,3 +6,4 @@ gps_test
 Makefile
 *~
 .*
+bin_back/

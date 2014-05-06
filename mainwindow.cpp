@@ -90,7 +90,7 @@ MainWindow::MainWindow(QWidget *parent) :
       time_stamp_list+=time_stamp.setNum(tmnow.tm_sec);
       time_stamp_list+=("_");
       time_stamp_list+=time_stamp.setNum(st.tv_usec);
-      QString file_store_name("/media/mmcblk0/cutecom");
+      QString file_store_name("/media/sda/cutecom");
       file_store_name+=time_stamp_list;
       file_store_name+=(".log");
         ui->m_logFileLe->setText(file_store_name);
