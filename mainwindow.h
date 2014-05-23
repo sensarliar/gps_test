@@ -37,6 +37,7 @@ protected:
     int m_fd;
     QSocketNotifier *m_notifier;
     QFile m_logFile;
+    QFile m_logFile_2;
     QFileDialog *m_fileDlg;
 
 };

@@ -52,6 +52,9 @@ QLineEdit *m_logFileLe;
 QTextEdit *m_sendEdit;
 QTextEdit *m_receiveEdit;
 */
+
+bool flag_ephemeris=0;
+
 struct tm tmnow;
 struct timeval st;
 
@@ -71,6 +74,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect (m_logFileFileDialog,SIGNAL(clicked()),this,SLOT(chooseLogFile()));
       connect(ui->m_enableLoggingCb, SIGNAL(toggled(bool)), this, SLOT(enableLogging(bool)));
       connect (ui->m_logFileFileDialog,SIGNAL(clicked()),this,SLOT(chooseLogFile()));
+      connect (ui->m_logFileFileDialog_2,SIGNAL(clicked()),this,SLOT(chooseLogFile()));
       ui->m_receiveEdit->setWordWrapMode(QTextOption::WrapAnywhere);
       ui->m_receiveEdit->document()->setMaximumBlockCount(500);
 
@@ -90,10 +94,15 @@ MainWindow::MainWindow(QWidget *parent) :
       time_stamp_list+=time_stamp.setNum(tmnow.tm_sec);
       time_stamp_list+=("_");
       time_stamp_list+=time_stamp.setNum(st.tv_usec);
-      QString file_store_name("/media/sda1/cutecom");
+      QString file_store_name("/media/sda1/measure");
       file_store_name+=time_stamp_list;
       file_store_name+=(".log");
         ui->m_logFileLe->setText(file_store_name);
+
+        QString file_store_name_2("/media/sda1/ephemeris");
+        file_store_name_2+=time_stamp_list;
+        file_store_name_2+=(".log");
+          ui->m_logFileLe->setText(file_store_name_2);
 
 
 //      ui->m_logFileLe->setText("/media/mmcblk0/cutecom.log");
