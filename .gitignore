@@ -1,9 +1,9 @@
 *.o
-moc_*
-ui_*
+moc_*.cpp
+ui_*.h
 *.pro.user
 gps_test
 Make*
 *~
 .*
-bin_*
+bin_back/*
