@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>北斗/GPS定位授时设备</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>henben5.png</normaloff>henben5.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTextEdit" name="m_sendEdit">
@@ -34,7 +38,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Time</string>
+     <string>北京时间</string>
     </property>
    </widget>
    <widget class="QLabel" name="m_label_N">
