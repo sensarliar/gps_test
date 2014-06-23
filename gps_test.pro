@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = gps_test
+TARGET = gps_test_0618_1405
 TEMPLATE = app
 
 
