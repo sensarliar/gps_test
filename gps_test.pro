@@ -17,9 +17,11 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    gps_nmea.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    gps_nmea.h
 
 FORMS    += mainwindow.ui
     target.path += /home/root

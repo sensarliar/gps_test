@@ -27,7 +27,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>280</y>
+      <y>290</y>
       <width>251</width>
       <height>51</height>
      </rect>
@@ -185,24 +185,27 @@
    <widget class="QTextBrowser" name="m_receiveEdit">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>240</y>
-      <width>251</width>
-      <height>31</height>
+      <x>10</x>
+      <y>150</y>
+      <width>451</width>
+      <height>181</height>
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="m_label_debug">
+   <widget class="QLabel" name="m_label_available">
     <property name="geometry">
      <rect>
-      <x>650</x>
-      <y>10</y>
-      <width>69</width>
-      <height>17</height>
+      <x>600</x>
+      <y>0</y>
+      <width>40</width>
+      <height>40</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
     <property name="text">
-     <string/>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt; color:#ff0000;&quot;&gt;N/A&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QLCDNumber" name="m_time">
@@ -631,7 +634,7 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
    <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
-      <x>550</x>
+      <x>490</x>
       <y>0</y>
       <width>91</width>
       <height>81</height>
@@ -659,7 +662,7 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
    <widget class="QGraphicsView" name="graphicsView_3">
     <property name="geometry">
      <rect>
-      <x>530</x>
+      <x>470</x>
       <y>120</y>
       <width>111</width>
       <height>91</height>
@@ -701,6 +704,23 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
      <string/>
     </property>
    </widget>
+   <widget class="QLabel" name="m_label_tt">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>400</y>
+      <width>141</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <zorder>m_receiveEdit</zorder>
    <zorder>graphicsView_3</zorder>
    <zorder>graphicsView_4</zorder>
    <zorder>m_sendEdit</zorder>
@@ -712,8 +732,7 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
    <zorder>m_enableLoggingCb</zorder>
    <zorder>m_logFileLe</zorder>
    <zorder>m_logFileFileDialog</zorder>
-   <zorder>m_receiveEdit</zorder>
-   <zorder>m_label_debug</zorder>
+   <zorder>m_label_available</zorder>
    <zorder>m_time</zorder>
    <zorder>m_location_N</zorder>
    <zorder>m_location_E</zorder>
@@ -731,6 +750,7 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
    <zorder>graphicsView</zorder>
    <zorder>graphicsView_2</zorder>
    <zorder>label</zorder>
+   <zorder>m_label_tt</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

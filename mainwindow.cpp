@@ -41,6 +41,11 @@
 #include <time.h>
 #include <sys/time.h>
 
+#include "gps_nmea.h"
+//#include "gps.h"
+
+
+//struct GpsState gps;
 
 class QFileDialog;
 /*QPushButton *m_connectButton;
@@ -96,6 +101,8 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->m_logFileLe->setText(file_store_name);
 
 
+
+//       gps_nmea.msg_len = 0;
 //      ui->m_logFileLe->setText("/media/mmcblk0/cutecom.log");
       enableLogging(0);
       enableLogging(1);
@@ -111,6 +118,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::ConnectButtonClicked()
 {
+    gps_nmea.msg_len = 0;
+
     if (m_fd >= 0)
       return;
     m_fd = openSerialPort();
@@ -232,7 +241,7 @@ void MainWindow::remoteDataIncoming()
 
     ui->m_receiveEdit->append(buff_qs);
     ui->m_receiveEdit->append(QString("\n@@@@@@@@@@@@@@@@@@@@\n"));
-
+/*
     gettimeofday(&st, NULL);
 
     time_stamp_list=time_stamp.setNum(tmnow.tm_year+1900);
@@ -251,7 +260,65 @@ void MainWindow::remoteDataIncoming()
 
     ui->m_receiveEdit->append(time_stamp_list);
   ui->m_receiveEdit->append(QString("\n**********************\n"));
-    index_start=buff_qs.indexOf(STR_GGA);
+*/
+    int count_i=0;
+
+            gps_impl_init();
+    while(count_i<bytesRead)
+{
+
+// ui->m_receiveEdit->append(QString("\nstart deal with ..."));
+     while (count_i<bytesRead&&!gps_nmea.msg_available)
+     { nmea_parse_char(buff[count_i]);
+         count_i++;
+     }
+// ui->m_receiveEdit->append(QString("\nread buff over ..."));
+    if (gps_nmea.msg_available) {
+      nmea_parse_msg();
+
+      gps_nmea.msg_available = FALSE;
+    }
+//  ui->m_receiveEdit->append(QString("\nparse gps over ..."));
+  }
+
+   ui->m_receiveEdit->append(QString("\nfull loop is over ..."));
+//int test_vl=gps.hmsl;
+   QString temp_value;
+   ui->m_time->display(temp_value.setNum(gps.tow));
+
+   if(gps_nmea.pos_available){
+       ui->m_label_available->setText(QString("OK"));
+
+       ui->m_location_N->display(temp_value.setNum(gps.lat));
+       ui->m_label_N->setText(QString(QChar(gps.NorS)));
+       ui->m_location_E->display(temp_value.setNum(gps.lon));
+       ui->m_label_E->setText(QString(QChar(gps.EorW)));
+
+       ui->m_speed->display(temp_value.setNum(gps.pdop));
+       ui->m_direction->display(temp_value.setNum(gps.num_sv));
+       ui->m_hight->display(temp_value.setNum(gps.alt));
+    }
+   else{
+       ui->m_label_available->setText(QString("N/A"));
+       ui->m_speed->display(temp_value.setNum(gps.pdop));
+       ui->m_direction->display(temp_value.setNum(gps.num_sv));
+   }
+
+//QString disp_hight;
+//QString disp_num_sv;
+//disp_hight.setNum(temp_value.setNum(gps.hmsl));
+//ui->m_label_tt->setText(disp_hight);
+
+ //   disp_num_sv.setNum(gps.num_sv);
+
+ /*
+ ui->m_receiveEdit->append(QString("\n"));
+  ui->m_receiveEdit->append(disp_hight);
+   ui->m_receiveEdit->append(QString("\n"));
+  ui->m_receiveEdit->append(disp_num_sv);
+  */
+/*
+  index_start=buff_qs.indexOf(STR_GGA);
     if(((buff_qs.length()-42)>=index_start)&&(index_start>=0)&&(buff_qs.length()>=42)){   //num=15
  //gm-d   if(buff_qs.length()>=1){
       index_end=buff_qs.indexOf(DOUHAO,index_start+6);
@@ -290,20 +357,7 @@ void MainWindow::remoteDataIncoming()
       ui->m_time->display(buff_time);
       ui->m_location_N->display(buff_location_N);
       ui->m_location_E->display(buff_location_E);
-      /*
-       *
-       if(int(QChar(buff_qs[index_end+3]))==1){
-      //buff_location_N=buff_qs.mid(index_t+16,12);
-      //buff_location_E=buff_qs.mid(index_t+28,12);
 
-      m_time->display(buff_time);
-      m_location_N->display(buff_location_N);
-      m_location_E->display(buff_location_E);
-      }
-      else{
-        m_debug->display(QString("N/A"));
-      }
-      */
 
       // m_time->display(index_t);
      //  m_location_N->display(buff_time);
@@ -318,6 +372,12 @@ void MainWindow::remoteDataIncoming()
     ui->m_label_debug->setText(QString("N/A"));
 
     }
+*/
+
+
+
+
+
 
     /*  s2=QString(QChar(index_t));
       test_str+=s2;
