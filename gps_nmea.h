@@ -43,15 +43,22 @@ struct GpsState {
 
 
   double tow;                  ///< GPS time of week in ms
+  char time_ch[12];
   double lat;
+  char lat_ch[12];
   char NorS;
   double lon;
+  char lon_ch[12];
   char EorW;
 
   int num_sv;                ///< number of sat in fix
   float pdop;                 ///< position dilution of precision scaled by 100
 
   float alt;
+  char alt_ch[12];
+
+  char direction_ch[12];
+  char speed_ch[12];
 
 /*
   int16_t gspeed;                ///< norm of 2d ground speed in cm/s

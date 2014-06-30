@@ -36,8 +36,8 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>70</y>
+      <x>250</x>
+      <y>100</y>
       <width>91</width>
       <height>41</height>
      </rect>
@@ -91,8 +91,8 @@
    <widget class="QLabel" name="m_label_N">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>140</y>
+      <x>510</x>
+      <y>170</y>
       <width>31</width>
       <height>41</height>
      </rect>
@@ -186,9 +186,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>150</y>
-      <width>451</width>
-      <height>181</height>
+      <y>230</y>
+      <width>311</width>
+      <height>101</height>
      </rect>
     </property>
    </widget>
@@ -208,24 +208,11 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt; color:#ff0000;&quot;&gt;N/A&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QLCDNumber" name="m_time">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>60</y>
-      <width>171</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="numDigits">
-     <number>10</number>
-    </property>
-   </widget>
    <widget class="QLCDNumber" name="m_location_N">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>140</y>
+      <x>330</x>
+      <y>170</y>
       <width>171</width>
       <height>51</height>
      </rect>
@@ -267,15 +254,21 @@
       </disabled>
      </palette>
     </property>
+    <property name="smallDecimalPoint">
+     <bool>false</bool>
+    </property>
     <property name="numDigits">
      <number>10</number>
+    </property>
+    <property name="intValue" stdset="0">
+     <number>888888888</number>
     </property>
    </widget>
    <widget class="QLCDNumber" name="m_location_E">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>230</y>
+      <x>330</x>
+      <y>250</y>
       <width>171</width>
       <height>51</height>
      </rect>
@@ -320,12 +313,15 @@
     <property name="numDigits">
      <number>10</number>
     </property>
+    <property name="intValue" stdset="0">
+     <number>888888888</number>
+    </property>
    </widget>
    <widget class="QLabel" name="m_label_E">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>230</y>
+      <x>510</x>
+      <y>250</y>
       <width>31</width>
       <height>41</height>
      </rect>
@@ -337,8 +333,8 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>170</y>
+      <x>290</x>
+      <y>180</y>
       <width>91</width>
       <height>41</height>
      </rect>
@@ -495,8 +491,8 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>240</y>
+      <x>290</x>
+      <y>250</y>
       <width>91</width>
       <height>41</height>
      </rect>
@@ -530,7 +526,7 @@ background-color: rgb(0, 0, 0);</string>
    <widget class="QLCDNumber" name="m_speed">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>70</x>
       <y>60</y>
       <width>171</width>
       <height>51</height>
@@ -543,7 +539,7 @@ background-color: rgb(0, 0, 0);</string>
    <widget class="QLCDNumber" name="m_hight">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>70</x>
       <y>120</y>
       <width>171</width>
       <height>51</height>
@@ -556,7 +552,7 @@ background-color: rgb(0, 0, 0);</string>
    <widget class="QLCDNumber" name="m_direction">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>70</x>
       <y>180</y>
       <width>171</width>
       <height>51</height>
@@ -572,7 +568,7 @@ background-color: rgb(0, 0, 0);</string>
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>10</x>
       <y>70</y>
       <width>61</width>
       <height>41</height>
@@ -585,7 +581,7 @@ background-color: rgb(0, 0, 0);</string>
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>10</x>
       <y>130</y>
       <width>61</width>
       <height>41</height>
@@ -601,7 +597,7 @@ background-color: rgb(0, 0, 0);</string>
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>10</x>
       <y>180</y>
       <width>61</width>
       <height>41</height>
@@ -634,10 +630,10 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
    <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
-      <x>490</x>
+      <x>520</x>
       <y>0</y>
-      <width>91</width>
-      <height>81</height>
+      <width>61</width>
+      <height>61</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -662,10 +658,10 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
    <widget class="QGraphicsView" name="graphicsView_3">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>120</y>
-      <width>111</width>
-      <height>91</height>
+      <x>570</x>
+      <y>360</y>
+      <width>71</width>
+      <height>81</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -675,10 +671,10 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
    <widget class="QGraphicsView" name="graphicsView_4">
     <property name="geometry">
      <rect>
-      <x>490</x>
-      <y>220</y>
-      <width>141</width>
-      <height>131</height>
+      <x>560</x>
+      <y>160</y>
+      <width>81</width>
+      <height>141</height>
      </rect>
     </property>
     <property name="autoFillBackground">
@@ -704,20 +700,256 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
      <string/>
     </property>
    </widget>
-   <widget class="QLabel" name="m_label_tt">
+   <widget class="QLCDNumber" name="m_time_h">
     <property name="geometry">
      <rect>
-      <x>230</x>
-      <y>400</y>
-      <width>141</width>
-      <height>41</height>
+      <x>320</x>
+      <y>90</y>
+      <width>51</width>
+      <height>51</height>
      </rect>
     </property>
-    <property name="autoFillBackground">
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Plain</enum>
+    </property>
+    <property name="lineWidth">
+     <number>1</number>
+    </property>
+    <property name="midLineWidth">
+     <number>0</number>
+    </property>
+    <property name="smallDecimalPoint">
      <bool>false</bool>
     </property>
+    <property name="numDigits">
+     <number>2</number>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
+    </property>
+    <property name="value" stdset="0">
+     <double>88.000000000000000</double>
+    </property>
+    <property name="intValue" stdset="0">
+     <number>88</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>70</y>
+      <width>31</width>
+      <height>21</height>
+     </rect>
+    </property>
     <property name="text">
-     <string/>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;小时&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_12">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>70</y>
+      <width>31</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;分钟&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_13">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>70</y>
+      <width>31</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;秒&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_14">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>70</y>
+      <width>31</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;毫秒&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="m_time_m">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>90</y>
+      <width>51</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Plain</enum>
+    </property>
+    <property name="lineWidth">
+     <number>1</number>
+    </property>
+    <property name="midLineWidth">
+     <number>0</number>
+    </property>
+    <property name="smallDecimalPoint">
+     <bool>false</bool>
+    </property>
+    <property name="numDigits">
+     <number>2</number>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
+    </property>
+    <property name="value" stdset="0">
+     <double>88.000000000000000</double>
+    </property>
+    <property name="intValue" stdset="0">
+     <number>88</number>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="m_time_s">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>90</y>
+      <width>51</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Plain</enum>
+    </property>
+    <property name="lineWidth">
+     <number>1</number>
+    </property>
+    <property name="midLineWidth">
+     <number>0</number>
+    </property>
+    <property name="smallDecimalPoint">
+     <bool>false</bool>
+    </property>
+    <property name="numDigits">
+     <number>2</number>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
+    </property>
+    <property name="value" stdset="0">
+     <double>88.000000000000000</double>
+    </property>
+    <property name="intValue" stdset="0">
+     <number>88</number>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="m_time_ms">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>90</y>
+      <width>71</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Plain</enum>
+    </property>
+    <property name="lineWidth">
+     <number>1</number>
+    </property>
+    <property name="midLineWidth">
+     <number>0</number>
+    </property>
+    <property name="smallDecimalPoint">
+     <bool>false</bool>
+    </property>
+    <property name="numDigits">
+     <number>3</number>
+    </property>
+    <property name="segmentStyle">
+     <enum>QLCDNumber::Flat</enum>
+    </property>
+    <property name="value" stdset="0">
+     <double>888.000000000000000</double>
+    </property>
+    <property name="intValue" stdset="0">
+     <number>888</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_15">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>100</y>
+      <width>16</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt;&quot;&gt;:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_16">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>100</y>
+      <width>16</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt;&quot;&gt;:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_17">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>100</y>
+      <width>16</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt;&quot;&gt;:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="m_label_km_h">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>70</y>
+      <width>41</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>km/h</string>
     </property>
    </widget>
    <zorder>m_receiveEdit</zorder>
@@ -733,7 +965,6 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
    <zorder>m_logFileLe</zorder>
    <zorder>m_logFileFileDialog</zorder>
    <zorder>m_label_available</zorder>
-   <zorder>m_time</zorder>
    <zorder>m_location_N</zorder>
    <zorder>m_location_E</zorder>
    <zorder>m_label_E</zorder>
@@ -750,7 +981,18 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
    <zorder>graphicsView</zorder>
    <zorder>graphicsView_2</zorder>
    <zorder>label</zorder>
-   <zorder>m_label_tt</zorder>
+   <zorder>m_time_h</zorder>
+   <zorder>label_11</zorder>
+   <zorder>label_12</zorder>
+   <zorder>label_13</zorder>
+   <zorder>label_14</zorder>
+   <zorder>m_time_m</zorder>
+   <zorder>m_time_s</zorder>
+   <zorder>m_time_ms</zorder>
+   <zorder>label_15</zorder>
+   <zorder>label_16</zorder>
+   <zorder>label_17</zorder>
+   <zorder>m_label_km_h</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

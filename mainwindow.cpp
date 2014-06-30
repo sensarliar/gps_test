@@ -43,6 +43,7 @@
 
 #include "gps_nmea.h"
 //#include "gps.h"
+#include <math.h>
 
 
 //struct GpsState gps;
@@ -284,24 +285,83 @@ void MainWindow::remoteDataIncoming()
    ui->m_receiveEdit->append(QString("\nfull loop is over ..."));
 //int test_vl=gps.hmsl;
    QString temp_value;
-   ui->m_time->display(temp_value.setNum(gps.tow));
 
+
+
+ //  buff_time(gps.time_ch);
+    QChar qc_hour_h,qc_hour_l;
+  //  qc_hour_h=QChar(buff_qs[index_start+7]);
+   // qc_hour_l=QChar(buff_qs[index_start+6]);
+    qc_hour_h=QChar(gps.time_ch[0]);
+    qc_hour_l=QChar(gps.time_ch[1]);
+
+   //time_hour=uchar(QChar(buff_qs[index_start+7]))+uchar(QChar(buff_qs[index_start+6]))*10+8;
+   time_hour=qc_hour_l.digitValue()+(qc_hour_h.digitValue())*10+8;
+   //time_adjust+=int(buff_qs[index_start+6])*10+8;
+   time_hour%=24;
+   ui->m_time_h->display(temp_value.setNum(time_hour));
+   qc_hour_h=QChar(gps.time_ch[2]);
+   qc_hour_l=QChar(gps.time_ch[3]);
+   temp_value=qc_hour_h;
+   temp_value+=qc_hour_l;
+  //time_hour=uchar(QChar(buff_qs[index_start+7]))+uchar(QChar(buff_qs[index_start+6]))*10+8;
+//  time_hour=qc_hour_l.digitValue()+(qc_hour_h.digitValue())*10;
+
+//   ui->m_time_m->display(temp_value.setNum(time_hour));
+     ui->m_time_m->display(temp_value);
+    int time_length;
+    time_length=strlen(gps.time_ch);
+   if(time_length<9)
+   {
+       qc_hour_h=QChar('0');
+       qc_hour_l=QChar(gps.time_ch[4]);
+   }
+   else{
+       qc_hour_h=QChar(gps.time_ch[4]);
+       qc_hour_l=QChar(gps.time_ch[5]);
+    }
+   //   time_hour=qc_hour_l.digitValue()+(qc_hour_h.digitValue())*10;
+    temp_value=qc_hour_h;
+    temp_value+=qc_hour_l;
+   // ui->m_time_s->display(temp_value.setNum(time_hour));
+    ui->m_time_s->display(temp_value);
+    //temp_value=QChar(gps.time_ch[time_length-3]);
+    temp_value=QChar(gps.time_ch[time_length-2]);
+    temp_value+=QChar(gps.time_ch[time_length-1]);
+    temp_value+=QChar('0');
+    ui->m_time_ms->display(temp_value);
+
+  //  ui->m_time_ms->display(temp_value.setNum(fmod(gps.tow,1000)));
+
+  //  ui->m_time->display(temp_value.setNum(gps.tow,'g',11));
    if(gps_nmea.pos_available){
        ui->m_label_available->setText(QString("OK"));
 
-       ui->m_location_N->display(temp_value.setNum(gps.lat));
+     //  ui->m_location_N->display(temp_value.setNum(gps.lat,'g',11));
+      // ui->m_location_N->display(temp_value((char *)gps.lat_ch));
+       ui->m_location_N->display((char *)gps.lat_ch);
        ui->m_label_N->setText(QString(QChar(gps.NorS)));
-       ui->m_location_E->display(temp_value.setNum(gps.lon));
+     //  ui->m_location_E->display(temp_value.setNum(gps.lon,'g',11));
+       ui->m_location_E->display((char *)gps.lon_ch);
        ui->m_label_E->setText(QString(QChar(gps.EorW)));
 
-       ui->m_speed->display(temp_value.setNum(gps.pdop));
-       ui->m_direction->display(temp_value.setNum(gps.num_sv));
-       ui->m_hight->display(temp_value.setNum(gps.alt));
+     //  ui->m_speed->display(temp_value.setNum(gps.pdop));
+      ui->m_speed->display((char *)gps.speed_ch);
+    //   ui->m_direction->display(temp_value.setNum(gps.num_sv));
+      ui->m_direction->display((char *)gps.direction_ch);
+       //ui->m_hight->display(temp_value.setNum(gps.alt));
+       ui->m_hight->display((char *)gps.alt_ch);
     }
    else{
        ui->m_label_available->setText(QString("N/A"));
-       ui->m_speed->display(temp_value.setNum(gps.pdop));
-       ui->m_direction->display(temp_value.setNum(gps.num_sv));
+
+       ui->m_location_N->display("");
+       ui->m_label_N->setText("");
+       ui->m_location_E->display("");
+       ui->m_label_E->setText("");
+       ui->m_speed->display("");
+       ui->m_direction->display("");
+       ui->m_hight->display("");
    }
 
 //QString disp_hight;

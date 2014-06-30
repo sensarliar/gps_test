@@ -41,6 +41,7 @@ struct GpsState gps;
 
 //void parse_nmea_GPGSA(void);
 //void parse_nmea_GPRMC(void);
+void parse_nmea_NVVTG(void);
 void parse_nmea_GPGGA(void);
 
 
@@ -65,7 +66,7 @@ void gps_impl_init( void ) {
 void parse_nmea_GPGGA(void) {
   int i = 6;     // current position in the message, start after: GPGGA,
   char* endptr;  // end of parsed substrings
-  double degrees, minutesfrac;
+//  double degrees, minutesfrac;
 //  struct LlaCoor_f lla_f;
 
   // attempt to reject empty packets right away
@@ -79,16 +80,18 @@ void parse_nmea_GPGGA(void) {
   // FIXME: parse UTC time correctly
   double time = strtod(&gps_nmea.msg_buf[i],&endptr);
  // gps.tow = (uint32_t)((time+1)*1000);
-  gps.tow = time;
+  gps.tow = time*1000;
 
   //AD TODO: strtod itow
+  int j=0;
   while(gps_nmea.msg_buf[i++] != ',') {              // next field: latitude
     if (i >= gps_nmea.msg_len) {
       NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
       return;
     }
+    gps.time_ch[j++]=gps_nmea.msg_buf[i-1];
   }
-
+  gps.time_ch[j]='\0';
   // get latitude [ddmm.mmmmm]
   double lat = strtod(&gps_nmea.msg_buf[i], &endptr);
   // convert to pure degrees [dd.dddd] format
@@ -96,14 +99,16 @@ void parse_nmea_GPGGA(void) {
  // lat = degrees + (minutesfrac*100)/60;
   // convert to radians
   //GpsInfo.PosLLA.lat.f *= (M_PI/180);
-  gps.lat = lat;
-
+  gps.lat = lat*10000;
+    j=0;
   while(gps_nmea.msg_buf[i++] != ',') {              // next field: N/S indicator
     if (i >= gps_nmea.msg_len) {
       NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
       return;
     }
+    gps.lat_ch[j++]=gps_nmea.msg_buf[i-1];
   }
+  gps.lat_ch[j]='\0';
   gps.NorS = gps_nmea.msg_buf[i];
   // correct latitute for N/S
   if(gps_nmea.msg_buf[i] == 'S')
@@ -126,13 +131,16 @@ void parse_nmea_GPGGA(void) {
   // convert to pure degrees [dd.dddd] format
 //  minutesfrac = modf(lon/100, &degrees);
 //  lon = degrees + (minutesfrac*100)/60;
-  gps.lon = lon;
+  gps.lon = lon*10000;
   // convert to radians
   //GpsInfo.PosLLA.lon.f *= (M_PI/180);
+  j=0;
   while(gps_nmea.msg_buf[i++] != ',') {              // next field: E/W indicator
     if (i >= gps_nmea.msg_len)
       return;
+    gps.lon_ch[j++]=gps_nmea.msg_buf[i-1];
   }
+  gps.lat_ch[j]='\0';
     gps.EorW = gps_nmea.msg_buf[i];
   // correct latitute for E/W
   if(gps_nmea.msg_buf[i] == 'W')
@@ -198,11 +206,13 @@ void parse_nmea_GPGGA(void) {
   gps.alt = lla_f_alt;
 //  gps.lla_pos.alt = gps.hmsl;
 //  NMEA_PRINT("p_GPGGA() - gps_alt=%i\n\r", gps.hmsl);
-
+ j=0;
   while(gps_nmea.msg_buf[i++] != ',') {              // next field: altitude units, always 'M'
     if (i >= gps_nmea.msg_len)
       return;
+   gps.alt_ch[j++]=gps_nmea.msg_buf[i-1];
   }
+  gps.alt_ch[j]='\0';
   while(gps_nmea.msg_buf[i++] != ',') {              // next field: geoid seperation
     if (i >= gps_nmea.msg_len)
       return;
@@ -213,6 +223,96 @@ void parse_nmea_GPGGA(void) {
 
 
 }
+
+
+
+
+/**
+ * parse NVVTG-nmea-messages stored in
+ * gps_nmea.msg_buf .
+ */
+void parse_nmea_NVVTG(void) {
+  int i = 6;     // current position in the message, start after: GPGGA,
+//  char* endptr;  // end of parsed substrings
+//  double degrees, minutesfrac;
+//  struct LlaCoor_f lla_f;
+
+  // attempt to reject empty packets right away
+  if(gps_nmea.msg_buf[i]==',' && gps_nmea.msg_buf[i+1]==',') {
+    NMEA_PRINT("p_GPGGA() - skipping empty message\n\r");
+    return;
+  }
+
+
+  int j=0;
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: direction,000.0~359.9
+    if (i >= gps_nmea.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      return;
+    }
+    gps.direction_ch[j++]=gps_nmea.msg_buf[i-1];
+  }
+  gps.direction_ch[j]='\0';
+
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: T
+    if (i >= gps_nmea.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      return;
+    }
+  }
+
+
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: magnatic direction,compass
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field:M
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: speed of knots
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: unit of knots
+    if (i >= gps_nmea.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r\r");
+      return;
+    }
+  }
+
+    j=0;
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: speed
+    if (i >= gps_nmea.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      return;
+    }
+    gps.speed_ch[j++]=gps_nmea.msg_buf[i-1];
+  }
+  gps.speed_ch[j]='\0';
+
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: km/h
+    if (i >= gps_nmea.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      return;
+    }
+  }
+
+
+
+}
+
+
 
 /**
  * parse_nmea_char() has a complete line.
@@ -229,10 +329,11 @@ void nmea_parse_msg( void ) {
       parse_nmea_GPGGA();
     }
     else {
-      if(gps_nmea.msg_len > 5 && !strncmp(gps_nmea.msg_buf , "GPGSA", 5)) {
+      if(gps_nmea.msg_len > 5 && !strncmp(gps_nmea.msg_buf , "NVVTG", 5)) {
         gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
         NMEA_PRINT("GSA: \"%s\" \n\r",gps_nmea.msg_buf);
         NMEA_PRINT("GSA");
+        parse_nmea_NVVTG();
 //        parse_nmea_GPGSA();
       } else {
         gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
