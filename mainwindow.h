@@ -38,6 +38,8 @@ protected:
     QSocketNotifier *m_notifier;
     QFile m_logFile;
     QFileDialog *m_fileDlg;
+    QFile m_detectUFile;
+    int delayNum;
 
 };
 
