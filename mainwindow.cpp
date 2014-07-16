@@ -337,6 +337,7 @@ void MainWindow::remoteDataIncoming()
   //  ui->m_time->display(temp_value.setNum(gps.tow,'g',11));
    if(gps_nmea.pos_available){
        ui->m_label_available->setText(QString("OK"));
+       ui->m_label_available->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
 
      //  ui->m_location_N->display(temp_value.setNum(gps.lat,'g',11));
       // ui->m_location_N->display(temp_value((char *)gps.lat_ch));
@@ -355,6 +356,7 @@ void MainWindow::remoteDataIncoming()
     }
    else{
        ui->m_label_available->setText(QString("N/A"));
+       ui->m_label_available->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 0, 0);"));
 
        ui->m_location_N->display("");
        ui->m_label_N->setText("");

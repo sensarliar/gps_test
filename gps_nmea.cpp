@@ -309,8 +309,64 @@ void parse_nmea_NVVTG(void) {
   }
 
 
+}
+
+
+
+
+/**
+ * parse NVDVI-nmea-messages stored in
+ * gps_nmea.msg_buf .
+ */
+void parse_nmea_NVDVI(void) {
+  int i = 6;     // current position in the message, start after: GPGGA,
+//  char* endptr;  // end of parsed substrings
+
+
+  // attempt to reject empty packets right away
+  if(gps_nmea.msg_buf[i]==',' && gps_nmea.msg_buf[i+1]==',') {
+    NMEA_PRINT("p_GPGGA() - skipping empty message\n\r");
+    return;
+  }
+
+
+  int j=0;
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: East speed
+    if (i >= gps_nmea.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      return;
+    }
+    gps.speed_E_ch[j++]=gps_nmea.msg_buf[i-1];
+  }
+  gps.speed_E_ch[j]='\0';
+
+
+ j=0;
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: North speed
+    if (i >= gps_nmea.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      return;
+    }
+    gps.speed_N_ch[j++]=gps_nmea.msg_buf[i-1];
+  }
+  gps.speed_N_ch[j]='\0';
+
+
+  j=0;
+   while(gps_nmea.msg_buf[i++] != '*') {              // next field: UP speed
+     if (i >= gps_nmea.msg_len) {
+       NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+       return;
+     }
+     gps.speed_U_ch[j++]=gps_nmea.msg_buf[i-1];
+   }
+   gps.speed_U_ch[j]='\0';
+
+
+
 
 }
+
 
 
 
@@ -334,10 +390,18 @@ void nmea_parse_msg( void ) {
         NMEA_PRINT("GSA: \"%s\" \n\r",gps_nmea.msg_buf);
         NMEA_PRINT("GSA");
         parse_nmea_NVVTG();
-//        parse_nmea_GPGSA();
+
       } else {
-        gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
-        NMEA_PRINT("ignoring: len=%i \n\r \"%s\" \n\r", gps_nmea.msg_len, gps_nmea.msg_buf);
+          if(gps_nmea.msg_len > 5 && !strncmp(gps_nmea.msg_buf , "NVDVI", 5)) {
+              gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
+              NMEA_PRINT("GSA: \"%s\" \n\r",gps_nmea.msg_buf);
+              NMEA_PRINT("GSA");
+              parse_nmea_NVDVI();
+              //        parse_nmea_GPGSA();
+          } else {
+              gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
+              NMEA_PRINT("ignoring: len=%i \n\r \"%s\" \n\r", gps_nmea.msg_len, gps_nmea.msg_buf);
+          }
       }
     }
 
