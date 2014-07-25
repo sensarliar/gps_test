@@ -353,6 +353,10 @@ void MainWindow::remoteDataIncoming()
       ui->m_direction->display((char *)gps.direction_ch);
        //ui->m_hight->display(temp_value.setNum(gps.alt));
        ui->m_hight->display((char *)gps.alt_ch);
+
+        ui->m_speed_U->display((char *)gps.speed_U_ch);
+        ui->m_speed_E->display(gps.speed_E);
+        ui->m_speed_N->display(gps.speed_N);
     }
    else{
        ui->m_label_available->setText(QString("N/A"));
@@ -365,6 +369,9 @@ void MainWindow::remoteDataIncoming()
        ui->m_speed->display("");
        ui->m_direction->display("");
        ui->m_hight->display("");
+       ui->m_speed_U->display("");
+       ui->m_speed_E->display("");
+       ui->m_speed_N->display("");
    }
 
 //QString disp_hight;
