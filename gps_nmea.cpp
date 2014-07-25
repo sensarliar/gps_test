@@ -370,6 +370,136 @@ void parse_nmea_NVDVI(void) {
 
 
 
+
+/**
+ * parse BESTVELA, NOVATEL messages stored in
+ * gps_nmea.msg_buf .
+ * #BESTVELA,COM1,0,68.5,FINESTEERING,1802,459952.900,00000000,8c02,12832;SOL_COMPUTED,DOPPLER_VELOCITY,0.150,0.000,0.0505,12.520238,-0.0537,0.0*18021b75
+ */
+void parse_novatel_bestvela(void) {
+  int i = 9;     // current position in the message, start after: bestvela,
+  char* endptr;  // end of parsed substrings
+
+
+  // attempt to reject empty packets right away
+  if(gps_nmea.msg_buf[i]==',' && gps_nmea.msg_buf[i+1]==',') {
+    NMEA_PRINT("p_GPGGA() - skipping empty message\n\r");
+    return;
+  }
+
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: COM1
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: 0
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: 68.5
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field:FINESTEERING
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field:1802
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field:459952.900
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field:00000000
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field:8c02
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+  while(gps_nmea.msg_buf[i++] != ';') {              // next field:12832;;;
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field:SOL_COMPUTED
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field:DOPPLER_VELOCITY
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field:latency，0.150
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field:Differential age in seconds，0.000
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+
+
+  int j=0;
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: horizontal speed
+    if (i >= gps_nmea.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      return;
+    }
+    gps.speed_horizon_ch[j++]=gps_nmea.msg_buf[i-1];
+  }
+  gps.speed_horizon_ch[j]='\0';
+
+  double speed_H = strtod(&gps.speed_horizon_ch[0],&endptr);
+
+ j=0;
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field:  speed angle
+    if (i >= gps_nmea.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      return;
+    }
+    gps.speed_angle_ch[j++]=gps_nmea.msg_buf[i-1];
+  }
+  gps.speed_angle_ch[j]='\0';
+
+  double speed_angle = strtod(&gps.speed_angle_ch[0],&endptr);
+
+  gps.speed_E= speed_H*sin(speed_angle);
+  gps.speed_N= speed_H*cos(speed_angle);
+
+
+  j=0;
+   while(gps_nmea.msg_buf[i++] != ',') {              // next field: vertical UP speed
+     if (i >= gps_nmea.msg_len) {
+       NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+       return;
+     }
+     gps.speed_U_ch[j++]=gps_nmea.msg_buf[i-1];
+   }
+   gps.speed_U_ch[j]='\0';
+
+
+
+
+}
+
+
+
 /**
  * parse_nmea_char() has a complete line.
  * Find out what type of message it is and
@@ -378,25 +508,26 @@ void parse_nmea_NVDVI(void) {
 void nmea_parse_msg( void ) {
 
 
-    if(gps_nmea.msg_len > 5 && !strncmp(gps_nmea.msg_buf , "NVGGA", 5)) {
+    if(gps_nmea.msg_len > 5 && !strncmp(gps_nmea.msg_buf , "GPGGA", 5)) {
       gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
       NMEA_PRINT("parse_gps_msg() - parsing GGA gps-message \"%s\" \n\r",gps_nmea.msg_buf);
       NMEA_PRINT("GGA");
       parse_nmea_GPGGA();
     }
     else {
-      if(gps_nmea.msg_len > 5 && !strncmp(gps_nmea.msg_buf , "NVVTG", 5)) {
+      if(gps_nmea.msg_len > 5 && !strncmp(gps_nmea.msg_buf , "GPVTG", 5)) {
         gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
         NMEA_PRINT("GSA: \"%s\" \n\r",gps_nmea.msg_buf);
         NMEA_PRINT("GSA");
         parse_nmea_NVVTG();
 
       } else {
-          if(gps_nmea.msg_len > 5 && !strncmp(gps_nmea.msg_buf , "NVDVI", 5)) {
+          if(gps_nmea.msg_len > 5 && !strncmp(gps_nmea.msg_buf , "BESTVELA", 8)) {
               gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
               NMEA_PRINT("GSA: \"%s\" \n\r",gps_nmea.msg_buf);
               NMEA_PRINT("GSA");
-              parse_nmea_NVDVI();
+              //parse_nmea_NVDVI();
+              parse_novatel_bestvela();
               //        parse_nmea_GPGSA();
           } else {
               gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
@@ -420,7 +551,7 @@ void nmea_parse_msg( void ) {
 void nmea_parse_char( char c ) {
   //reject empty lines
   if (gps_nmea.msg_len == 0) {
-    if (c == '\r' || c == '\n' || c == '$')
+    if (c == '\r' || c == '\n' || c == '#'|| c == '$')
       return;
   }
 

@@ -60,9 +60,14 @@ struct GpsState {
   char direction_ch[12];
   char speed_ch[12];
 
+  char speed_horizon_ch[12];
+  char speed_angle_ch[12];
   char speed_E_ch[12];
   char speed_N_ch[12];
   char speed_U_ch[12];
+
+  double speed_E;
+  double speed_N;
 
 /*
   int16_t gspeed;                ///< norm of 2d ground speed in cm/s
