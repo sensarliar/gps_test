@@ -26,8 +26,8 @@
    <widget class="QTextEdit" name="m_sendEdit">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>400</y>
+      <x>210</x>
+      <y>430</y>
       <width>231</width>
       <height>51</height>
      </rect>
@@ -107,8 +107,8 @@
    <widget class="QPushButton" name="m_connectButton">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>360</y>
+      <x>-40</x>
+      <y>430</y>
       <width>101</width>
       <height>27</height>
      </rect>
@@ -120,8 +120,8 @@
    <widget class="QPushButton" name="m_disconnectButton">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>360</y>
+      <x>170</x>
+      <y>430</y>
       <width>101</width>
       <height>27</height>
      </rect>
@@ -133,10 +133,10 @@
    <widget class="QPushButton" name="m_sendButton">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>400</y>
+      <x>60</x>
+      <y>430</y>
       <width>101</width>
-      <height>27</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -146,8 +146,8 @@
    <widget class="QCheckBox" name="m_enableLoggingCb">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>360</y>
+      <x>50</x>
+      <y>390</y>
       <width>61</width>
       <height>21</height>
      </rect>
@@ -162,8 +162,8 @@
    <widget class="QLineEdit" name="m_logFileLe">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>350</y>
+      <x>110</x>
+      <y>380</y>
       <width>151</width>
       <height>31</height>
      </rect>
@@ -172,8 +172,8 @@
    <widget class="QPushButton" name="m_logFileFileDialog">
     <property name="geometry">
      <rect>
-      <x>530</x>
-      <y>350</y>
+      <x>270</x>
+      <y>380</y>
       <width>101</width>
       <height>27</height>
      </rect>
@@ -185,10 +185,10 @@
    <widget class="QTextBrowser" name="m_receiveEdit">
     <property name="geometry">
      <rect>
-      <x>-10</x>
-      <y>10</y>
-      <width>311</width>
-      <height>101</height>
+      <x>0</x>
+      <y>30</y>
+      <width>51</width>
+      <height>31</height>
      </rect>
     </property>
    </widget>
@@ -461,22 +461,6 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
     <property name="styleSheet">
      <string notr="true">border-image: url(:/new/prefix1/images/red.png);
 </string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>370</y>
-      <width>16</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 0, 0);</string>
-    </property>
-    <property name="text">
-     <string/>
     </property>
    </widget>
    <widget class="QLCDNumber" name="m_time_h">
@@ -872,8 +856,6 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
    <zorder>label_7</zorder>
    <zorder>label_8</zorder>
    <zorder>label_usbNotify</zorder>
-   <zorder>graphicsView</zorder>
-   <zorder>label</zorder>
    <zorder>m_time_h</zorder>
    <zorder>label_11</zorder>
    <zorder>label_12</zorder>
@@ -895,6 +877,7 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
    <zorder>m_speed_N</zorder>
    <zorder>m_label_km_h_4</zorder>
    <zorder>label_18</zorder>
+   <zorder>graphicsView</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
