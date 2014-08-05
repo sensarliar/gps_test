@@ -101,7 +101,8 @@ MainWindow::MainWindow(QWidget *parent) :
       file_store_name+=(".log");
         ui->m_logFileLe->setText(file_store_name);
 
-
+        gps_impl_init();
+        gps_nmea.pos_available = FALSE;
 
 //       gps_nmea.msg_len = 0;
 //      ui->m_logFileLe->setText("/media/mmcblk0/cutecom.log");
@@ -110,6 +111,23 @@ MainWindow::MainWindow(QWidget *parent) :
      // enableLogging(1);
       ConnectButtonClicked();
 
+      if(m_detectUFile.exists("/dev/sda1")){
+
+                  enableLogging(1);
+                  // ui->label_usbNotify->setText(tr("数据记录中！！！"));
+                  ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\">\346\225\260\346\215\256\346\255\243\345\234\250\350\256\260\345\275\225\344\270\255\357\274\201</p></body></html>", 0, QApplication::UnicodeUTF8));
+                  ui->label_usbNotify->setStyleSheet(QString::fromUtf8( "background-color: rgba(0,0,0,0);"));
+
+      }
+      else{
+
+           enableLogging(0);
+       //    ui->label_usbNotify->setText(tr("请插入U盘记录数据！！！"));
+           ui->label_usbNotify->setStyleSheet(QString::fromUtf8("color: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0, stop:0 rgba(0, 0, 0, 255), stop:0.05 rgba(14, 8, 73, 255), stop:0.36 rgba(28, 17, 145, 255), stop:0.6 rgba(126, 14, 81, 255), stop:0.75 rgba(234, 11, 11, 255), stop:0.79 rgba(244, 70, 5, 255), stop:0.86 rgba(255, 136, 0, 255), stop:0.935 rgba(239, 236, 55, 255));\n"
+   "background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 3, 255), stop:0.16 rgba(136, 106, 22, 255), stop:0.225 rgba(166, 140, 41, 255), stop:0.285 rgba(204, 181, 74, 255), stop:0.345 rgba(235, 219, 102, 255), stop:0.415 rgba(245, 236, 112, 255), stop:0.52 rgba(209, 190, 76, 255), stop:0.57 rgba(187, 156, 51, 255), stop:0.635 rgba(168, 142, 42, 255), stop:0.695 rgba(202, 174, 68, 255), stop:0.75 rgba(218, 202, 86, 255), stop:0.815 rgba(208, 187, 73, 255), stop:0.88 rgba(187, 156, 51, 255), stop:0.935 rgba(137, 108, 26, 255), stop:1 rgba(35, 40, 3, 255));"));
+           ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#ff0000;\">\350\257\267\346\217\222\345\205\245U\347\233\230\350\256\260\345\275\225\346\225\260\346\215\256\357\274\201</span></p></body></html>", 0, QApplication::UnicodeUTF8));
+
+       }
 
 }
 
@@ -185,7 +203,7 @@ int MainWindow::openSerialPort()
     memset(&serialAttr, 0, sizeof serialAttr);
     serialAttr.c_iflag = IGNPAR;
     serialAttr.c_cflag = B115200 | HUPCL | CS8 | CREAD | CLOCAL;
-    serialAttr.c_cc[VMIN] = 143;//144
+    serialAttr.c_cc[VMIN] = 273;//144
     if (tcsetattr(fd, TCSANOW, &serialAttr) != 0) {
         return -1;
     }
@@ -196,7 +214,8 @@ int MainWindow::openSerialPort()
 
 void MainWindow::remoteDataIncoming()
 {
-    char buff[2*(66+49+29)+30];
+//    char buff[2*(66+49+29)+30];
+    char buff[2*(74+48+151)+30];
     //char buff_array[2*(66+49+29)+30];
     //char *buff=buff_array;
     QString buff_time;
@@ -228,7 +247,7 @@ void MainWindow::remoteDataIncoming()
             );
     }
 */
-    int bytesRead=read(m_fd, buff, 2*(66+49+29));
+    int bytesRead=read(m_fd, buff, 2*(74+48+151));
     if (bytesRead<1) {
         QMessageBox::warning(this, tr("Error"), tr("Receive error!"));
         return;
@@ -449,10 +468,12 @@ void MainWindow::remoteDataIncoming()
    if(m_detectUFile.exists("/dev/sda1")){
        delayNum--;
        if(delayNum<=0){
-        enableLogging(1);
-       // ui->label_usbNotify->setText(tr("数据记录中！！！"));
-         ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\">\346\225\260\346\215\256\346\255\243\345\234\250\350\256\260\345\275\225\344\270\255\357\274\201</p></body></html>", 0, QApplication::UnicodeUTF8));
-         ui->label_usbNotify->setStyleSheet(QString::fromUtf8( "background-color: rgba(0,0,0,0);"));
+           if (!m_logFile.isOpen()){
+               enableLogging(1);
+               // ui->label_usbNotify->setText(tr("数据记录中！！！"));
+               ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\">\346\225\260\346\215\256\346\255\243\345\234\250\350\256\260\345\275\225\344\270\255\357\274\201</p></body></html>", 0, QApplication::UnicodeUTF8));
+               ui->label_usbNotify->setStyleSheet(QString::fromUtf8( "background-color: rgba(0,0,0,0);"));
+           }
         }
    }
    else{
