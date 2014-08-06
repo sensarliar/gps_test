@@ -24,10 +24,12 @@ private:
 
 protected:
     int openSerialPort();
+    int openSerialPort_com2();
 
 protected slots:
     void sendButtonClicked();
     void remoteDataIncoming();
+    void remoteDataIncoming_com2();
     void ConnectButtonClicked();
     void DisconnectButtonClicked();
     void enableLogging(bool);
@@ -36,6 +38,8 @@ protected slots:
 protected:
     int m_fd;
     QSocketNotifier *m_notifier;
+    int m_fd_com2;
+    QSocketNotifier *m_notifier_com2;
     QFile m_logFile;
     QFileDialog *m_fileDlg;
     QFile m_detectUFile;
