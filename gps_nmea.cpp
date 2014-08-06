@@ -47,7 +47,7 @@ void parse_nmea_GPGGA(void);
 
 void gps_impl_init( void ) {
   gps_nmea.msg_available = FALSE;
-  gps_nmea.pos_available = FALSE;
+//  gps_nmea.pos_available = FALSE;
 //  gps_nmea.gps_nb_ovrn = 0;
  // gps_nmea.msg_len = 0;
 }
@@ -78,13 +78,13 @@ void parse_nmea_GPGGA(void) {
   // get UTC time [hhmmss.sss]
   // ignored GpsInfo.PosLLA.TimeOfFix.f = strtod(&packet[i], &endptr);
   // FIXME: parse UTC time correctly
-  double time = strtod(&gps_nmea.msg_buf[i],&endptr);
+  //double time = strtod(&gps_nmea.msg_buf[i],&endptr);
  // gps.tow = (uint32_t)((time+1)*1000);
-  gps.tow = time*1000;
+  //gps.tow = time*1000;
 
   //AD TODO: strtod itow
   int j=0;
-  while(gps_nmea.msg_buf[i++] != ',') {              // next field: latitude
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: time
     if (i >= gps_nmea.msg_len) {
       NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
       return;
@@ -93,15 +93,15 @@ void parse_nmea_GPGGA(void) {
   }
   gps.time_ch[j]='\0';
   // get latitude [ddmm.mmmmm]
-  double lat = strtod(&gps_nmea.msg_buf[i], &endptr);
+//  double lat = strtod(&gps_nmea.msg_buf[i], &endptr);
   // convert to pure degrees [dd.dddd] format
 //  minutesfrac = modf(lat/100, &degrees);
  // lat = degrees + (minutesfrac*100)/60;
   // convert to radians
   //GpsInfo.PosLLA.lat.f *= (M_PI/180);
-  gps.lat = lat*10000;
+ // gps.lat = lat*10000;
     j=0;
-  while(gps_nmea.msg_buf[i++] != ',') {              // next field: N/S indicator
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: latitude
     if (i >= gps_nmea.msg_len) {
       NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
       return;
@@ -111,8 +111,8 @@ void parse_nmea_GPGGA(void) {
   gps.lat_ch[j]='\0';
   gps.NorS = gps_nmea.msg_buf[i];
   // correct latitute for N/S
-  if(gps_nmea.msg_buf[i] == 'S')
-    lat = -lat;
+ // if(gps_nmea.msg_buf[i] == 'S')
+ //   lat = -lat;
 
   // convert to radians
 //  lla_f.lat = RadOfDeg(lat);
@@ -121,11 +121,11 @@ void parse_nmea_GPGGA(void) {
   NMEA_PRINT("p_GPGGA() - lat=%d gps_lat=%i\n\r", (lat*1000), lla_f.lat);
 
 
-  while(gps_nmea.msg_buf[i++] != ',') {              // next field: longitude
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: N / S
     if (i >= gps_nmea.msg_len)
       return;
   }
-
+/*
   // get longitude [ddmm.mmmmm]
   double lon = strtod(&gps_nmea.msg_buf[i], &endptr);
   // convert to pure degrees [dd.dddd] format
@@ -134,18 +134,19 @@ void parse_nmea_GPGGA(void) {
   gps.lon = lon*10000;
   // convert to radians
   //GpsInfo.PosLLA.lon.f *= (M_PI/180);
+  */
   j=0;
-  while(gps_nmea.msg_buf[i++] != ',') {              // next field: E/W indicator
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: LOGITUDE
     if (i >= gps_nmea.msg_len)
       return;
     gps.lon_ch[j++]=gps_nmea.msg_buf[i-1];
   }
-  gps.lat_ch[j]='\0';
+  gps.lon_ch[j]='\0';
     gps.EorW = gps_nmea.msg_buf[i];
   // correct latitute for E/W
-  if(gps_nmea.msg_buf[i] == 'W')
+ /* if(gps_nmea.msg_buf[i] == 'W')
     lon = -lon;
-
+*/
   // convert to radians
 //  lla_f.lon = RadOfDeg(lon);
 
@@ -153,7 +154,7 @@ void parse_nmea_GPGGA(void) {
   NMEA_PRINT("p_GPGGA() - lon=%d gps_lon=%i time=%u\n\r", (lon*1000), lla_f.lon, gps.tow);
 
 
-  while(gps_nmea.msg_buf[i++] != ',') {              // next field: position fix status
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: E / W
     if (i >= gps_nmea.msg_len)
       return;
   }
