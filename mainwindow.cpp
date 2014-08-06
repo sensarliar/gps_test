@@ -191,7 +191,7 @@ int MainWindow::openSerialPort()
 {
     int fd = -1;
 
-    const char *devName = "/dev/ttyO1";
+    const char *devName = "/dev/ttyO2";
 //    const char *devName = "/dev/ttyUSB0";
     fd = ::open(devName, O_RDWR&~O_NONBLOCK);
     //fd = ::open(devName, O_RDWR|O_NONBLOCK);
@@ -203,7 +203,8 @@ int MainWindow::openSerialPort()
     memset(&serialAttr, 0, sizeof serialAttr);
     serialAttr.c_iflag = IGNPAR;
     serialAttr.c_cflag = B115200 | HUPCL | CS8 | CREAD | CLOCAL;
-    serialAttr.c_cc[VMIN] = 273;//144
+//    serialAttr.c_cc[VMIN] = 273;//144
+    serialAttr.c_cc[VMIN] = 255;//144
     if (tcsetattr(fd, TCSANOW, &serialAttr) != 0) {
         return -1;
     }
