@@ -234,7 +234,7 @@ void parse_nmea_GPGGA(void) {
  */
 void parse_nmea_NVVTG(void) {
   int i = 6;     // current position in the message, start after: GPGGA,
-//  char* endptr;  // end of parsed substrings
+  char* endptr;  // end of parsed substrings
 //  double degrees, minutesfrac;
 //  struct LlaCoor_f lla_f;
 
@@ -300,6 +300,11 @@ void parse_nmea_NVVTG(void) {
     gps.speed_ch[j++]=gps_nmea.msg_buf[i-1];
   }
   gps.speed_ch[j]='\0';
+  gps.gspeed= strtod(&gps.speed_ch[0],&endptr);
+//  gps.gspeed /= 36;  // transfer from km/h to m/s
+
+  gps.gspeed=(double((int)(gps.gspeed*100/36)))/10;
+
 
 
   while(gps_nmea.msg_buf[i++] != ',') {              // next field: km/h
@@ -483,6 +488,13 @@ void parse_novatel_bestvela(void) {
   gps.speed_E= speed_H*sin(speed_angle);
   gps.speed_N= speed_H*cos(speed_angle);
 
+  gps.speed_E*=10;
+ int temp = (int)gps.speed_E;
+  gps.speed_E=double(temp)/10;
+
+  gps.speed_N*=10;
+
+  gps.speed_N=(double((int)gps.speed_N))/10;
 
   j=0;
    while(gps_nmea.msg_buf[i++] != ',') {              // next field: vertical UP speed
@@ -493,7 +505,8 @@ void parse_novatel_bestvela(void) {
      gps.speed_U_ch[j++]=gps_nmea.msg_buf[i-1];
    }
    gps.speed_U_ch[j]='\0';
-
+   gps.speed_U = strtod(&gps.speed_U_ch[0],&endptr);
+    gps.speed_U=(double((int)(gps.speed_U*10)))/10;
 
 
 

@@ -460,13 +460,15 @@ void MainWindow::remoteDataIncoming()
        ui->m_label_E->setText(QString(QChar(gps.EorW)));
 
      //  ui->m_speed->display(temp_value.setNum(gps.pdop));
-      ui->m_speed->display((char *)gps.speed_ch);
+    //  ui->m_speed->display((char *)gps.speed_ch);
+       ui->m_speed->display(gps.gspeed);
     //   ui->m_direction->display(temp_value.setNum(gps.num_sv));
       ui->m_direction->display((char *)gps.direction_ch);
        //ui->m_hight->display(temp_value.setNum(gps.alt));
        ui->m_hight->display((char *)gps.alt_ch);
 
-        ui->m_speed_U->display((char *)gps.speed_U_ch);
+        //ui->m_speed_U->display((char *)gps.speed_U_ch);
+        ui->m_speed_U->display(gps.speed_U);
         ui->m_speed_E->display(gps.speed_E);
         ui->m_speed_N->display(gps.speed_N);
     }
