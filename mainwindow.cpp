@@ -58,7 +58,7 @@ QLineEdit *m_logFileLe;
 QTextEdit *m_sendEdit;
 QTextEdit *m_receiveEdit;
 */
-struct tm tmnow;
+struct tm* tmnow;
 struct timeval st;
 
 QString time_stamp;
@@ -84,18 +84,22 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
       gettimeofday(&st, NULL);
+      time_t t_store;
+      time(&t_store);
+      tmnow=localtime(&t_store);
+      //tmnow=localtime(NULL);
 
-      time_stamp_list=time_stamp.setNum(tmnow.tm_year+1900);
+      time_stamp_list=time_stamp.setNum(tmnow->tm_year+1900);
       time_stamp_list+=("_");
-      time_stamp_list+=time_stamp.setNum(tmnow.tm_mon+1);
+      time_stamp_list+=time_stamp.setNum(tmnow->tm_mon+1);
       time_stamp_list+=("_");
-      time_stamp_list+=time_stamp.setNum(tmnow.tm_mday);
+      time_stamp_list+=time_stamp.setNum(tmnow->tm_mday);
       time_stamp_list+=("_");
-      time_stamp_list+=time_stamp.setNum(tmnow.tm_hour);
+      time_stamp_list+=time_stamp.setNum(tmnow->tm_hour);
       time_stamp_list+=("_");
-      time_stamp_list+=time_stamp.setNum(tmnow.tm_min);
+      time_stamp_list+=time_stamp.setNum(tmnow->tm_min);
       time_stamp_list+=("_");
-      time_stamp_list+=time_stamp.setNum(tmnow.tm_sec);
+      time_stamp_list+=time_stamp.setNum(tmnow->tm_sec);
       time_stamp_list+=("_");
       time_stamp_list+=time_stamp.setNum(st.tv_usec);
       QString file_store_name("/media/sda1/cutecom");
