@@ -63,6 +63,7 @@ struct timeval st;
 
 QString time_stamp;
 QString time_stamp_list;
+bool flag_write_ephem;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -108,9 +109,11 @@ MainWindow::MainWindow(QWidget *parent) :
 //       gps_nmea.msg_len = 0;
 //      ui->m_logFileLe->setText("/media/mmcblk0/cutecom.log");
       enableLogging(0);
-      delayNum=100;
+      delayNum=200;
      // enableLogging(1);
       ConnectButtonClicked();
+
+      flag_write_ephem = 0;
 
       if(m_detectUFile.exists("/dev/sda1")){
 
@@ -118,6 +121,12 @@ MainWindow::MainWindow(QWidget *parent) :
                   // ui->label_usbNotify->setText(tr("数据记录中！！！"));
                   ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\">\346\225\260\346\215\256\346\255\243\345\234\250\350\256\260\345\275\225\344\270\255\357\274\201</p></body></html>", 0, QApplication::UnicodeUTF8));
                   ui->label_usbNotify->setStyleSheet(QString::fromUtf8( "background-color: rgba(0,0,0,0);"));
+                  usleep(200000);
+                  QString text("log com2 rawephema\r\n");
+                  ::write(m_fd, text.toLatin1(), text.length());
+                  sleep(1);
+                  text="log com2 rawephema onnew\r\n";
+                  ::write(m_fd, text.toLatin1(), text.length());
 
       }
       else{
@@ -282,17 +291,38 @@ void MainWindow::remoteDataIncoming_com2()
 
     if(m_detectUFile.exists("/dev/sda1")){
         delayNum--;
-        if(delayNum<=0){
+        if(delayNum<=30){
             if (!m_logFile.isOpen()){
                 enableLogging(1);
                 // ui->label_usbNotify->setText(tr("数据记录中！！！"));
                 ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\">\346\225\260\346\215\256\346\255\243\345\234\250\350\256\260\345\275\225\344\270\255\357\274\201</p></body></html>", 0, QApplication::UnicodeUTF8));
                 ui->label_usbNotify->setStyleSheet(QString::fromUtf8( "background-color: rgba(0,0,0,0);"));
+/*
+                QString text("log com2 rawephema\r\n");
+                ::write(m_fd, text.toLatin1(), text.length());
+                */
+                usleep(200000);
+                QString text("log com2 rawephema\r\n");
+                ::write(m_fd, text.toLatin1(), text.length());
+                flag_write_ephem = 1;
+
+
             }
+            if(delayNum<=0){
+                if(1==flag_write_ephem){
+                usleep(20000);
+                QString text_new("log com2 rawephema onnew\r\n");
+                ::write(m_fd, text_new.toLatin1(), text_new.length());
+                flag_write_ephem = 0;
+                }
+                delayNum=200;
+            }
+
          }
+
     }
     else{
-        delayNum=100;
+        delayNum=200;
          enableLogging(0);
      //    ui->label_usbNotify->setText(tr("请插入U盘记录数据！！！"));
          ui->label_usbNotify->setStyleSheet(QString::fromUtf8("color: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0, stop:0 rgba(0, 0, 0, 255), stop:0.05 rgba(14, 8, 73, 255), stop:0.36 rgba(28, 17, 145, 255), stop:0.6 rgba(126, 14, 81, 255), stop:0.75 rgba(234, 11, 11, 255), stop:0.79 rgba(244, 70, 5, 255), stop:0.86 rgba(255, 136, 0, 255), stop:0.935 rgba(239, 236, 55, 255));\n"
@@ -463,7 +493,13 @@ void MainWindow::remoteDataIncoming()
     //  ui->m_speed->display((char *)gps.speed_ch);
        ui->m_speed->display(gps.gspeed);
     //   ui->m_direction->display(temp_value.setNum(gps.num_sv));
-      ui->m_direction->display((char *)gps.direction_ch);
+       if (gps.gspeed>1){
+          ui->m_direction->display((char *)gps.direction_ch);
+       }
+       else{
+           ui->m_direction->display("");
+       }
+
        //ui->m_hight->display(temp_value.setNum(gps.alt));
        ui->m_hight->display((char *)gps.alt_ch);
 

@@ -99,6 +99,11 @@
       <height>41</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>13</pointsize>
+     </font>
+    </property>
     <property name="autoFillBackground">
      <bool>false</bool>
     </property>
@@ -223,7 +228,7 @@
      <font>
       <family>Ubuntu</family>
       <pointsize>11</pointsize>
-      <weight>9</weight>
+      <weight>50</weight>
       <italic>true</italic>
       <bold>false</bold>
      </font>
@@ -232,9 +237,7 @@
      <bool>false</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(170, 255, 127);
-background-color: rgb(205, 255, 177);
-font: 75 italic 11pt &quot;Ubuntu&quot;;</string>
+     <string notr="true">background-color: rgb(231, 255, 217);</string>
     </property>
     <property name="smallDecimalPoint">
      <bool>false</bool>
@@ -261,27 +264,27 @@ font: 75 italic 11pt &quot;Ubuntu&quot;;</string>
        <colorrole role="Button">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>205</red>
+          <red>231</red>
           <green>255</green>
-          <blue>177</blue>
+          <blue>217</blue>
          </color>
         </brush>
        </colorrole>
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>205</red>
+          <red>231</red>
           <green>255</green>
-          <blue>177</blue>
+          <blue>217</blue>
          </color>
         </brush>
        </colorrole>
        <colorrole role="Window">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>205</red>
+          <red>231</red>
           <green>255</green>
-          <blue>177</blue>
+          <blue>217</blue>
          </color>
         </brush>
        </colorrole>
@@ -290,27 +293,27 @@ font: 75 italic 11pt &quot;Ubuntu&quot;;</string>
        <colorrole role="Button">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>205</red>
+          <red>231</red>
           <green>255</green>
-          <blue>177</blue>
+          <blue>217</blue>
          </color>
         </brush>
        </colorrole>
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>205</red>
+          <red>231</red>
           <green>255</green>
-          <blue>177</blue>
+          <blue>217</blue>
          </color>
         </brush>
        </colorrole>
        <colorrole role="Window">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>205</red>
+          <red>231</red>
           <green>255</green>
-          <blue>177</blue>
+          <blue>217</blue>
          </color>
         </brush>
        </colorrole>
@@ -319,27 +322,27 @@ font: 75 italic 11pt &quot;Ubuntu&quot;;</string>
        <colorrole role="Button">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>205</red>
+          <red>231</red>
           <green>255</green>
-          <blue>177</blue>
+          <blue>217</blue>
          </color>
         </brush>
        </colorrole>
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>205</red>
+          <red>231</red>
           <green>255</green>
-          <blue>177</blue>
+          <blue>217</blue>
          </color>
         </brush>
        </colorrole>
        <colorrole role="Window">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>205</red>
+          <red>231</red>
           <green>255</green>
-          <blue>177</blue>
+          <blue>217</blue>
          </color>
         </brush>
        </colorrole>
@@ -352,8 +355,7 @@ font: 75 italic 11pt &quot;Ubuntu&quot;;</string>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(170, 255, 127);
-background-color: rgb(205, 255, 177);</string>
+     <string notr="true">background-color: rgb(231, 255, 217);</string>
     </property>
     <property name="numDigits">
      <number>10</number>
@@ -370,6 +372,11 @@ background-color: rgb(205, 255, 177);</string>
       <width>31</width>
       <height>41</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>13</pointsize>
+     </font>
     </property>
     <property name="text">
      <string/>
@@ -439,8 +446,7 @@ background-color: rgb(0, 0, 0);</string>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(170, 255, 127);
-background-color: rgb(205, 255, 177);</string>
+     <string notr="true">background-color: rgb(231, 255, 217);</string>
     </property>
     <property name="numDigits">
      <number>10</number>
@@ -749,6 +755,11 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
       <height>31</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>13</pointsize>
+     </font>
+    </property>
     <property name="text">
      <string>m/s</string>
     </property>
@@ -774,6 +785,11 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
       <width>41</width>
       <height>31</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>13</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>m/s</string>
@@ -825,6 +841,11 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
       <height>31</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>13</pointsize>
+     </font>
+    </property>
     <property name="text">
      <string>m/s</string>
     </property>
@@ -864,6 +885,11 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
       <height>31</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>13</pointsize>
+     </font>
+    </property>
     <property name="text">
      <string>m/s</string>
     </property>
@@ -902,6 +928,11 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
       <width>41</width>
       <height>31</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>13</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>m</string>
