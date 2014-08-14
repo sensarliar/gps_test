@@ -253,7 +253,7 @@ int MainWindow::openSerialPort_com2()
 {
     int fd = -1;
 
-    const char *devName = "/dev/ttyO2";
+    const char *devName = "/dev/ttyO4";
 //    const char *devName = "/dev/ttyUSB0";
     fd = ::open(devName, O_RDWR&~O_NONBLOCK);
     //fd = ::open(devName, O_RDWR|O_NONBLOCK);
