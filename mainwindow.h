@@ -25,11 +25,13 @@ private:
 protected:
     int openSerialPort();
     int openSerialPort_com2();
+    int openSerialPort_com4();
 
 protected slots:
     void sendButtonClicked();
     void remoteDataIncoming();
     void remoteDataIncoming_com2();
+    void remoteDataIncoming_com4();
     void ConnectButtonClicked();
     void DisconnectButtonClicked();
     void enableLogging(bool);
@@ -40,10 +42,13 @@ protected:
     QSocketNotifier *m_notifier;
     int m_fd_com2;
     QSocketNotifier *m_notifier_com2;
+    int m_fd_com4;
+    QSocketNotifier *m_notifier_com4;
     QFile m_logFile;
     QFileDialog *m_fileDlg;
     QFile m_detectUFile;
     int delayNum;
+    bool uart4_message_ok;
 
 };
 

@@ -58,8 +58,9 @@ QLineEdit *m_logFileLe;
 QTextEdit *m_sendEdit;
 QTextEdit *m_receiveEdit;
 */
-struct tm* tmnow;
+struct tm* tmnow,*tmrtc;
 struct timeval st;
+char fpga_state;
 
 QString time_stamp;
 QString time_stamp_list;
@@ -82,11 +83,47 @@ MainWindow::MainWindow(QWidget *parent) :
       ui->m_receiveEdit->setWordWrapMode(QTextOption::WrapAnywhere);
       ui->m_receiveEdit->document()->setMaximumBlockCount(500);
 
+      uart4_message_ok=0;
+      m_fd_com4 = openSerialPort_com4();
+      if (m_fd_com4 < 0) {
+          QMessageBox::warning(this, tr("Error"), tr("Fail to open serial port!"));
+          return ;
+      }
+      tcflush(m_fd_com4,TCIOFLUSH);
+      m_notifier_com4 = new QSocketNotifier(m_fd_com4, QSocketNotifier::Read, this);
+      connect (m_notifier_com4, SIGNAL(activated(int)), this, SLOT(remoteDataIncoming_com2()));
+
+      while(1)
+      {
+          if(uart4_message_ok)
+              break;
+          usleep(500000);
+      }
+ /*     if(uart4_message_ok)
+      {
+          if (m_notifier_com4) {
+              delete m_notifier_com4;
+              m_notifier_com4 = 0;
+          }
+
+          if (m_fd_com4 >= 0) {
+              tcflush(m_fd_com4,TCIOFLUSH);
+              ::close(m_fd_com4);
+              m_fd_com4 = -1;
+          }
+      }
+      */
 
       gettimeofday(&st, NULL);
       time_t t_store;
       time(&t_store);
       tmnow=localtime(&t_store);
+      tmnow->tm_hour=tmrtc->tm_hour;
+      tmnow->tm_min=tmrtc->tm_min;
+      tmnow->tm_sec=tmrtc->tm_sec;
+      t_store=mktime(tmnow);
+      stime(&t_store);  //set system time
+
       //tmnow=localtime(NULL);
 
       time_stamp_list=time_stamp.setNum(tmnow->tm_year+1900);
@@ -102,7 +139,7 @@ MainWindow::MainWindow(QWidget *parent) :
       time_stamp_list+=time_stamp.setNum(tmnow->tm_sec);
       time_stamp_list+=("_");
       time_stamp_list+=time_stamp.setNum(st.tv_usec);
-      QString file_store_name("/media/sda1/cutecom");
+      QString file_store_name("/media/sda1/range");
       file_store_name+=time_stamp_list;
       file_store_name+=(".log");
         ui->m_logFileLe->setText(file_store_name);
@@ -123,8 +160,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
                   enableLogging(1);
                   // ui->label_usbNotify->setText(tr("数据记录中！！！"));
-                  ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\">\346\225\260\346\215\256\346\255\243\345\234\250\350\256\260\345\275\225\344\270\255\357\274\201</p></body></html>", 0, QApplication::UnicodeUTF8));
-                  ui->label_usbNotify->setStyleSheet(QString::fromUtf8( "background-color: rgba(0,0,0,0);"));
+                //  ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\">\346\225\260\346\215\256\346\255\243\345\234\250\350\256\260\345\275\225\344\270\255\357\274\201</p></body></html>", 0, QApplication::UnicodeUTF8));
+                  ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">\350\256\260\345\275\225\344\270\255\357\274\201</span></p></body></html>", 0, QApplication::UnicodeUTF8));
+                 // ui->label_usbNotify->setStyleSheet(QString::fromUtf8( "background-color: rgba(0,0,0,0);"));
+                  ui->label_usbNotify->setStyleSheet(QString::fromUtf8( "background-color: rgb(0, 255, 0);"));
                   usleep(200000);
                   QString text("log com2 rawephema\r\n");
                   ::write(m_fd, text.toLatin1(), text.length());
@@ -139,8 +178,8 @@ MainWindow::MainWindow(QWidget *parent) :
        //    ui->label_usbNotify->setText(tr("请插入U盘记录数据！！！"));
            ui->label_usbNotify->setStyleSheet(QString::fromUtf8("color: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0, stop:0 rgba(0, 0, 0, 255), stop:0.05 rgba(14, 8, 73, 255), stop:0.36 rgba(28, 17, 145, 255), stop:0.6 rgba(126, 14, 81, 255), stop:0.75 rgba(234, 11, 11, 255), stop:0.79 rgba(244, 70, 5, 255), stop:0.86 rgba(255, 136, 0, 255), stop:0.935 rgba(239, 236, 55, 255));\n"
    "background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 3, 255), stop:0.16 rgba(136, 106, 22, 255), stop:0.225 rgba(166, 140, 41, 255), stop:0.285 rgba(204, 181, 74, 255), stop:0.345 rgba(235, 219, 102, 255), stop:0.415 rgba(245, 236, 112, 255), stop:0.52 rgba(209, 190, 76, 255), stop:0.57 rgba(187, 156, 51, 255), stop:0.635 rgba(168, 142, 42, 255), stop:0.695 rgba(202, 174, 68, 255), stop:0.75 rgba(218, 202, 86, 255), stop:0.815 rgba(208, 187, 73, 255), stop:0.88 rgba(187, 156, 51, 255), stop:0.935 rgba(137, 108, 26, 255), stop:1 rgba(35, 40, 3, 255));"));
-           ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#ff0000;\">\350\257\267\346\217\222\345\205\245U\347\233\230\350\256\260\345\275\225\346\225\260\346\215\256\357\274\201</span></p></body></html>", 0, QApplication::UnicodeUTF8));
-
+        //   ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#ff0000;\">\350\257\267\346\217\222\345\205\245U\347\233\230\350\256\260\345\275\225\346\225\260\346\215\256\357\274\201</span></p></body></html>", 0, QApplication::UnicodeUTF8));
+        ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\">\350\257\267\346\217\222\345\205\245U\347\233\230\357\274\201\357\274\201</p></body></html>", 0, QApplication::UnicodeUTF8));
        }
 
 }
@@ -206,6 +245,17 @@ void MainWindow::DisconnectButtonClicked()
         ::close(m_fd_com2);
         m_fd_com2 = -1;
     }
+
+    if (m_notifier_com4) {
+        delete m_notifier_com4;
+        m_notifier_com4 = 0;
+    }
+
+    if (m_fd_com4 >= 0) {
+        tcflush(m_fd_com4,TCIOFLUSH);
+        ::close(m_fd_com4);
+        m_fd_com4 = -1;
+    }
 }
 
 void MainWindow::sendButtonClicked()
@@ -253,7 +303,7 @@ int MainWindow::openSerialPort_com2()
 {
     int fd = -1;
 
-    const char *devName = "/dev/ttyO4";
+    const char *devName = "/dev/ttyO2";
 //    const char *devName = "/dev/ttyUSB0";
     fd = ::open(devName, O_RDWR&~O_NONBLOCK);
     //fd = ::open(devName, O_RDWR|O_NONBLOCK);
@@ -274,6 +324,28 @@ int MainWindow::openSerialPort_com2()
     return fd;
 }
 
+int MainWindow::openSerialPort_com4()
+{
+    int fd = -1;
+
+    const char *devName = "/dev/ttyO4";
+    fd = ::open(devName, O_RDWR&~O_NONBLOCK);
+    if (fd < 0) {
+        return -1;
+    }
+
+    termios serialAttr;
+    memset(&serialAttr, 0, sizeof serialAttr);
+    serialAttr.c_iflag = IGNPAR;
+    serialAttr.c_cflag = B115200 | HUPCL | CS8 | CREAD | CLOCAL;
+//    serialAttr.c_cc[VMIN] = 273;//144
+    serialAttr.c_cc[VMIN] = 20;
+    if (tcsetattr(fd, TCSANOW, &serialAttr) != 0) {
+        return -1;
+    }
+    //tcflush(fd,TCIOFLUSH);
+    return fd;
+}
 
 
 void MainWindow::remoteDataIncoming_com2()
@@ -299,8 +371,13 @@ void MainWindow::remoteDataIncoming_com2()
             if (!m_logFile.isOpen()){
                 enableLogging(1);
                 // ui->label_usbNotify->setText(tr("数据记录中！！！"));
-                ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\">\346\225\260\346\215\256\346\255\243\345\234\250\350\256\260\345\275\225\344\270\255\357\274\201</p></body></html>", 0, QApplication::UnicodeUTF8));
-                ui->label_usbNotify->setStyleSheet(QString::fromUtf8( "background-color: rgba(0,0,0,0);"));
+              //  ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\">\346\225\260\346\215\256\346\255\243\345\234\250\350\256\260\345\275\225\344\270\255\357\274\201</p></body></html>", 0, QApplication::UnicodeUTF8));
+              //  ui->label_usbNotify->setStyleSheet(QString::fromUtf8( "background-color: rgba(0,0,0,0);"));
+                ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">\350\256\260\345\275\225\344\270\255\357\274\201</span></p></body></html>", 0, QApplication::UnicodeUTF8));
+               // ui->label_usbNotify->setStyleSheet(QString::fromUtf8( "background-color: rgba(0,0,0,0);"));
+                ui->label_usbNotify->setStyleSheet(QString::fromUtf8( "background-color: rgb(0, 255, 0);"));
+
+
 /*
                 QString text("log com2 rawephema\r\n");
                 ::write(m_fd, text.toLatin1(), text.length());
@@ -331,12 +408,69 @@ void MainWindow::remoteDataIncoming_com2()
      //    ui->label_usbNotify->setText(tr("请插入U盘记录数据！！！"));
          ui->label_usbNotify->setStyleSheet(QString::fromUtf8("color: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0, stop:0 rgba(0, 0, 0, 255), stop:0.05 rgba(14, 8, 73, 255), stop:0.36 rgba(28, 17, 145, 255), stop:0.6 rgba(126, 14, 81, 255), stop:0.75 rgba(234, 11, 11, 255), stop:0.79 rgba(244, 70, 5, 255), stop:0.86 rgba(255, 136, 0, 255), stop:0.935 rgba(239, 236, 55, 255));\n"
  "background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 3, 255), stop:0.16 rgba(136, 106, 22, 255), stop:0.225 rgba(166, 140, 41, 255), stop:0.285 rgba(204, 181, 74, 255), stop:0.345 rgba(235, 219, 102, 255), stop:0.415 rgba(245, 236, 112, 255), stop:0.52 rgba(209, 190, 76, 255), stop:0.57 rgba(187, 156, 51, 255), stop:0.635 rgba(168, 142, 42, 255), stop:0.695 rgba(202, 174, 68, 255), stop:0.75 rgba(218, 202, 86, 255), stop:0.815 rgba(208, 187, 73, 255), stop:0.88 rgba(187, 156, 51, 255), stop:0.935 rgba(137, 108, 26, 255), stop:1 rgba(35, 40, 3, 255));"));
-         ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#ff0000;\">\350\257\267\346\217\222\345\205\245U\347\233\230\350\256\260\345\275\225\346\225\260\346\215\256\357\274\201</span></p></body></html>", 0, QApplication::UnicodeUTF8));
+    //     ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#ff0000;\">\350\257\267\346\217\222\345\205\245U\347\233\230\350\256\260\345\275\225\346\225\260\346\215\256\357\274\201</span></p></body></html>", 0, QApplication::UnicodeUTF8));
+         ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\">\350\257\267\346\217\222\345\205\245U\347\233\230\357\274\201\357\274\201</p></body></html>", 0, QApplication::UnicodeUTF8));
 
      }
 
 }
 
+
+
+void MainWindow::remoteDataIncoming_com4()
+{
+    char buff[40];
+    int bytesRead=read(m_fd_com4, buff, 20);
+    if (bytesRead<1) {
+        QMessageBox::warning(this, tr("Error"), tr("Receive error!"));
+        return;
+    }
+
+    int i;
+    int index_f5af=0;
+    for(i=0;i<10;i++)
+    {
+        if(buff[i]==0xF5&&buff[i+1]==0xAF)
+        {
+            if(bytesRead-i>=10)
+            {
+                uart4_message_ok=1;
+                index_f5af=i;
+            }
+        }
+    }
+
+    if(uart4_message_ok)
+    {
+        tmrtc->tm_sec=buff[index_f5af+4];
+        tmrtc->tm_min=buff[index_f5af+5];
+        tmrtc->tm_hour=buff[index_f5af+6];
+        fpga_state=buff[index_f5af+9];
+        if(fpga_state&1<<0)
+        ui->lineEdit_bdc->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
+        else
+        ui->lineEdit_bdc->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 0, 0);"));
+
+        if(fpga_state&1<<1)
+        ui->lineEdit_bac->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
+        else
+        ui->lineEdit_bac->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 0, 0);"));
+
+        if(fpga_state&1<<2)
+        ui->lineEdit_1588->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
+        else
+        ui->lineEdit_1588->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 0, 0);"));
+
+        if(fpga_state&1<<3)
+        ui->lineEdit_ntp->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
+        else
+        ui->lineEdit_ntp->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 0, 0);"));
+
+     }
+
+
+
+}
 
 
 void MainWindow::remoteDataIncoming()
@@ -385,10 +519,12 @@ void MainWindow::remoteDataIncoming()
        m_logFile.write(buff, bytesRead);
     }
 */
-    QString buff_qs(buff);
+/*    QString buff_qs(buff);
 
     ui->m_receiveEdit->append(buff_qs);
     ui->m_receiveEdit->append(QString("\n@@@@@@@@@@@@@@@@@@@@\n"));
+*/
+
 /*
     gettimeofday(&st, NULL);
 

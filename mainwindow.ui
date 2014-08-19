@@ -94,7 +94,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>130</y>
+      <y>140</y>
       <width>31</width>
       <height>41</height>
      </rect>
@@ -154,7 +154,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>410</y>
+      <y>420</y>
       <width>61</width>
       <height>21</height>
      </rect>
@@ -170,7 +170,7 @@
     <property name="geometry">
      <rect>
       <x>80</x>
-      <y>400</y>
+      <y>410</y>
       <width>251</width>
       <height>31</height>
      </rect>
@@ -180,7 +180,7 @@
     <property name="geometry">
      <rect>
       <x>340</x>
-      <y>400</y>
+      <y>410</y>
       <width>71</width>
       <height>27</height>
      </rect>
@@ -219,7 +219,7 @@
     <property name="geometry">
      <rect>
       <x>390</x>
-      <y>120</y>
+      <y>130</y>
       <width>191</width>
       <height>61</height>
      </rect>
@@ -253,7 +253,7 @@
     <property name="geometry">
      <rect>
       <x>390</x>
-      <y>180</y>
+      <y>190</y>
       <width>191</width>
       <height>61</height>
      </rect>
@@ -368,7 +368,7 @@
     <property name="geometry">
      <rect>
       <x>590</x>
-      <y>190</y>
+      <y>200</y>
       <width>31</width>
       <height>41</height>
      </rect>
@@ -386,7 +386,7 @@
     <property name="geometry">
      <rect>
       <x>350</x>
-      <y>190</y>
+      <y>200</y>
       <width>91</width>
       <height>41</height>
      </rect>
@@ -400,7 +400,7 @@
      <rect>
       <x>210</x>
       <y>0</y>
-      <width>241</width>
+      <width>251</width>
       <height>41</height>
      </rect>
     </property>
@@ -414,17 +414,20 @@
 background-color: rgb(0, 0, 0);</string>
     </property>
     <property name="text">
-     <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600; color:#ebdf30;&quot;&gt;北斗/GPS定位授时设备&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:18pt; font-weight:600; color:#ebdf30;&quot;&gt;北斗/GPS定位授时设备&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QLCDNumber" name="m_speed">
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>250</y>
+      <y>260</y>
       <width>171</width>
       <height>61</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(231, 255, 217);</string>
     </property>
     <property name="numDigits">
      <number>10</number>
@@ -434,7 +437,7 @@ background-color: rgb(0, 0, 0);</string>
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>120</y>
+      <y>130</y>
       <width>171</width>
       <height>61</height>
      </rect>
@@ -456,7 +459,7 @@ background-color: rgb(0, 0, 0);</string>
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>180</y>
+      <y>190</y>
       <width>171</width>
       <height>61</height>
      </rect>
@@ -465,13 +468,13 @@ background-color: rgb(0, 0, 0);</string>
      <font>
       <family>Ubuntu</family>
       <pointsize>14</pointsize>
-      <weight>3</weight>
+      <weight>50</weight>
       <italic>false</italic>
       <bold>false</bold>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">font: 25 14pt &quot;Ubuntu&quot;;</string>
+     <string notr="true">background-color: rgb(231, 255, 217);</string>
     </property>
     <property name="numDigits">
      <number>10</number>
@@ -481,7 +484,7 @@ background-color: rgb(0, 0, 0);</string>
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>260</y>
+      <y>270</y>
       <width>61</width>
       <height>41</height>
      </rect>
@@ -494,7 +497,7 @@ background-color: rgb(0, 0, 0);</string>
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>130</y>
+      <y>140</y>
       <width>61</width>
       <height>41</height>
      </rect>
@@ -510,7 +513,7 @@ background-color: rgb(0, 0, 0);</string>
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>190</y>
+      <y>200</y>
       <width>61</width>
       <height>41</height>
      </rect>
@@ -523,10 +526,15 @@ background-color: rgb(0, 0, 0);</string>
     <property name="geometry">
      <rect>
       <x>440</x>
-      <y>390</y>
+      <y>400</y>
       <width>181</width>
       <height>41</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="autoFillBackground">
      <bool>false</bool>
@@ -536,7 +544,7 @@ background-color: rgb(0, 0, 0);</string>
 background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 3, 255), stop:0.16 rgba(136, 106, 22, 255), stop:0.225 rgba(166, 140, 41, 255), stop:0.285 rgba(204, 181, 74, 255), stop:0.345 rgba(235, 219, 102, 255), stop:0.415 rgba(245, 236, 112, 255), stop:0.52 rgba(209, 190, 76, 255), stop:0.57 rgba(187, 156, 51, 255), stop:0.635 rgba(168, 142, 42, 255), stop:0.695 rgba(202, 174, 68, 255), stop:0.75 rgba(218, 202, 86, 255), stop:0.815 rgba(208, 187, 73, 255), stop:0.88 rgba(187, 156, 51, 255), stop:0.935 rgba(137, 108, 26, 255), stop:1 rgba(35, 40, 3, 255));</string>
     </property>
     <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;数据正在记录中！&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;请插入U盘！！&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <widget class="QGraphicsView" name="graphicsView">
@@ -544,8 +552,8 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>81</width>
-      <height>81</height>
+      <width>75</width>
+      <height>75</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -750,7 +758,7 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>260</y>
+      <y>270</y>
       <width>41</width>
       <height>31</height>
      </rect>
@@ -768,10 +776,13 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
     <property name="geometry">
      <rect>
       <x>400</x>
-      <y>250</y>
+      <y>260</y>
       <width>171</width>
       <height>61</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(231, 255, 217);</string>
     </property>
     <property name="numDigits">
      <number>10</number>
@@ -781,7 +792,7 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
     <property name="geometry">
      <rect>
       <x>580</x>
-      <y>260</y>
+      <y>270</y>
       <width>41</width>
       <height>31</height>
      </rect>
@@ -799,7 +810,7 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>260</y>
+      <y>270</y>
       <width>61</width>
       <height>41</height>
      </rect>
@@ -812,7 +823,7 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
     <property name="geometry">
      <rect>
       <x>400</x>
-      <y>320</y>
+      <y>330</y>
       <width>171</width>
       <height>61</height>
      </rect>
@@ -821,6 +832,9 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
      <font>
       <pointsize>11</pointsize>
      </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(231, 255, 217);</string>
     </property>
     <property name="frameShape">
      <enum>QFrame::Box</enum>
@@ -836,7 +850,7 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
     <property name="geometry">
      <rect>
       <x>580</x>
-      <y>330</y>
+      <y>340</y>
       <width>41</width>
       <height>31</height>
      </rect>
@@ -854,7 +868,7 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>320</y>
+      <y>330</y>
       <width>61</width>
       <height>41</height>
      </rect>
@@ -867,10 +881,13 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
     <property name="geometry">
      <rect>
       <x>90</x>
-      <y>320</y>
+      <y>330</y>
       <width>171</width>
       <height>61</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(231, 255, 217);</string>
     </property>
     <property name="numDigits">
      <number>10</number>
@@ -880,7 +897,7 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
     <property name="geometry">
      <rect>
       <x>270</x>
-      <y>330</y>
+      <y>340</y>
       <width>41</width>
       <height>31</height>
      </rect>
@@ -898,7 +915,7 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>320</y>
+      <y>330</y>
       <width>61</width>
       <height>41</height>
      </rect>
@@ -911,7 +928,7 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
     <property name="geometry">
      <rect>
       <x>350</x>
-      <y>130</y>
+      <y>140</y>
       <width>91</width>
       <height>41</height>
      </rect>
@@ -924,7 +941,7 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
     <property name="geometry">
      <rect>
       <x>280</x>
-      <y>130</y>
+      <y>140</y>
       <width>41</width>
       <height>31</height>
      </rect>
@@ -936,6 +953,110 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
     </property>
     <property name="text">
      <string>m</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_bac">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>70</y>
+      <width>16</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 0, 0);</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>60</y>
+      <width>51</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;B码AC&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_1588">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>70</y>
+      <width>16</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 0, 0);</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_12">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>60</y>
+      <width>41</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;1588&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_13">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>90</y>
+      <width>41</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;NTP&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_ntp">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>100</y>
+      <width>16</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 0, 0);</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_bdc">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>100</y>
+      <width>16</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 0, 0);</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_14">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>90</y>
+      <width>51</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;B码DC&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
    <zorder>m_receiveEdit</zorder>
@@ -981,6 +1102,14 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
    <zorder>graphicsView</zorder>
    <zorder>label_19</zorder>
    <zorder>m_label_km_h_5</zorder>
+   <zorder>lineEdit_bac</zorder>
+   <zorder>label_11</zorder>
+   <zorder>lineEdit_1588</zorder>
+   <zorder>label_12</zorder>
+   <zorder>label_13</zorder>
+   <zorder>lineEdit_ntp</zorder>
+   <zorder>lineEdit_bdc</zorder>
+   <zorder>label_14</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
