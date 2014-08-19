@@ -48,7 +48,7 @@ protected:
     QFileDialog *m_fileDlg;
     QFile m_detectUFile;
     int delayNum;
-    bool uart4_message_ok;
+
 
 };
 

@@ -58,9 +58,10 @@ QLineEdit *m_logFileLe;
 QTextEdit *m_sendEdit;
 QTextEdit *m_receiveEdit;
 */
-struct tm* tmnow,*tmrtc;
+struct tm* tmnow=NULL,*tmrtc=NULL;
 struct timeval st;
-char fpga_state;
+bool uart4_message_ok;
+
 
 QString time_stamp;
 QString time_stamp_list;
@@ -68,11 +69,12 @@ bool flag_write_ephem;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),m_notifier(0),m_notifier_com2(0),m_fileDlg(0)
+    ui(new Ui::MainWindow),m_notifier(0),m_notifier_com2(0),m_notifier_com4(0),m_fileDlg(0)
 {
     ui->setupUi(this);
     m_fd=-1;
     m_fd_com2=-1;
+    m_fd_com4=-1;
     connect(ui->m_connectButton, SIGNAL(clicked()), this, SLOT(ConnectButtonClicked()));
     connect (ui->m_disconnectButton,SIGNAL(clicked()),this,SLOT(DisconnectButtonClicked()));
 
@@ -84,6 +86,9 @@ MainWindow::MainWindow(QWidget *parent) :
       ui->m_receiveEdit->document()->setMaximumBlockCount(500);
 
       uart4_message_ok=0;
+      tmnow=(struct tm *)malloc(sizeof(struct tm));
+      tmrtc=(struct tm *)malloc(sizeof(struct tm));
+
       m_fd_com4 = openSerialPort_com4();
       if (m_fd_com4 < 0) {
           QMessageBox::warning(this, tr("Error"), tr("Fail to open serial port!"));
@@ -91,14 +96,14 @@ MainWindow::MainWindow(QWidget *parent) :
       }
       tcflush(m_fd_com4,TCIOFLUSH);
       m_notifier_com4 = new QSocketNotifier(m_fd_com4, QSocketNotifier::Read, this);
-      connect (m_notifier_com4, SIGNAL(activated(int)), this, SLOT(remoteDataIncoming_com2()));
+      connect (m_notifier_com4, SIGNAL(activated(int)), this, SLOT(remoteDataIncoming_com4()));
 
-      while(1)
-      {
-          if(uart4_message_ok)
+    //  sleep(2);
+  /*        if(uart4_message_ok)
               break;
-          usleep(500000);
-      }
+              */
+        //  usleep(500000);
+
  /*     if(uart4_message_ok)
       {
           if (m_notifier_com4) {
@@ -118,12 +123,16 @@ MainWindow::MainWindow(QWidget *parent) :
       time_t t_store;
       time(&t_store);
       tmnow=localtime(&t_store);
+
+/*
+      if(uart4_message_ok){
       tmnow->tm_hour=tmrtc->tm_hour;
       tmnow->tm_min=tmrtc->tm_min;
       tmnow->tm_sec=tmrtc->tm_sec;
       t_store=mktime(tmnow);
       stime(&t_store);  //set system time
-
+      }
+*/
       //tmnow=localtime(NULL);
 
       time_stamp_list=time_stamp.setNum(tmnow->tm_year+1900);
@@ -419,7 +428,9 @@ void MainWindow::remoteDataIncoming_com2()
 
 void MainWindow::remoteDataIncoming_com4()
 {
-    char buff[40];
+    unsigned int fpga_state=0;
+    unsigned int fpga_temp;
+    unsigned char buff[40];
     int bytesRead=read(m_fd_com4, buff, 20);
     if (bytesRead<1) {
         QMessageBox::warning(this, tr("Error"), tr("Receive error!"));
@@ -428,45 +439,46 @@ void MainWindow::remoteDataIncoming_com4()
 
     int i;
     int index_f5af=0;
-    for(i=0;i<10;i++)
+    for(i=0;(i<10)&&(i<bytesRead);i++)
     {
-        if(buff[i]==0xF5&&buff[i+1]==0xAF)
+        if((buff[i]==0xF5)&&(buff[i+1]==0xAF))
         {
             if(bytesRead-i>=10)
             {
                 uart4_message_ok=1;
                 index_f5af=i;
+
+                    tmrtc->tm_sec=buff[index_f5af+4];
+                    tmrtc->tm_min=buff[index_f5af+5];
+                    tmrtc->tm_hour=buff[index_f5af+6];
+                  //  fpga_state=(unsigned int)buff[index_f5af+9];
+                    fpga_state=buff[index_f5af+9];
+                    if(fpga_state&1)
+                    ui->lineEdit_bdc->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
+                    else
+                    ui->lineEdit_bdc->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 0, 0);"));
+                        fpga_temp=fpga_state&(unsigned int)(0x01<<1);
+                    if(fpga_temp)
+                    ui->lineEdit_bac->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
+                    else
+                    ui->lineEdit_bac->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 0, 0);"));
+
+                    if(fpga_state&1<<2)
+                    ui->lineEdit_1588->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
+                    else
+                    ui->lineEdit_1588->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 0, 0);"));
+
+                    if(fpga_state&1<<3)
+                    ui->lineEdit_ntp->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
+                    else
+                    ui->lineEdit_ntp->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 0, 0);"));
+
+
             }
         }
     }
 
-    if(uart4_message_ok)
-    {
-        tmrtc->tm_sec=buff[index_f5af+4];
-        tmrtc->tm_min=buff[index_f5af+5];
-        tmrtc->tm_hour=buff[index_f5af+6];
-        fpga_state=buff[index_f5af+9];
-        if(fpga_state&1<<0)
-        ui->lineEdit_bdc->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
-        else
-        ui->lineEdit_bdc->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 0, 0);"));
 
-        if(fpga_state&1<<1)
-        ui->lineEdit_bac->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
-        else
-        ui->lineEdit_bac->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 0, 0);"));
-
-        if(fpga_state&1<<2)
-        ui->lineEdit_1588->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
-        else
-        ui->lineEdit_1588->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 0, 0);"));
-
-        if(fpga_state&1<<3)
-        ui->lineEdit_ntp->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
-        else
-        ui->lineEdit_ntp->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 0, 0);"));
-
-     }
 
 
 
@@ -548,7 +560,8 @@ void MainWindow::remoteDataIncoming()
     int count_i=0;
 
             gps_impl_init();
-    while(count_i<bytesRead)
+
+ while(count_i<bytesRead)
 {
 
 // ui->m_receiveEdit->append(QString("\nstart deal with ..."));
