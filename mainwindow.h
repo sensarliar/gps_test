@@ -18,6 +18,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void initial_next();
 
 private:
     Ui::MainWindow *ui;
@@ -36,6 +37,7 @@ protected slots:
     void DisconnectButtonClicked();
     void enableLogging(bool);
     void chooseLogFile();
+
 
 protected:
     int m_fd;

@@ -58,6 +58,7 @@ QLineEdit *m_logFileLe;
 QTextEdit *m_sendEdit;
 QTextEdit *m_receiveEdit;
 */
+time_t t_store;
 struct tm* tmnow=NULL,*tmrtc=NULL;
 struct timeval st;
 bool uart4_message_ok;
@@ -66,6 +67,8 @@ bool uart4_message_ok;
 QString time_stamp;
 QString time_stamp_list;
 bool flag_write_ephem;
+
+//void initial_next();
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -84,7 +87,10 @@ MainWindow::MainWindow(QWidget *parent) :
       connect (ui->m_logFileFileDialog,SIGNAL(clicked()),this,SLOT(chooseLogFile()));
       ui->m_receiveEdit->setWordWrapMode(QTextOption::WrapAnywhere);
       ui->m_receiveEdit->document()->setMaximumBlockCount(500);
+      //initial_next();
+}
 
+void MainWindow::initial_next(){
       uart4_message_ok=0;
       tmnow=(struct tm *)malloc(sizeof(struct tm));
       tmrtc=(struct tm *)malloc(sizeof(struct tm));
@@ -98,7 +104,22 @@ MainWindow::MainWindow(QWidget *parent) :
       m_notifier_com4 = new QSocketNotifier(m_fd_com4, QSocketNotifier::Read, this);
       connect (m_notifier_com4, SIGNAL(activated(int)), this, SLOT(remoteDataIncoming_com4()));
 
-    //  sleep(2);
+
+      gps_nmea.msg_len = 0;
+
+      if (m_fd >= 0)
+        return;
+      m_fd = openSerialPort();
+      if (m_fd < 0) {
+          QMessageBox::warning(this, tr("Error"), tr("Fail to open serial port!"));
+          return ;
+      }
+      tcflush(m_fd,TCIOFLUSH);
+      m_notifier = new QSocketNotifier(m_fd, QSocketNotifier::Read, this);
+      connect (m_notifier, SIGNAL(activated(int)), this, SLOT(remoteDataIncoming()));
+
+
+      //sleep(10);
   /*        if(uart4_message_ok)
               break;
               */
@@ -120,18 +141,19 @@ MainWindow::MainWindow(QWidget *parent) :
       */
 
       gettimeofday(&st, NULL);
-      time_t t_store;
+
       time(&t_store);
       tmnow=localtime(&t_store);
 
 /*
-      if(uart4_message_ok){
+      if(uart4_message_ok)
+    {
       tmnow->tm_hour=tmrtc->tm_hour;
       tmnow->tm_min=tmrtc->tm_min;
       tmnow->tm_sec=tmrtc->tm_sec;
       t_store=mktime(tmnow);
       stime(&t_store);  //set system time
-      }
+    }
 */
       //tmnow=localtime(NULL);
 
@@ -200,18 +222,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::ConnectButtonClicked()
 {
-    gps_nmea.msg_len = 0;
 
-    if (m_fd >= 0)
-      return;
-    m_fd = openSerialPort();
-    if (m_fd < 0) {
-        QMessageBox::warning(this, tr("Error"), tr("Fail to open serial port!"));
-        return ;
-    }
-    tcflush(m_fd,TCIOFLUSH);
-    m_notifier = new QSocketNotifier(m_fd, QSocketNotifier::Read, this);
-    connect (m_notifier, SIGNAL(activated(int)), this, SLOT(remoteDataIncoming()));
     //connect (TMainForm->TMainFormBase->m_enableLoggingCb,SIGNAL(toggled(bool)),this,SLOT(remoteDataIncoming()));
     //connect (this->m_enableLoggingCb,SIGNAL(toggled(bool)),this,SLOT(remoteDataIncoming()));
 
@@ -428,6 +439,7 @@ void MainWindow::remoteDataIncoming_com2()
 
 void MainWindow::remoteDataIncoming_com4()
 {
+    static bool set_time_flag=0;
     unsigned int fpga_state=0;
     unsigned int fpga_temp;
     unsigned char buff[40];
@@ -447,10 +459,21 @@ void MainWindow::remoteDataIncoming_com4()
             {
                 uart4_message_ok=1;
                 index_f5af=i;
+                if(!set_time_flag&&(buff[index_f5af+4]||buff[index_f5af+5]||buff[index_f5af+6])){
+                    tmrtc->tm_sec=((buff[index_f5af+4]&0xF0)>>4)*10+(buff[index_f5af+4]&0x0F);
+                    tmrtc->tm_min=((buff[index_f5af+5]&0xF0)>>4)*10+(buff[index_f5af+5]&0x0F);
+                    tmrtc->tm_hour=((buff[index_f5af+6]&0xF0)>>4)*10+(buff[index_f5af+6]&0x0F);
 
-                    tmrtc->tm_sec=buff[index_f5af+4];
-                    tmrtc->tm_min=buff[index_f5af+5];
-                    tmrtc->tm_hour=buff[index_f5af+6];
+                    if(uart4_message_ok)
+                  {
+                    tmnow->tm_hour=tmrtc->tm_hour;
+                    tmnow->tm_min=tmrtc->tm_min;
+                    tmnow->tm_sec=tmrtc->tm_sec;
+                    t_store=mktime(tmnow);
+                    stime(&t_store);  //set system time
+                    set_time_flag=1;
+                  }
+                }
                   //  fpga_state=(unsigned int)buff[index_f5af+9];
                     fpga_state=buff[index_f5af+9];
                     if(fpga_state&1)
