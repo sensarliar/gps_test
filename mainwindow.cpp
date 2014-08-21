@@ -145,6 +145,21 @@ void MainWindow::initial_next(){
       }
       */
 
+
+      gps_impl_init();
+      gps_nmea.pos_available = FALSE;
+
+//       gps_nmea.msg_len = 0;
+//      ui->m_logFileLe->setText("/media/mmcblk0/cutecom.log");
+
+    delayNum=200;
+   // enableLogging(1);
+    ConnectButtonClicked();
+
+    flag_write_ephem = 0;
+
+
+
       gettimeofday(&st, NULL);
 
       time(&t_store);
@@ -180,17 +195,8 @@ void MainWindow::initial_next(){
       file_store_name+=(".log");
         ui->m_logFileLe->setText(file_store_name);
 
-        gps_impl_init();
-        gps_nmea.pos_available = FALSE;
-
-//       gps_nmea.msg_len = 0;
-//      ui->m_logFileLe->setText("/media/mmcblk0/cutecom.log");
-      enableLogging(0);
-      delayNum=200;
-     // enableLogging(1);
-      ConnectButtonClicked();
-
-      flag_write_ephem = 0;
+        enableLogging(0);
+        delayNum=200;
 
       if(m_detectUFile.exists("/dev/sda1")){
 
@@ -408,7 +414,8 @@ void MainWindow::remoteDataIncoming_com2()
                 ::write(m_fd, text.toLatin1(), text.length());
                 */
                 usleep(200000);
-                QString text("log com2 rawephema\r\n");
+               QString text("log com2 rawephema\r\n");
+ //               QString text("log com2 gpzda ontime 1 \r\n");
                 ::write(m_fd, text.toLatin1(), text.length());
                 flag_write_ephem = 1;
 
@@ -418,6 +425,7 @@ void MainWindow::remoteDataIncoming_com2()
                 if(1==flag_write_ephem){
                 usleep(20000);
                 QString text_new("log com2 rawephema onnew\r\n");
+                //QString text_new("log com2 gpzda ontime 1 \r\n");
                 ::write(m_fd, text_new.toLatin1(), text_new.length());
                 flag_write_ephem = 0;
                 }
