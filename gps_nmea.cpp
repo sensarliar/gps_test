@@ -389,7 +389,84 @@ void parse_nmea_NVDVI(void) {
 }
 
 
+/**
+ * parse GPZDA-nmea-messages stored in
+ * gps_nmea.msg_buf .
+ */
+void parse_nmea_GPZDA(void) {
+  int i = 6;     // current position in the message, start after: GPZDA,
+//  char* endptr;  // end of parsed substrings
 
+
+  // attempt to reject empty packets right away
+  if(gps_nmea.msg_buf[i]==',' && gps_nmea.msg_buf[i+1]==',') {
+    NMEA_PRINT("p_GPGGA() - skipping empty message\n\r");
+    return;
+  }
+
+
+  int j=0;
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: East speed
+    if (i >= gps_nmea.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      return;
+    }
+    gps.time_zda_ch[j++]=gps_nmea.msg_buf[i-1];
+  }
+  gps.time_zda_ch[j]='\0';
+  gps.time_zda_ch[6]='\0';
+  gps.time_zda=atoi(&gps.time_zda_ch[0]);
+
+  bool time_zda_flag=0;
+  gps.time_zda+=80000;
+  if(gps.time_zda>=240000)
+  {
+      time_zda_flag=1;
+      gps.time_zda-=240000;
+  }
+
+
+  j=0;
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: East speed
+    if (i >= gps_nmea.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      return;
+    }
+    gps.day_zda_ch[j++]=gps_nmea.msg_buf[i-1];
+  }
+  gps.day_zda_ch[j]='\0';
+  gps.day_zda=atoi(&gps.day_zda_ch[0]);
+
+  if(1==time_zda_flag)
+  {gps.day_zda++;}
+
+  j=0;
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: East speed
+    if (i >= gps_nmea.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      return;
+    }
+    gps.month_zda_ch[j++]=gps_nmea.msg_buf[i-1];
+  }
+  gps.month_zda_ch[j]='\0';
+  gps.month_zda=atoi(&gps.month_zda_ch[0]);
+
+
+  j=0;
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: East speed
+    if (i >= gps_nmea.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      return;
+    }
+    gps.year_zda_ch[j++]=gps_nmea.msg_buf[i-1];
+  }
+  gps.year_zda_ch[j]='\0';
+  gps.year_zda=atoi(&gps.year_zda_ch[0]);
+
+  if(gps.time_zda||gps.day_zda||gps.month_zda||gps.year_zda)
+      gps.time_zda_ok=1;
+
+}
 
 
 /**
@@ -551,7 +628,7 @@ void nmea_parse_msg( void ) {
         parse_nmea_NVVTG();
 
       } else {
-          if(gps_nmea.msg_len > 5 && !strncmp(gps_nmea.msg_buf , "BESTVELA", 8)) {
+          if(gps_nmea.msg_len > 8 && !strncmp(gps_nmea.msg_buf , "BESTVELA", 8)) {
               gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
               NMEA_PRINT("GSA: \"%s\" \n\r",gps_nmea.msg_buf);
               NMEA_PRINT("GSA");
@@ -559,8 +636,15 @@ void nmea_parse_msg( void ) {
               parse_novatel_bestvela();
               //        parse_nmea_GPGSA();
           } else {
+
+              if(!gps.file_name_flag && gps_nmea.msg_len > 5 && !strncmp(gps_nmea.msg_buf , "GPZDA", 5)) {
+                  gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
+                  parse_nmea_GPZDA();
+
+              } else{
               gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
               NMEA_PRINT("ignoring: len=%i \n\r \"%s\" \n\r", gps_nmea.msg_len, gps_nmea.msg_buf);
+              }
           }
       }
     }

@@ -67,6 +67,7 @@ bool uart4_message_ok;
 QString time_stamp;
 QString time_stamp_list;
 bool flag_write_ephem;
+//int file_name_flag;
 
 //void initial_next();
 
@@ -99,6 +100,25 @@ void MainWindow::initial_next(){
       uart4_message_ok=0;
       tmnow=(struct tm *)malloc(sizeof(struct tm));
       tmrtc=(struct tm *)malloc(sizeof(struct tm));
+
+      gps.time_zda_ok=0;
+      gps.time_zda=0;
+      gps.day_zda=0;
+      gps.month_zda=0;
+      gps.year_zda=0;
+
+      gps.file_name_flag=0;
+
+      gps.time_ch[0]='1';
+      gps.time_ch[1]='6';
+      gps.time_ch[2]='8';
+      gps.time_ch[3]='8';
+      gps.time_ch[4]='8';
+      gps.time_ch[5]='8';
+      gps.time_ch[6]='.';
+      gps.time_ch[7]='8';
+      gps.time_ch[8]='8';
+      gps.time_ch[9]='\0';
 
       m_fd_com4 = openSerialPort_com4();
       if (m_fd_com4 < 0) {
@@ -159,12 +179,12 @@ void MainWindow::initial_next(){
     flag_write_ephem = 0;
 
 
-
+/*
       gettimeofday(&st, NULL);
 
       time(&t_store);
       tmnow=localtime(&t_store);
-
+*/
 /*
       if(uart4_message_ok)
     {
@@ -177,7 +197,7 @@ void MainWindow::initial_next(){
 */
       //tmnow=localtime(NULL);
 
-      time_stamp_list=time_stamp.setNum(tmnow->tm_year+1900);
+/*      time_stamp_list=time_stamp.setNum(tmnow->tm_year+1900);
       time_stamp_list+=("_");
       time_stamp_list+=time_stamp.setNum(tmnow->tm_mon+1);
       time_stamp_list+=("_");
@@ -194,6 +214,8 @@ void MainWindow::initial_next(){
       file_store_name+=time_stamp_list;
       file_store_name+=(".log");
         ui->m_logFileLe->setText(file_store_name);
+        */
+/*
 
         enableLogging(0);
         delayNum=200;
@@ -223,6 +245,7 @@ void MainWindow::initial_next(){
         //   ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#ff0000;\">\350\257\267\346\217\222\345\205\245U\347\233\230\350\256\260\345\275\225\346\225\260\346\215\256\357\274\201</span></p></body></html>", 0, QApplication::UnicodeUTF8));
         ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\">\350\257\267\346\217\222\345\205\245U\347\233\230\357\274\201\357\274\201</p></body></html>", 0, QApplication::UnicodeUTF8));
        }
+       */
 
 }
 
@@ -396,7 +419,7 @@ void MainWindow::remoteDataIncoming_com2()
 
 
 
-    if(m_detectUFile.exists("/dev/sda1")){
+    if(m_detectUFile.exists("/dev/sda1")&&gps.file_name_flag){
         delayNum--;
         if(delayNum<=50){
             if (!m_logFile.isOpen()){
@@ -728,6 +751,23 @@ void MainWindow::remoteDataIncoming()
        ui->m_speed_E->display("");
        ui->m_speed_N->display("");
    }
+   if(1==gps.time_zda_ok)
+   {
+    time_stamp_list=time_stamp.setNum(gps.year_zda);
+    time_stamp_list+=("_");
+    time_stamp_list+=time_stamp.setNum(gps.month_zda);
+    time_stamp_list+=("_");
+    time_stamp_list+=time_stamp.setNum(gps.day_zda);
+    time_stamp_list+=("_");
+    time_stamp_list+=time_stamp.setNum(gps.time_zda);
+    time_stamp_list+=("_");
+    time_stamp_list+=time_stamp.setNum(st.tv_usec);
+    QString file_store_name("/media/sda1/range");
+    file_store_name+=time_stamp_list;
+    file_store_name+=(".log");
+      ui->m_logFileLe->setText(file_store_name);
+      gps.file_name_flag=1;
+    }
 
 //QString disp_hight;
 //QString disp_num_sv;

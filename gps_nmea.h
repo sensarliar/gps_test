@@ -69,9 +69,21 @@ struct GpsState {
   char speed_N_ch[12];
   char speed_U_ch[12];
 
+  char time_zda_ch[12];
+  char day_zda_ch[12];
+  char month_zda_ch[12];
+  char year_zda_ch[12];
+  int time_zda;
+  int day_zda;
+  int month_zda;
+  int year_zda;
+
+
   double speed_E;
   double speed_N;
   double speed_U;
+  bool time_zda_ok;
+  bool file_name_flag;
 
 /*
   int16_t gspeed;                ///< norm of 2d ground speed in cm/s
