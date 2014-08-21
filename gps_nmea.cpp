@@ -109,6 +109,15 @@ void parse_nmea_GPGGA(void) {
     gps.lat_ch[j++]=gps_nmea.msg_buf[i-1];
   }
   gps.lat_ch[j]='\0';
+
+  gps.lat_du_ch[0]=gps.lat_ch[0];
+  gps.lat_du_ch[1]=gps.lat_ch[1];
+  gps.lat_du_ch[2]='\0';
+  /*gps.lat = strtod(&gps.lat_ch[5], &endptr);
+  gps.lat = gps.lat*60/10000;
+  gps.lat=(double((int)(gps.lat*100)))/100;
+  //strtod();
+*/
   gps.NorS = gps_nmea.msg_buf[i];
   // correct latitute for N/S
  // if(gps_nmea.msg_buf[i] == 'S')
@@ -142,6 +151,12 @@ void parse_nmea_GPGGA(void) {
     gps.lon_ch[j++]=gps_nmea.msg_buf[i-1];
   }
   gps.lon_ch[j]='\0';
+
+  gps.lon_du_ch[0]=gps.lon_ch[0];
+  gps.lon_du_ch[1]=gps.lon_ch[1];
+  gps.lon_du_ch[2]=gps.lon_ch[2];
+  gps.lon_du_ch[3]='\0';
+
     gps.EorW = gps_nmea.msg_buf[i];
   // correct latitute for E/W
  /* if(gps_nmea.msg_buf[i] == 'W')

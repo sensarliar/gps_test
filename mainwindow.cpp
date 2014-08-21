@@ -88,6 +88,11 @@ MainWindow::MainWindow(QWidget *parent) :
       ui->m_receiveEdit->setWordWrapMode(QTextOption::WrapAnywhere);
       ui->m_receiveEdit->document()->setMaximumBlockCount(500);
       //initial_next();
+  /*    QFont font;
+      font.setPointSize(28);
+      ui->label->setFont(font);
+      ui->label->resize(320,50);
+*/
 }
 
 void MainWindow::initial_next(){
@@ -387,7 +392,7 @@ void MainWindow::remoteDataIncoming_com2()
 
     if(m_detectUFile.exists("/dev/sda1")){
         delayNum--;
-        if(delayNum<=30){
+        if(delayNum<=50){
             if (!m_logFile.isOpen()){
                 enableLogging(1);
                 // ui->label_usbNotify->setText(tr("数据记录中！！！"));
@@ -430,6 +435,9 @@ void MainWindow::remoteDataIncoming_com2()
  "background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 3, 255), stop:0.16 rgba(136, 106, 22, 255), stop:0.225 rgba(166, 140, 41, 255), stop:0.285 rgba(204, 181, 74, 255), stop:0.345 rgba(235, 219, 102, 255), stop:0.415 rgba(245, 236, 112, 255), stop:0.52 rgba(209, 190, 76, 255), stop:0.57 rgba(187, 156, 51, 255), stop:0.635 rgba(168, 142, 42, 255), stop:0.695 rgba(202, 174, 68, 255), stop:0.75 rgba(218, 202, 86, 255), stop:0.815 rgba(208, 187, 73, 255), stop:0.88 rgba(187, 156, 51, 255), stop:0.935 rgba(137, 108, 26, 255), stop:1 rgba(35, 40, 3, 255));"));
     //     ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#ff0000;\">\350\257\267\346\217\222\345\205\245U\347\233\230\350\256\260\345\275\225\346\225\260\346\215\256\357\274\201</span></p></body></html>", 0, QApplication::UnicodeUTF8));
          ui->label_usbNotify->setText(QApplication::translate("MainWindow", "<html><head/><body><p align=\"center\">\350\257\267\346\217\222\345\205\245U\347\233\230\357\274\201\357\274\201</p></body></html>", 0, QApplication::UnicodeUTF8));
+         if (m_fd_com2 >= 0) {
+           tcflush(m_fd_com2,TCIOFLUSH);
+         }
 
      }
 
@@ -459,7 +467,7 @@ void MainWindow::remoteDataIncoming_com4()
             {
                 uart4_message_ok=1;
                 index_f5af=i;
-                if(!set_time_flag&&(buff[index_f5af+4]||buff[index_f5af+5]||buff[index_f5af+6])){
+          /*      if(!set_time_flag&&(buff[index_f5af+4]||buff[index_f5af+5]||buff[index_f5af+6])){
                     tmrtc->tm_sec=((buff[index_f5af+4]&0xF0)>>4)*10+(buff[index_f5af+4]&0x0F);
                     tmrtc->tm_min=((buff[index_f5af+5]&0xF0)>>4)*10+(buff[index_f5af+5]&0x0F);
                     tmrtc->tm_hour=((buff[index_f5af+6]&0xF0)>>4)*10+(buff[index_f5af+6]&0x0F);
@@ -474,6 +482,7 @@ void MainWindow::remoteDataIncoming_com4()
                     set_time_flag=1;
                   }
                 }
+                */
                   //  fpga_state=(unsigned int)buff[index_f5af+9];
                     fpga_state=buff[index_f5af+9];
                     if(fpga_state&1)
@@ -659,10 +668,18 @@ void MainWindow::remoteDataIncoming()
 
      //  ui->m_location_N->display(temp_value.setNum(gps.lat,'g',11));
       // ui->m_location_N->display(temp_value((char *)gps.lat_ch));
-       ui->m_location_N->display((char *)gps.lat_ch);
+   //    gps.lat_ch[4]='\0';
+       ui->m_location_N_fen->display((char *)(&gps.lat_ch[2]));
+//       gps.lat_ch[2]='\0';
+       ui->m_location_N_du->display((char *)gps.lat_du_ch);
+  //     ui->m_location_N_miao->display(gps.lat);
+//       ui->m_location_N->display((char *)gps.lat_ch);
        ui->m_label_N->setText(QString(QChar(gps.NorS)));
      //  ui->m_location_E->display(temp_value.setNum(gps.lon,'g',11));
-       ui->m_location_E->display((char *)gps.lon_ch);
+  //     ui->m_location_E->display((char *)gps.lon_ch);
+       ui->m_location_E_fen->display((char *)(&gps.lon_ch[3]));
+//       gps.lat_ch[2]='\0';
+       ui->m_location_E_du->display((char *)gps.lon_du_ch);
        ui->m_label_E->setText(QString(QChar(gps.EorW)));
 
      //  ui->m_speed->display(temp_value.setNum(gps.pdop));
@@ -688,9 +705,13 @@ void MainWindow::remoteDataIncoming()
        ui->m_label_available->setText(QString("N/A"));
        ui->m_label_available->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 0, 0);"));
 
-       ui->m_location_N->display("");
+       ui->m_location_N_du->display("");
+       ui->m_location_N_fen->display("");
+//       ui->m_location_N_miao->display("");
        ui->m_label_N->setText("");
-       ui->m_location_E->display("");
+//       ui->m_location_E->display("");
+       ui->m_location_E_du->display("");
+       ui->m_location_E_fen->display("");
        ui->m_label_E->setText("");
        ui->m_speed->display("");
        ui->m_direction->display("");

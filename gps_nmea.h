@@ -46,9 +46,11 @@ struct GpsState {
   char time_ch[12];
   double lat;
   char lat_ch[12];
+  char lat_du_ch[12];
   char NorS;
   double lon;
   char lon_ch[12];
+  char lon_du_ch[12];
   char EorW;
 
   int num_sv;                ///< number of sat in fix
