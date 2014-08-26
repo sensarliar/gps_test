@@ -433,11 +433,11 @@ void MainWindow::remoteDataIncoming_com2()
 
 
 /*
-                QString text("log com2 rawephema\r\n");
+                QString text("log com2 rawephema\r\nbdsephemerisa");
                 ::write(m_fd, text.toLatin1(), text.length());
                 */
                 usleep(200000);
-               QString text("log com2 rawephema\r\n");
+               QString text("log com2 rawephema\r\nlog com2 bdsephemerisa once\r\n");
  //               QString text("log com2 gpzda ontime 1 \r\n");
                 ::write(m_fd, text.toLatin1(), text.length());
                 flag_write_ephem = 1;
@@ -447,7 +447,7 @@ void MainWindow::remoteDataIncoming_com2()
             if(delayNum<=0){
                 if(1==flag_write_ephem){
                 usleep(20000);
-                QString text_new("log com2 rawephema onnew\r\n");
+                QString text_new("log com2 rawephema onnew\r\nlog com2 bdsephemerisa onchanged\r\n");
                 //QString text_new("log com2 gpzda ontime 1 \r\n");
                 ::write(m_fd, text_new.toLatin1(), text_new.length());
                 flag_write_ephem = 0;
