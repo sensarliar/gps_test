@@ -368,7 +368,8 @@ int MainWindow::openSerialPort_com2()
     termios serialAttr;
     memset(&serialAttr, 0, sizeof serialAttr);
     serialAttr.c_iflag = IGNPAR;
-    serialAttr.c_cflag = B115200 | HUPCL | CS8 | CREAD | CLOCAL;
+//    serialAttr.c_cflag = B115200 | HUPCL | CS8 | CREAD | CLOCAL;
+    serialAttr.c_cflag = B921600 | HUPCL | CS8 | CREAD | CLOCAL;
 //    serialAttr.c_cc[VMIN] = 273;//144
     serialAttr.c_cc[VMIN] = 255;//144
     if (tcsetattr(fd, TCSANOW, &serialAttr) != 0) {
@@ -421,7 +422,7 @@ void MainWindow::remoteDataIncoming_com2()
 
     if(m_detectUFile.exists("/dev/sda1")&&gps.file_name_flag){
         delayNum--;
-        if(delayNum<=50){
+        if(delayNum<=25){
             if (!m_logFile.isOpen()){
                 enableLogging(1);
                 // ui->label_usbNotify->setText(tr("数据记录中！！！"));
@@ -436,21 +437,28 @@ void MainWindow::remoteDataIncoming_com2()
                 QString text("log com2 rawephema\r\nbdsephemerisa");
                 ::write(m_fd, text.toLatin1(), text.length());
                 */
-                usleep(200000);
-               QString text("log com2 rawephema\r\nlog com2 bdsephemerisa once\r\n");
+ /*               usleep(200000);
+//               QString text("log com2 rawephema\r\nlog com2 bdsephemerisa once\r\n");
+             QString text("log com2 rawephemb\r\n");
  //               QString text("log com2 gpzda ontime 1 \r\n");
-                ::write(m_fd, text.toLatin1(), text.length());
-                flag_write_ephem = 1;
+             ::write(m_fd, text.toLatin1(), text.length());
+             usleep(200000);
+//               QString text("log com2 rawephema\r\nlog com2 bdsephemerisa once\r\n");
+          text="log com2 bdsephemerisb\r\n";
+//               QString text("log com2 gpzda ontime 1 \r\n");
+          ::write(m_fd, text.toLatin1(), text.length());
+*/                flag_write_ephem = 1;
 
 
             }
             if(delayNum<=0){
                 if(1==flag_write_ephem){
                 usleep(20000);
-                QString text_new("log com2 rawephema onnew\r\nlog com2 bdsephemerisa onchanged\r\n");
+//                QString text_new("log com2 rawephema onnew\r\nlog com2 bdsephemerisa onchanged\r\n");
+/*            QString text_new("log com2 rawephemb ontime 300\r\nlog com2 bdsephemerisb ontime 302\r\n");
                 //QString text_new("log com2 gpzda ontime 1 \r\n");
-                ::write(m_fd, text_new.toLatin1(), text_new.length());
-                flag_write_ephem = 0;
+           ::write(m_fd, text_new.toLatin1(), text_new.length());
+  */              flag_write_ephem = 0;
                 }
                 delayNum=200;
             }
@@ -459,7 +467,7 @@ void MainWindow::remoteDataIncoming_com2()
 
     }
     else{
-        delayNum=200;
+        delayNum=100;
          enableLogging(0);
      //    ui->label_usbNotify->setText(tr("请插入U盘记录数据！！！"));
          ui->label_usbNotify->setStyleSheet(QString::fromUtf8("color: qlineargradient(spread:pad, x1:0, y1:1, x2:0, y2:0, stop:0 rgba(0, 0, 0, 255), stop:0.05 rgba(14, 8, 73, 255), stop:0.36 rgba(28, 17, 145, 255), stop:0.6 rgba(126, 14, 81, 255), stop:0.75 rgba(234, 11, 11, 255), stop:0.79 rgba(244, 70, 5, 255), stop:0.86 rgba(255, 136, 0, 255), stop:0.935 rgba(239, 236, 55, 255));\n"
