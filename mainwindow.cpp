@@ -695,7 +695,7 @@ void MainWindow::remoteDataIncoming()
     //temp_value=QChar(gps.time_ch[time_length-3]);
     temp_value=QChar(gps.time_ch[time_length-2]);
     temp_value+=QChar(gps.time_ch[time_length-1]);
-    temp_value+=QChar('0');
+//    temp_value+=QChar('0');
     ui->m_time_ms->display(temp_value);
 
   //  ui->m_time_ms->display(temp_value.setNum(fmod(gps.tow,1000)));

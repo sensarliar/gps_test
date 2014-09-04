@@ -8,6 +8,7 @@
         <file>images/Su-35 Flanker.png</file>
         <file>images/Su-32 Flanker.png</file>
         <file>images/title.png</file>
+        <file>images/zhgy.jpg</file>
     </qresource>
     <qresource prefix="/new/prefix2">
         <file>images/airplane/A-6E Intruder.ico</file>
