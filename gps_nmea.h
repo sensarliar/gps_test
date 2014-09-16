@@ -26,7 +26,8 @@
 #define NMEA_PRINT(...) {};
 #endif
 
-#define NMEA_MAXLEN 255
+//#define NMEA_MAXLEN 255
+#define NMEA_MAXLEN 1024
 
 struct GpsNmea {
   bool msg_available;
@@ -84,6 +85,12 @@ struct GpsState {
   double speed_U;
   bool time_zda_ok;
   bool file_name_flag;
+
+  char num_sats_ch[12];
+  unsigned int num_sats;
+  unsigned int num_gps;
+  unsigned int num_beidou;
+
 
 /*
   int16_t gspeed;                ///< norm of 2d ground speed in cm/s

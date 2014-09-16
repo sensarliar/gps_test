@@ -605,6 +605,74 @@ void parse_novatel_bestvela(void) {
 }
 
 
+/**
+ * parse BESTVELA, NOVATEL messages stored in
+ * gps_nmea.msg_buf .
+ * #BESTVELA,COM1,0,68.5,FINESTEERING,1802,459952.900,00000000,8c02,12832;SOL_COMPUTED,DOPPLER_VELOCITY,0.150,0.000,0.0505,12.520238,-0.0537,0.0*18021b75
+ */
+void parse_novatel_bestsatsa(void) {
+  int i = 10;     // current position in the message, start after: bestvela,
+//  char* endptr;  // end of parsed substrings
+
+
+  // attempt to reject empty packets right away
+  if(gps_nmea.msg_buf[i]==',' && gps_nmea.msg_buf[i+1]==',') {
+    NMEA_PRINT("p_GPGGA() - skipping empty message\n\r");
+    return;
+  }
+
+
+
+  while(gps_nmea.msg_buf[i++] != ';') {              // next field:12832;;;
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+
+  int j=0;
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field: horizontal speed
+    if (i >= gps_nmea.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      return;
+    }
+    gps.num_sats_ch[j++]=gps_nmea.msg_buf[i-1];
+  }
+  gps.num_sats_ch[j]='\0';
+
+  gps.num_sats = atoi(&gps.num_sats_ch[0]);
+
+  if(gps.num_sats <= 0){
+      gps.num_sats = 0;
+      gps.num_gps = 0;
+      gps.num_beidou = 0;
+      return;
+  }
+
+      gps.num_gps = 0;
+  while(gps_nmea.msg_buf[i++] != '*') {              // next field: horizontal speed
+    if (i >= gps_nmea.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      return;
+    }
+    if((gps_nmea.msg_buf[i-1] == 'G') && (gps_nmea.msg_buf[i] == 'P')&&gps_nmea.msg_buf[i+1] == 'S'){
+        gps.num_gps++;
+    }
+  }
+
+  if(gps.num_sats >= gps.num_gps){
+      gps.num_beidou = gps.num_sats - gps.num_gps;
+  }
+  else {
+      gps.num_sats = 0;
+      gps.num_gps = 0;
+      gps.num_beidou = 0;
+  }
+
+
+
+
+}
+
 
 /**
  * parse_nmea_char() has a complete line.
@@ -642,8 +710,14 @@ void nmea_parse_msg( void ) {
                   parse_nmea_GPZDA();
 
               } else{
-              gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
-              NMEA_PRINT("ignoring: len=%i \n\r \"%s\" \n\r", gps_nmea.msg_len, gps_nmea.msg_buf);
+                  if(!gps.file_name_flag && gps_nmea.msg_len > 9 && !strncmp(gps_nmea.msg_buf , "BESTSATSA", 9)) {
+                      gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
+                      parse_novatel_bestsatsa();
+
+                  } else{
+                    gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
+                    NMEA_PRINT("ignoring: len=%i \n\r \"%s\" \n\r", gps_nmea.msg_len, gps_nmea.msg_buf);
+                  }
               }
           }
       }

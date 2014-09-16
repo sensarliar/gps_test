@@ -725,12 +725,15 @@ void MainWindow::remoteDataIncoming()
     //  ui->m_speed->display((char *)gps.speed_ch);
        ui->m_speed->display(gps.gspeed);
     //   ui->m_direction->display(temp_value.setNum(gps.num_sv));
-       if (gps.gspeed>1){
+ /*      if (gps.gspeed>1){
           ui->m_direction->display((char *)gps.direction_ch);
        }
        else{
            ui->m_direction->display("");
        }
+       */
+       ui->m_num_gps->display((int)gps.num_gps);
+       ui->m_num_beidou->display((int)gps.num_beidou);
 
        //ui->m_hight->display(temp_value.setNum(gps.alt));
        ui->m_hight->display((char *)gps.alt_ch);
@@ -753,7 +756,9 @@ void MainWindow::remoteDataIncoming()
        ui->m_location_E_fen->display("");
        ui->m_label_E->setText("");
        ui->m_speed->display("");
-       ui->m_direction->display("");
+//       ui->m_direction->display("");
+       ui->m_num_gps->display("");
+       ui->m_num_beidou->display("");
        ui->m_hight->display("");
        ui->m_speed_U->display("");
        ui->m_speed_E->display("");
