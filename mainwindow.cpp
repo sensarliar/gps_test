@@ -120,6 +120,10 @@ void MainWindow::initial_next(){
       gps.time_ch[8]='8';
       gps.time_ch[9]='\0';
 
+      gps.num_sats = 0;
+      gps.num_gps = 0;
+      gps.num_beidou = 0;
+
       m_fd_com4 = openSerialPort_com4();
       if (m_fd_com4 < 0) {
           QMessageBox::warning(this, tr("Error"), tr("Fail to open serial port!"));
@@ -723,7 +727,7 @@ void MainWindow::remoteDataIncoming()
 
      //  ui->m_speed->display(temp_value.setNum(gps.pdop));
     //  ui->m_speed->display((char *)gps.speed_ch);
-       ui->m_speed->display(gps.gspeed);
+
     //   ui->m_direction->display(temp_value.setNum(gps.num_sv));
  /*      if (gps.gspeed>1){
           ui->m_direction->display((char *)gps.direction_ch);
@@ -732,8 +736,11 @@ void MainWindow::remoteDataIncoming()
            ui->m_direction->display("");
        }
        */
-       ui->m_num_gps->display((int)gps.num_gps);
-       ui->m_num_beidou->display((int)gps.num_beidou);
+       ui->m_speed->display(gps.gspeed);
+       //ui->m_speed->display(gps.num_sats);
+
+       ui->m_num_gps->display(gps.num_gps);
+       ui->m_num_beidou->display(gps.num_beidou);
 
        //ui->m_hight->display(temp_value.setNum(gps.alt));
        ui->m_hight->display((char *)gps.alt_ch);

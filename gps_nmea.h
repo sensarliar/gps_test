@@ -87,9 +87,9 @@ struct GpsState {
   bool file_name_flag;
 
   char num_sats_ch[12];
-  unsigned int num_sats;
-  unsigned int num_gps;
-  unsigned int num_beidou;
+  int num_sats;
+  int num_gps;
+  int num_beidou;
 
 
 /*
