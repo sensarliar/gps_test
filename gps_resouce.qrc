@@ -8,9 +8,11 @@
         <file>images/title.png</file>
         <file>images/zhgy.jpg</file>
         <file>images/zhgy.png</file>
-        <file>images/b_ma_status.png</file>
-        <file>images/comma_for_time.png</file>
-        <file>images/m_s_unit.png</file>
         <file>images/b_ma_2.png</file>
+        <file>images/1588.png</file>
+        <file>images/comma_2.png</file>
+        <file>images/dot.png</file>
+        <file>images/gps.png</file>
+        <file>images/m_s_2.png</file>
     </qresource>
 </RCC>

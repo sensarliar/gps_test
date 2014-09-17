@@ -705,6 +705,9 @@ void MainWindow::remoteDataIncoming()
   //  ui->m_time_ms->display(temp_value.setNum(fmod(gps.tow,1000)));
 
   //  ui->m_time->display(temp_value.setNum(gps.tow,'g',11));
+    ui->m_num_gps->display(gps.num_gps);
+    ui->m_num_beidou->display(gps.num_beidou);
+
    if(gps_nmea.pos_available){
        ui->m_label_available->setText(QString("OK"));
        ui->m_label_available->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
@@ -739,8 +742,7 @@ void MainWindow::remoteDataIncoming()
        ui->m_speed->display(gps.gspeed);
        //ui->m_speed->display(gps.num_sats);
 
-       ui->m_num_gps->display(gps.num_gps);
-       ui->m_num_beidou->display(gps.num_beidou);
+
 
        //ui->m_hight->display(temp_value.setNum(gps.alt));
        ui->m_hight->display((char *)gps.alt_ch);
@@ -764,8 +766,7 @@ void MainWindow::remoteDataIncoming()
        ui->m_label_E->setText("");
        ui->m_speed->display("");
 //       ui->m_direction->display("");
-       ui->m_num_gps->display("");
-       ui->m_num_beidou->display("");
+
        ui->m_hight->display("");
        ui->m_speed_U->display("");
        ui->m_speed_E->display("");
