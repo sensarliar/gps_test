@@ -785,7 +785,7 @@ void MainWindow::remoteDataIncoming()
     time_stamp_list+=time_stamp.setNum(st.tv_usec);
     QString file_store_name("/media/sda1/range");
     file_store_name+=time_stamp_list;
-    file_store_name+=(".log");
+    file_store_name+=(".bin");
       ui->m_logFileLe->setText(file_store_name);
       gps.file_name_flag=1;
     }
