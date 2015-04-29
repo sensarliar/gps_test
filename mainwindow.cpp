@@ -409,8 +409,8 @@ int MainWindow::openSerialPort_com4()
 
 void MainWindow::remoteDataIncoming_com2()
 {
-    char buff[2*(74+48+151)+30];
-    int bytesRead=read(m_fd_com2, buff, 2*(74+48+151));
+    char buff_com2[2*(74+48+151)+30];
+    int bytesRead=read(m_fd_com2, buff_com2, 2*(74+48+151));
     if (bytesRead<1) {
         QMessageBox::warning(this, tr("Error"), tr("Receive error!"));
         return;
@@ -418,7 +418,7 @@ void MainWindow::remoteDataIncoming_com2()
 
     if (m_logFile.isOpen())
     {
-       m_logFile.write(buff, bytesRead);
+       m_logFile.write(buff_com2, bytesRead);
     }
 
 
@@ -493,8 +493,8 @@ void MainWindow::remoteDataIncoming_com4()
     static bool set_time_flag=0;
     unsigned int fpga_state=0;
     unsigned int fpga_temp;
-    unsigned char buff[40];
-    int bytesRead=read(m_fd_com4, buff, 20);
+    unsigned char buff_com4[40];
+    int bytesRead=read(m_fd_com4, buff_com4, 20);
     if (bytesRead<1) {
         QMessageBox::warning(this, tr("Error"), tr("Receive error!"));
         return;
@@ -504,7 +504,7 @@ void MainWindow::remoteDataIncoming_com4()
     int index_f5af=0;
     for(i=0;(i<10)&&(i<bytesRead);i++)
     {
-        if((buff[i]==0xF5)&&(buff[i+1]==0xAF))
+        if((buff_com4[i]==0xF5)&&(buff_com4[i+1]==0xAF))
         {
             if(bytesRead-i>=10)
             {
@@ -527,7 +527,7 @@ void MainWindow::remoteDataIncoming_com4()
                 }
                 */
                   //  fpga_state=(unsigned int)buff[index_f5af+9];
-                    fpga_state=buff[index_f5af+9];
+                    fpga_state=buff_com4[index_f5af+9];
                     if(fpga_state&1)
                     ui->lineEdit_bdc->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
                     else
@@ -563,7 +563,11 @@ void MainWindow::remoteDataIncoming_com4()
 void MainWindow::remoteDataIncoming()
 {
 //    char buff[2*(66+49+29)+30];
-    char buff[2*(74+48+151)+30];
+    static char buff[2*(74+48+151+569)+30];
+    char* buff_cont_p = buff;
+    static char buff_cont_len=0;
+    char buff_wr[255];
+    char* buff_wr_p=buff_wr;
     //char buff_array[2*(66+49+29)+30];
     //char *buff=buff_array;
     QString buff_time;
@@ -581,6 +585,7 @@ void MainWindow::remoteDataIncoming()
     //unsigned char time_hour;
     int time_hour;
     QString adjust_hour;
+    int bytesRead = 0;
 
 //    char* time_stamp;
 
@@ -595,11 +600,25 @@ void MainWindow::remoteDataIncoming()
             );
     }
 */
-    int bytesRead=read(m_fd, buff, 2*(74+48+151));
-    if (bytesRead<1) {
-        QMessageBox::warning(this, tr("Error"), tr("Receive error!"));
+    if((buff_cont_len>450)||(buff_cont_len<0))
+    {
+        QMessageBox::warning(this, tr("Error"), tr("Receive error2!"));
+        buff_cont_len = 0;
         return;
     }
+    buff_cont_p=&buff[buff_cont_len];
+    if(buff_cont_p==NULL)
+    {
+        QMessageBox::warning(this, tr("Error"), tr("Receive error1!"));
+        return;
+    }
+        bytesRead=read(m_fd, buff_cont_p, 2*(74+48+151+569)-buff_cont_len);
+        if (bytesRead<1) {
+            QMessageBox::warning(this, tr("Error"), tr("Receive error3!"));
+            return;
+        }
+
+    bytesRead += buff_cont_len;
 /*
     if (m_logFile.isOpen())
     {
@@ -634,11 +653,17 @@ void MainWindow::remoteDataIncoming()
 */
     int count_i=0;
 
-            gps_impl_init();
+    gps_impl_init();
+    int temp_count_i = count_i;
+    char* dest_p =buff;
+    char* src_p = &buff[count_i];
 
  while(count_i<bytesRead)
 {
+     // buff_cont_p = &nmea_parse_char(buff[count_i];
+     temp_count_i = count_i;
 
+     src_p = &buff[count_i];
 // ui->m_receiveEdit->append(QString("\nstart deal with ..."));
      while (count_i<bytesRead&&!gps_nmea.msg_available)
      { nmea_parse_char(buff[count_i]);
@@ -649,11 +674,46 @@ void MainWindow::remoteDataIncoming()
       nmea_parse_msg();
 
       gps_nmea.msg_available = FALSE;
+      buff_cont_len = 0;
     }
-//  ui->m_receiveEdit->append(QString("\nparse gps over ..."));
-  }
+    else
+      { buff_cont_len = bytesRead - temp_count_i;
+       int buff_cont_len_temp = buff_cont_len;
+        if(src_p>dest_p)
+        {
+            while(buff_cont_len_temp>0)
+            {
+                *dest_p++ = *src_p++;
+                buff_cont_len_temp--;
+            }
 
-   ui->m_receiveEdit->append(QString("\nfull loop is over ..."));
+
+        }
+        else
+        {
+            buff_cont_len =0;
+        }
+    }//else
+//  ui->m_receiveEdit->append(QString("\nparse gps over ..."));
+  }//while(count_i<bytesRead)
+    buff_wr_p = strcpy(buff_wr,"$GAOMING,");
+    buff_wr_p += 9;
+    buff_wr_p = strcpy(buff_wr_p,gps.time_ch);
+    buff_wr_p += strlen(gps.time_ch);
+    *buff_wr_p = ',';
+    buff_wr_p++;
+    buff_wr_p = strcpy(buff_wr_p,gps.day_zda_ch);
+    buff_wr_p += strlen(gps.day_zda_ch);
+    strcpy(buff_wr_p,"\r\n");
+    int bytesWrite=write(m_fd, buff_wr, strlen(buff_wr));
+
+//   ui->m_receiveEdit->append(QString("\nfull loop is over ..."));
+    int time_length;
+    time_length=strlen(gps.time_ch);
+
+ //   if((gps.time_ch[time_length-2]=='3'||gps.time_ch[time_length-2]=='8')&&(gps.time_ch[time_length-1]!='0'))
+    if(1)
+    {
 //int test_vl=gps.hmsl;
    QString temp_value;
 
@@ -680,8 +740,7 @@ void MainWindow::remoteDataIncoming()
 
 //   ui->m_time_m->display(temp_value.setNum(time_hour));
      ui->m_time_m->display(temp_value);
-    int time_length;
-    time_length=strlen(gps.time_ch);
+
    if(time_length<9)
    {
        qc_hour_h=QChar('0');
@@ -789,6 +848,8 @@ void MainWindow::remoteDataIncoming()
       ui->m_logFileLe->setText(file_store_name);
       gps.file_name_flag=1;
     }
+
+   }//if(gps.time_ch[4]=='1'||gps.time_ch[4]=='6')
 
 //QString disp_hight;
 //QString disp_num_sv;
