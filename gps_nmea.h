@@ -79,7 +79,7 @@ struct GpsState {
   int month_zda;
   int year_zda;
 
-
+ double speed_H;
   double speed_E;
   double speed_N;
   double speed_U;
