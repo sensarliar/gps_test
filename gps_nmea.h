@@ -91,6 +91,12 @@ struct GpsState {
   int num_gps;
   int num_beidou;
 
+  int buff_cont_num_pre;
+  int buff_cont_num_max;
+  int test01;\
+  int test02;
+
+
 
 /*
   int16_t gspeed;                ///< norm of 2d ground speed in cm/s

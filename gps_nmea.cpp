@@ -649,24 +649,32 @@ void parse_novatel_bestsatsa(void) {
       gps.num_beidou = 0;
       return;
   }
+  gps.test01=gps_nmea.msg_len;
 
 int gps_num_temp = 0;
+int beidou_num_temp = 0;
      //gps.num_gps = 0;
   while(gps_nmea.msg_buf[i++] != '*') {              // next field: horizontal speed
     if (i >= gps_nmea.msg_len) {
       NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      gps.test02++;
       return;
     }
   //  if((gps_nmea.msg_buf[i-1] == 'G') && (gps_nmea.msg_buf[i] == 'P')&&gps_nmea.msg_buf[i+1] == 'S'){
-    if((gps_nmea.msg_buf[i] == 'P')&&gps_nmea.msg_buf[i+1] == 'S'){
+    if((gps_nmea.msg_buf[i-1] == 'G')&&gps_nmea.msg_buf[i+1] == 'S'){
        // gps.num_gps++;
         gps_num_temp++;
     }
+    if((gps_nmea.msg_buf[i] == 'B')&&gps_nmea.msg_buf[i+3] == 'D'){
+       // gps.num_gps++;
+        beidou_num_temp++;
+    }
   }
-  gps.num_gps = gps_num_temp;
+
   if((gps.num_sats >= 0)&&(gps.num_gps >= 0)&&(gps.num_sats >= gps.num_gps)){
-        gps.num_gps = gps_num_temp;
-      gps.num_beidou = gps.num_sats - gps.num_gps;
+      gps.num_gps = gps_num_temp;
+      gps.num_beidou = beidou_num_temp;
+    //  gps.num_beidou = gps.num_sats - gps.num_gps;
   }
   else {
       gps.num_sats = 0;
@@ -753,13 +761,30 @@ void nmea_parse_char( char c ) {
 
     // messages end with a linefeed
     //AD: TRUNK:       if (c == '\r' || c == '\n')
-    if (c == '\r' || c == '\n') {
-      gps_nmea.msg_available = TRUE;
-    } else {
-      gps_nmea.msg_buf[gps_nmea.msg_len] = c;
-      gps_nmea.msg_len ++;
-    }
-  }
+
+      /*
+      if (c == '\r') {
+      return;
+     }
+    else if (c == '\n') {
+          gps_nmea.msg_available = TRUE;
+        }
+        else {
+          gps_nmea.msg_buf[gps_nmea.msg_len] = c;
+          gps_nmea.msg_len ++;
+          }
+
+          */
+
+      if (c == '\r'||c == '\n') {
+             gps_nmea.msg_available = TRUE;
+        }
+        else {
+          gps_nmea.msg_buf[gps_nmea.msg_len] = c;
+          gps_nmea.msg_len ++;
+          }
+
+}
 
   if (gps_nmea.msg_len >= NMEA_MAXLEN - 1)
     gps_nmea.msg_available = TRUE;
