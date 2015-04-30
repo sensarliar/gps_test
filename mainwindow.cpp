@@ -565,8 +565,8 @@ void MainWindow::remoteDataIncoming()
 //    char buff[2*(66+49+29)+30];
     static char buff[2*(74+48+151+569)+30];
     char* buff_cont_p = buff;
-    static char buff_cont_len=0;
-    char buff_wr[255];
+    static int buff_cont_len=0;
+    char buff_wr[2048];
     char* buff_wr_p=buff_wr;
     //char buff_array[2*(66+49+29)+30];
     //char *buff=buff_array;
@@ -600,7 +600,7 @@ void MainWindow::remoteDataIncoming()
             );
     }
 */
-    if((buff_cont_len>450)||(buff_cont_len<0))
+    if((buff_cont_len>74+48+151+569)||(buff_cont_len<0))
     {
         QMessageBox::warning(this, tr("Error"), tr("Receive error2!"));
         buff_cont_len = 0;
@@ -631,6 +631,51 @@ void MainWindow::remoteDataIncoming()
     ui->m_receiveEdit->append(QString("\n@@@@@@@@@@@@@@@@@@@@\n"));
 */
 
+
+    char* src_p_w=buff;
+
+
+    buff_wr_p = strcpy(buff_wr,"$GAOMING,");
+    buff_wr_p += 9;
+    buff_wr_p = strcpy(buff_wr_p,gps.time_ch);
+    buff_wr_p += strlen(gps.time_ch);
+    *buff_wr_p = ',';
+    buff_wr_p++;
+    buff_wr_p = strcpy(buff_wr_p,gps.day_zda_ch);
+    buff_wr_p += strlen(gps.day_zda_ch);
+    *buff_wr_p = '%';
+    buff_wr_p++;
+    if(bytesRead>1800){
+        strcpy(buff_wr_p,"out of service!");
+        buff_wr_p += strlen("out of service!");
+
+    }else
+    {
+        int buff_cont_len_temp2=buff_cont_len;
+
+        while(buff_cont_len_temp2>0)
+        {
+            *buff_wr_p++ = *src_p_w++;
+            buff_cont_len_temp2--;
+        }
+
+        *buff_wr_p = '%';
+        buff_wr_p++;
+        int buff_cont_len_temp3=bytesRead-buff_cont_len;
+        while(buff_cont_len_temp3>0)
+        {
+            *buff_wr_p++ = *src_p_w++;
+            buff_cont_len_temp3--;
+        }
+    }
+
+    strcpy(buff_wr_p,"\r\n");
+
+  //  int bytesWrite=write(m_fd, buff_wr, (strlen(buff_wr)<1023)? strlen(buff_wr):1023);
+     int bytesWrite=write(m_fd, buff_wr, strlen(buff_wr));
+
+
+
 /*
     gettimeofday(&st, NULL);
 
@@ -654,9 +699,9 @@ void MainWindow::remoteDataIncoming()
     int count_i=0;
 
     gps_impl_init();
-    int temp_count_i = count_i;
+    int temp_count_i = 0;
     char* dest_p =buff;
-    char* src_p = &buff[count_i];
+    char* src_p = buff;
 
  while(count_i<bytesRead)
 {
@@ -674,38 +719,52 @@ void MainWindow::remoteDataIncoming()
       nmea_parse_msg();
 
       gps_nmea.msg_available = FALSE;
-      buff_cont_len = 0;
+      //buff_cont_len = 0;
     }
     else
-      { buff_cont_len = bytesRead - temp_count_i;
-       int buff_cont_len_temp = buff_cont_len;
-        if(src_p>dest_p)
+      {
+
+        if(temp_count_i>0)
         {
-            while(buff_cont_len_temp>0)
+            buff_cont_len = bytesRead - temp_count_i;
+           int buff_cont_len_temp = buff_cont_len;
+            if(src_p>dest_p)
             {
-                *dest_p++ = *src_p++;
-                buff_cont_len_temp--;
+
+                   if (*src_p == '\r'||*src_p == '\n') {
+                       src_p++;
+                       buff_cont_len_temp--;
+                       buff_cont_len--;
+                   }
+                while(buff_cont_len_temp>0)
+                {
+                    *dest_p++ = *src_p++;
+                    buff_cont_len_temp--;
+                }
+
+
             }
-
-
+            gps_nmea.msg_len = 0;
+        }
+        else if (temp_count_i==0)
+        {
+            buff_cont_len = bytesRead;
+            gps_nmea.msg_len = 0;
+            return;
         }
         else
         {
+
             buff_cont_len =0;
+            gps_nmea.msg_len = 0;
+             return;
+
         }
+
     }//else
 //  ui->m_receiveEdit->append(QString("\nparse gps over ..."));
   }//while(count_i<bytesRead)
-    buff_wr_p = strcpy(buff_wr,"$GAOMING,");
-    buff_wr_p += 9;
-    buff_wr_p = strcpy(buff_wr_p,gps.time_ch);
-    buff_wr_p += strlen(gps.time_ch);
-    *buff_wr_p = ',';
-    buff_wr_p++;
-    buff_wr_p = strcpy(buff_wr_p,gps.day_zda_ch);
-    buff_wr_p += strlen(gps.day_zda_ch);
-    strcpy(buff_wr_p,"\r\n");
-    int bytesWrite=write(m_fd, buff_wr, strlen(buff_wr));
+
 
 //   ui->m_receiveEdit->append(QString("\nfull loop is over ..."));
     int time_length;

@@ -651,6 +651,7 @@ void parse_novatel_bestsatsa(void) {
   }
 
 int gps_num_temp = 0;
+int beidou_num_temp = 0;
      //gps.num_gps = 0;
   while(gps_nmea.msg_buf[i++] != '*') {              // next field: horizontal speed
     if (i >= gps_nmea.msg_len) {
@@ -658,15 +659,22 @@ int gps_num_temp = 0;
       return;
     }
   //  if((gps_nmea.msg_buf[i-1] == 'G') && (gps_nmea.msg_buf[i] == 'P')&&gps_nmea.msg_buf[i+1] == 'S'){
-    if((gps_nmea.msg_buf[i] == 'P')&&gps_nmea.msg_buf[i+1] == 'S'){
+    if((gps_nmea.msg_buf[i-1] == 'G')&&gps_nmea.msg_buf[i+1] == 'S'){
        // gps.num_gps++;
         gps_num_temp++;
     }
+    if((gps_nmea.msg_buf[i-1] == 'B')&&gps_nmea.msg_buf[i+2] == 'D'){
+       // gps.num_gps++;
+        beidou_num_temp++;
+    }
+
   }
-  gps.num_gps = gps_num_temp;
+
   if((gps.num_sats >= 0)&&(gps.num_gps >= 0)&&(gps.num_sats >= gps.num_gps)){
-        gps.num_gps = gps_num_temp;
-      gps.num_beidou = gps.num_sats - gps.num_gps;
+ //       gps.num_gps = gps_num_temp;
+   //   gps.num_beidou = gps.num_sats - gps.num_gps;
+      gps.num_gps = gps_num_temp;
+      gps.num_beidou = beidou_num_temp;
   }
   else {
       gps.num_sats = 0;
