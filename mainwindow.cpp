@@ -125,6 +125,11 @@ void MainWindow::initial_next(){
       gps.num_gps = 0;
       gps.num_beidou = 0;
 
+      gps.speed_E = 0;
+      gps.speed_N = 0;
+      gps.speed_U = 0;
+      gps.speed_H = 0;
+
       m_fd_com4 = openSerialPort_com4();
       if (m_fd_com4 < 0) {
           QMessageBox::warning(this, tr("Error"), tr("Fail to open serial port!"));
@@ -957,7 +962,7 @@ void MainWindow::remoteDataIncoming()
 
     buff_wr[31]='\r';
     buff_wr[32]='\n';
-    buff_wr[32]='\0';
+    buff_wr[33]='\0';
 
  //  int bytesWrite=write(m_fd, buff_wr, (strlen(buff_wr)<1023)? strlen(buff_wr):1023);
    bytesWrite=write(m_fd, buff_wr, 33);///do not use strlen
