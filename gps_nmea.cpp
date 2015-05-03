@@ -436,9 +436,9 @@ void parse_nmea_GPZDA(void) {
   }
   gps.day_zda_ch[j]='\0';
   gps.day_zda=atoi(&gps.day_zda_ch[0]);
-
-  if(1==time_zda_flag)
-  {gps.day_zda++;}
+/*   the day month,and year was dealt at writing function ,so ignore it ;only the time_zda was concerned*/
+//  if(1==time_zda_flag)
+//  {gps.day_zda++;}
 
   j=0;
   while(gps_nmea.msg_buf[i++] != ',') {              // next field: East speed

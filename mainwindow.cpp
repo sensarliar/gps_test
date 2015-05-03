@@ -46,6 +46,7 @@
 #include <math.h>
 #include <stdlib.h>
 
+extern int utc2bj_time(int utc_hour, struct GpsState* gps_p);
 
 //struct GpsState gps;
 
@@ -662,17 +663,26 @@ write(m_fd, buff_wr, strlen(buff_wr));
   int convert_int;
  //  short convert_16bit;
   short convert_16bit;
+  int utc_hour_temp;
   buff_wr[0]=0xAA;
   buff_wr[1]=0x55;
   convert_ch[0]=gps.time_ch[0];
   convert_ch[1]=gps.time_ch[1];
   convert_ch[2]='\0';
-  buff_wr[2]=char(atoi(convert_ch));//hour
+                                    //hour
+  utc_hour_temp = atoi(convert_ch);
+  int bj_time_temp;
+  bj_time_temp = utc2bj_time(utc_hour_temp,&gps);
+  buff_wr[2]=char(bj_time_temp);
+
+
+
 
   convert_ch[0]=gps.time_ch[2];
   convert_ch[1]=gps.time_ch[3];
   convert_ch[2]='\0';
-  buff_wr[3]=char(atoi(convert_ch));//minute
+                                        //minute
+  buff_wr[3]=char(atoi(convert_ch));
 
   if(time_length<9)
   {

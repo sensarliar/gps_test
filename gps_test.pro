@@ -18,7 +18,8 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    gps_nmea.cpp
+    gps_nmea.cpp \
+    utc_convert.cpp
 
 HEADERS  += mainwindow.h \
     gps_nmea.h
