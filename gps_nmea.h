@@ -91,6 +91,8 @@ struct GpsState {
   int num_gps;
   int num_beidou;
 
+  bool bestvela_parse_ok;
+
 
 /*
   int16_t gspeed;                ///< norm of 2d ground speed in cm/s

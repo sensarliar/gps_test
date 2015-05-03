@@ -130,6 +130,8 @@ void MainWindow::initial_next(){
       gps.speed_U = 0;
       gps.speed_H = 0;
 
+      gps.bestvela_parse_ok =0;
+
       m_fd_com4 = openSerialPort_com4();
       if (m_fd_com4 < 0) {
           QMessageBox::warning(this, tr("Error"), tr("Fail to open serial port!"));
@@ -566,14 +568,237 @@ void MainWindow::remoteDataIncoming_com4()
 }
 
 
+
+void MainWindow::serial_wr_func()
+{
+
+    char buff_wr[2048];
+    //char* buff_wr_p=buff_wr;
+
+    /*
+
+buff_wr_p = strcpy(buff_wr,"$GAOMING,");
+buff_wr_p += 9;
+buff_wr_p = strcpy(buff_wr_p,gps.time_ch);
+buff_wr_p += strlen(gps.time_ch);
+*buff_wr_p = ',';
+buff_wr_p++;
+buff_wr_p = strcpy(buff_wr_p,gps.year_zda_ch);
+buff_wr_p += strlen(gps.year_zda_ch);
+*buff_wr_p = ',';
+buff_wr_p++;
+buff_wr_p = strcpy(buff_wr_p,gps.month_zda_ch);
+buff_wr_p += strlen(gps.month_zda_ch);
+*buff_wr_p = ',';
+buff_wr_p++;
+buff_wr_p = strcpy(buff_wr_p,gps.day_zda_ch);
+buff_wr_p += strlen(gps.day_zda_ch);
+*buff_wr_p = ',';
+buff_wr_p++;
+if(gps_nmea.pos_available)
+{
+    *buff_wr_p = '1';
+}else
+{
+    *buff_wr_p = '0';
+}
+buff_wr_p++;
+*buff_wr_p = ',';
+buff_wr_p++;
+buff_wr_p = strcpy(buff_wr_p,gps.lat_ch);
+buff_wr_p += strlen(gps.lat_ch);
+*buff_wr_p = gps.NorS;
+buff_wr_p++;
+*buff_wr_p = ',';
+buff_wr_p++;
+buff_wr_p = strcpy(buff_wr_p,gps.lon_ch);
+buff_wr_p += strlen(gps.lon_ch);
+*buff_wr_p = gps.EorW;
+buff_wr_p++;
+*buff_wr_p = ',';
+buff_wr_p++;
+buff_wr_p = strcpy(buff_wr_p,gps.alt_ch);
+buff_wr_p += strlen(gps.alt_ch);
+*buff_wr_p = ',';
+buff_wr_p++;
+char speed_buff[20];
+gcvt(gps.speed_E,8,speed_buff);
+buff_wr_p = strcpy(buff_wr_p,speed_buff);
+buff_wr_p += strlen(speed_buff);
+*buff_wr_p = ',';
+buff_wr_p++;
+gcvt(gps.speed_N,8,speed_buff);
+buff_wr_p = strcpy(buff_wr_p,speed_buff);
+buff_wr_p += strlen(speed_buff);
+*buff_wr_p = ',';
+buff_wr_p++;
+gcvt(gps.speed_U,8,speed_buff);
+buff_wr_p = strcpy(buff_wr_p,speed_buff);
+buff_wr_p += strlen(speed_buff);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+strcpy(buff_wr_p,"\r\n");
+
+//  int bytesWrite=write(m_fd, buff_wr, (strlen(buff_wr)<1023)? strlen(buff_wr):1023);
+// int bytesWrite=write(m_fd, buff_wr, strlen(buff_wr));
+write(m_fd, buff_wr, strlen(buff_wr));
+
+ int wbuff_len = strlen(buff_wr);
+  while (wbuff_len>0)
+  {
+      buff_wr[wbuff_len--]=0;
+  }
+
+*/
+ /*------------------clear all buff_wr--------------*/
+
+
+  int time_length;
+  time_length=strlen(gps.time_ch);
+
+ //binary output
+  char convert_ch[30];
+  int convert_int;
+ //  short convert_16bit;
+  short convert_16bit;
+  buff_wr[0]=0xAA;
+  buff_wr[1]=0x55;
+  convert_ch[0]=gps.time_ch[0];
+  convert_ch[1]=gps.time_ch[1];
+  convert_ch[2]='\0';
+  buff_wr[2]=char(atoi(convert_ch));//hour
+
+  convert_ch[0]=gps.time_ch[2];
+  convert_ch[1]=gps.time_ch[3];
+  convert_ch[2]='\0';
+  buff_wr[3]=char(atoi(convert_ch));//minute
+
+  if(time_length<9)
+  {
+      convert_ch[1]=gps.time_ch[4];
+      convert_ch[2]='\0';
+  }
+  else{
+      convert_ch[0]=gps.time_ch[4];
+      convert_ch[1]=gps.time_ch[5];
+      convert_ch[2]='\0';
+   }
+    buff_wr[4]=char(atoi(convert_ch));//second
+
+
+    convert_ch[0]=gps.time_ch[time_length-2];
+    convert_ch[1]=gps.time_ch[time_length-1];
+    convert_ch[2]='\0';
+    buff_wr[5]=char(atoi(convert_ch));//mili-second*10
+
+    if(gps_nmea.pos_available)      //Position state
+    {
+        buff_wr[6]='A';
+    }else
+    {
+        buff_wr[6]='V';
+    }
+
+    buff_wr[7]=char(gps.year_zda);
+    buff_wr[8]=char(gps.year_zda>>8); //year ,2B
+
+    buff_wr[9]=char(gps.month_zda);//month
+
+    buff_wr[10]=char(gps.day_zda);//day
+
+    convert_ch[0]=gps.lat_ch[0];
+    convert_ch[1]=gps.lat_ch[1];  //
+    convert_ch[2]=gps.lat_ch[2];
+    convert_ch[3]=gps.lat_ch[3];  //
+    convert_ch[4]='\0';
+    convert_int = atoi(convert_ch);//lat
+    buff_wr[11]=char(convert_int);//du*100+min
+    buff_wr[12]=char(convert_int>>8);
+
+    convert_ch[0]=gps.lat_ch[5];
+    convert_ch[1]=gps.lat_ch[6];  //
+    convert_ch[2]=gps.lat_ch[7];
+    convert_ch[3]=gps.lat_ch[8];  //
+    convert_ch[4]='\0';
+    convert_int = atoi(convert_ch);//lat
+    buff_wr[13]=char(convert_int);//min(<1)*10000
+    buff_wr[14]=char(convert_int>>8);
+
+    convert_ch[0]=gps.lon_ch[0];
+    convert_ch[1]=gps.lon_ch[1];  //
+    convert_ch[2]=gps.lon_ch[2];
+    convert_ch[3]=gps.lon_ch[3];  //
+    convert_ch[4]=gps.lon_ch[4];
+    convert_ch[5]='\0';
+    convert_int = atoi(convert_ch);//lon
+    buff_wr[15]=char(convert_int);//du*100+min
+    buff_wr[16]=char(convert_int>>8);
+
+    convert_ch[0]=gps.lon_ch[6];
+    convert_ch[1]=gps.lon_ch[7];  //
+    convert_ch[2]=gps.lon_ch[8];
+    convert_ch[3]=gps.lon_ch[9];  //
+    convert_ch[4]='\0';
+    convert_int = atoi(convert_ch);//lon
+    buff_wr[17]=char(convert_int);//min(<1)*10000
+    buff_wr[18]=char(convert_int>>8);
+
+
+    convert_int = (int)(gps.alt*100);//alt*100,4B
+    buff_wr[19]=char(convert_int);//
+    buff_wr[20]=char(convert_int>>8);
+    buff_wr[21]=char(convert_int>>16);
+    buff_wr[22]=char(convert_int>>24);
+
+    convert_16bit = (short)(gps.speed_E*10);//speed_E*10,2B with sign
+    buff_wr[23]=char(convert_16bit);//
+    buff_wr[24]=char(convert_16bit>>8);
+
+    convert_16bit = (short)(gps.speed_N*10);//speed_N*10,2B
+    buff_wr[25]=char(convert_16bit);//
+    buff_wr[26]=char(convert_16bit>>8);
+
+    convert_16bit = (short)(gps.speed_U*10);//speed_U*10,2B
+    buff_wr[27]=char(convert_16bit);//
+    buff_wr[28]=char(convert_16bit>>8);
+
+    double gps_total_square=gps.speed_U*gps.speed_U+gps.speed_H*gps.speed_H;
+    double gps_total_speed = 0;
+    if(gps_total_square>0)
+    {
+        gps_total_speed =sqrt(gps_total_square);
+    }
+    else
+    {
+        gps_total_speed = 0;
+    }
+
+    convert_16bit = (short)(gps_total_speed*10);//total speed*10,2B
+    buff_wr[29]=char(convert_16bit);//
+    buff_wr[30]=char(convert_16bit>>8);
+
+    buff_wr[31]='\r';
+    buff_wr[32]='\n';
+    buff_wr[33]='\0';
+
+ //  int bytesWrite=write(m_fd, buff_wr, (strlen(buff_wr)<1023)? strlen(buff_wr):1023);
+  // bytesWrite = write(m_fd, buff_wr, 33);///do not use strlen
+    write(m_fd, buff_wr, 33);///do not use strlen
+   }
+
+
+
+
+
+
 void MainWindow::remoteDataIncoming()
 {
 //    char buff[2*(66+49+29)+30];
     static char buff[2*(74+48+151+569)+30];
     char* buff_cont_p = buff;
     static int buff_cont_len=0;
-    char buff_wr[2048];
-    char* buff_wr_p=buff_wr;
+
     //char buff_array[2*(66+49+29)+30];
     //char *buff=buff_array;
     QString buff_time;
@@ -725,6 +950,12 @@ void MainWindow::remoteDataIncoming()
       nmea_parse_msg();
 
       gps_nmea.msg_available = FALSE;
+      if(gps.bestvela_parse_ok)
+      {
+          serial_wr_func();
+          gps.bestvela_parse_ok =0;
+      }
+
       //buff_cont_len = 0;
     }
     else
@@ -776,201 +1007,6 @@ void MainWindow::remoteDataIncoming()
  //char* src_p_w=buff;//error
 
 
- buff_wr_p = strcpy(buff_wr,"$GAOMING,");
- buff_wr_p += 9;
- buff_wr_p = strcpy(buff_wr_p,gps.time_ch);
- buff_wr_p += strlen(gps.time_ch);
- *buff_wr_p = ',';
- buff_wr_p++;
- buff_wr_p = strcpy(buff_wr_p,gps.year_zda_ch);
- buff_wr_p += strlen(gps.year_zda_ch);
- *buff_wr_p = ',';
- buff_wr_p++;
- buff_wr_p = strcpy(buff_wr_p,gps.month_zda_ch);
- buff_wr_p += strlen(gps.month_zda_ch);
- *buff_wr_p = ',';
- buff_wr_p++;
- buff_wr_p = strcpy(buff_wr_p,gps.day_zda_ch);
- buff_wr_p += strlen(gps.day_zda_ch);
- *buff_wr_p = ',';
- buff_wr_p++;
- if(gps_nmea.pos_available)
- {
-     *buff_wr_p = '1';
- }else
- {
-     *buff_wr_p = '0';
- }
- buff_wr_p++;
- *buff_wr_p = ',';
- buff_wr_p++;
- buff_wr_p = strcpy(buff_wr_p,gps.lat_ch);
- buff_wr_p += strlen(gps.lat_ch);
- *buff_wr_p = gps.NorS;
- buff_wr_p++;
- *buff_wr_p = ',';
- buff_wr_p++;
- buff_wr_p = strcpy(buff_wr_p,gps.lon_ch);
- buff_wr_p += strlen(gps.lon_ch);
- *buff_wr_p = gps.EorW;
- buff_wr_p++;
- *buff_wr_p = ',';
- buff_wr_p++;
- buff_wr_p = strcpy(buff_wr_p,gps.alt_ch);
- buff_wr_p += strlen(gps.alt_ch);
- *buff_wr_p = ',';
- buff_wr_p++;
- char speed_buff[20];
- gcvt(gps.speed_E,8,speed_buff);
- buff_wr_p = strcpy(buff_wr_p,speed_buff);
- buff_wr_p += strlen(speed_buff);
- *buff_wr_p = ',';
- buff_wr_p++;
- gcvt(gps.speed_N,8,speed_buff);
- buff_wr_p = strcpy(buff_wr_p,speed_buff);
- buff_wr_p += strlen(speed_buff);
- *buff_wr_p = ',';
- buff_wr_p++;
- gcvt(gps.speed_U,8,speed_buff);
- buff_wr_p = strcpy(buff_wr_p,speed_buff);
- buff_wr_p += strlen(speed_buff);
- *buff_wr_p = ',';
- buff_wr_p++;
-
- strcpy(buff_wr_p,"\r\n");
-
-//  int bytesWrite=write(m_fd, buff_wr, (strlen(buff_wr)<1023)? strlen(buff_wr):1023);
-  int bytesWrite=write(m_fd, buff_wr, strlen(buff_wr));
-
-  int wbuff_len = strlen(buff_wr);
-   while (wbuff_len>0)
-   {
-       buff_wr[wbuff_len--]=0;
-   }
-  /*------------------clear all buff_wr--------------*/
-
-
-   int time_length;
-   time_length=strlen(gps.time_ch);
-
-  //binary output
-   char convert_ch[30];
-   int convert_int;
-  //  short convert_16bit;
-   short convert_16bit;
-   buff_wr[0]=0xAA;
-   buff_wr[1]=0x55;
-   convert_ch[0]=gps.time_ch[0];
-   convert_ch[1]=gps.time_ch[1];
-   convert_ch[2]='\0';
-   buff_wr[2]=char(atoi(convert_ch));//hour
-
-   convert_ch[0]=gps.time_ch[2];
-   convert_ch[1]=gps.time_ch[3];
-   convert_ch[2]='\0';
-   buff_wr[3]=char(atoi(convert_ch));//minute
-
-   if(time_length<9)
-   {
-       convert_ch[1]=gps.time_ch[4];
-       convert_ch[2]='\0';
-   }
-   else{
-       convert_ch[0]=gps.time_ch[4];
-       convert_ch[1]=gps.time_ch[5];
-       convert_ch[2]='\0';
-    }
-     buff_wr[4]=char(atoi(convert_ch));//second
-
-
-     convert_ch[0]=gps.time_ch[time_length-2];
-     convert_ch[1]=gps.time_ch[time_length-1];
-     convert_ch[2]='\0';
-     buff_wr[5]=char(atoi(convert_ch));//mili-second*10
-
-     if(gps_nmea.pos_available)      //Position state
-     {
-         buff_wr[6]='A';
-     }else
-     {
-         buff_wr[6]='V';
-     }
-
-     buff_wr[7]=char(gps.year_zda);
-     buff_wr[8]=char(gps.year_zda>>8); //year ,2B
-
-     buff_wr[9]=char(gps.month_zda);//month
-
-     buff_wr[10]=char(gps.day_zda);//day
-
-     convert_ch[0]=gps.lat_ch[0];
-     convert_ch[1]=gps.lat_ch[1];  //
-     convert_ch[2]=gps.lat_ch[2];
-     convert_ch[3]=gps.lat_ch[3];  //
-     convert_ch[4]='\0';
-     convert_int = atoi(convert_ch);//lat
-     buff_wr[11]=char(convert_int);//du*100+min
-     buff_wr[12]=char(convert_int>>8);
-
-     convert_ch[0]=gps.lat_ch[5];
-     convert_ch[1]=gps.lat_ch[6];  //
-     convert_ch[2]=gps.lat_ch[7];
-     convert_ch[3]=gps.lat_ch[8];  //
-     convert_ch[4]='\0';
-     convert_int = atoi(convert_ch);//lat
-     buff_wr[13]=char(convert_int);//min(<1)*10000
-     buff_wr[14]=char(convert_int>>8);
-
-     convert_ch[0]=gps.lon_ch[0];
-     convert_ch[1]=gps.lon_ch[1];  //
-     convert_ch[2]=gps.lon_ch[2];
-     convert_ch[3]=gps.lon_ch[3];  //
-     convert_ch[4]=gps.lon_ch[4];
-     convert_ch[5]='\0';
-     convert_int = atoi(convert_ch);//lon
-     buff_wr[15]=char(convert_int);//du*100+min
-     buff_wr[16]=char(convert_int>>8);
-
-     convert_ch[0]=gps.lon_ch[6];
-     convert_ch[1]=gps.lon_ch[7];  //
-     convert_ch[2]=gps.lon_ch[8];
-     convert_ch[3]=gps.lon_ch[9];  //
-     convert_ch[4]='\0';
-     convert_int = atoi(convert_ch);//lon
-     buff_wr[17]=char(convert_int);//min(<1)*10000
-     buff_wr[18]=char(convert_int>>8);
-
-
-     convert_int = (int)(gps.alt*100);//alt*100,4B
-     buff_wr[19]=char(convert_int);//
-     buff_wr[20]=char(convert_int>>8);
-     buff_wr[21]=char(convert_int>>16);
-     buff_wr[22]=char(convert_int>>24);
-
-     convert_16bit = (short)(gps.speed_E*10);//speed_E*10,2B with sign
-     buff_wr[23]=char(convert_16bit);//
-     buff_wr[24]=char(convert_16bit>>8);
-
-     convert_16bit = (short)(gps.speed_N*10);//speed_N*10,2B
-     buff_wr[25]=char(convert_16bit);//
-     buff_wr[26]=char(convert_16bit>>8);
-
-     convert_16bit = (short)(gps.speed_U*10);//speed_U*10,2B
-     buff_wr[27]=char(convert_16bit);//
-     buff_wr[28]=char(convert_16bit>>8);
-
-     double gps_total_speed =sqrt(gps.speed_U*gps.speed_U+gps.speed_H*gps.speed_H);
-     convert_16bit = (short)(gps_total_speed*10);//total speed*10,2B
-     buff_wr[23]=char(convert_16bit);//
-     buff_wr[24]=char(convert_16bit>>8);
-
-     buff_wr[31]='\r';
-     buff_wr[32]='\n';
-     buff_wr[33]='\0';
-
-  //  int bytesWrite=write(m_fd, buff_wr, (strlen(buff_wr)<1023)? strlen(buff_wr):1023);
-    bytesWrite = write(m_fd, buff_wr, 33);///do not use strlen
-
 
 
 //   ui->m_receiveEdit->append(QString("\nfull loop is over ..."));
@@ -1005,6 +1041,9 @@ void MainWindow::remoteDataIncoming()
 
 //   ui->m_time_m->display(temp_value.setNum(time_hour));
      ui->m_time_m->display(temp_value);
+
+     int time_length;
+     time_length=strlen(gps.time_ch);
 
    if(time_length<9)
    {

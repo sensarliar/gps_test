@@ -566,6 +566,8 @@ void parse_novatel_bestvela(void) {
 
   gps.speed_H = strtod(&gps.speed_horizon_ch[0],&endptr);
 
+
+
  j=0;
   while(gps_nmea.msg_buf[i++] != ',') {              // next field:  speed angle
     if (i >= gps_nmea.msg_len) {
@@ -578,8 +580,12 @@ void parse_novatel_bestvela(void) {
 
   double speed_angle = strtod(&gps.speed_angle_ch[0],&endptr);
 
-  gps.speed_E= gps.speed_H*sin(speed_angle);
-  gps.speed_N= gps.speed_H*cos(speed_angle);
+
+      gps.speed_E= gps.speed_H*sin(speed_angle);
+      gps.speed_N= gps.speed_H*cos(speed_angle);
+
+
+
 
   gps.speed_E*=10;
  int temp = (int)gps.speed_E;
@@ -600,6 +606,10 @@ void parse_novatel_bestvela(void) {
    gps.speed_U_ch[j]='\0';
    gps.speed_U = strtod(&gps.speed_U_ch[0],&endptr);
     gps.speed_U=(double((int)(gps.speed_U*10)))/10;
+
+    gps.speed_H=(double((int)(gps.speed_H*10)))/10;//nomalize the speed_H
+
+    gps.bestvela_parse_ok =1;
 
 
 

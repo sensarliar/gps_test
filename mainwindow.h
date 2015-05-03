@@ -37,6 +37,7 @@ protected slots:
     void DisconnectButtonClicked();
     void enableLogging(bool);
     void chooseLogFile();
+    void serial_wr_func();
 
 
 protected:
