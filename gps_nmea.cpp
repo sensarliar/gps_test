@@ -16,6 +16,7 @@
 #include <unistd.h>
 #include <cstring>
 #include <stdio.h>
+#include "mainwindow.h"
 
 //#define FALSE 0
 //#define TRUE 1
@@ -716,6 +717,9 @@ void nmea_parse_msg( void ) {
               NMEA_PRINT("GSA");
               //parse_nmea_NVDVI();
               parse_novatel_bestvela();
+              gps.bestvela_wr_flag=1;
+              //MainWindow::write_to_serial();
+              //w.write_to_serial();
               //        parse_nmea_GPGSA();
           } else {
 

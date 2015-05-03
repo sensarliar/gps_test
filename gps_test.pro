@@ -18,9 +18,11 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    gps_nmea.cpp
+    gps_nmea.cpp \
+    serial_write_func.cpp
 
 HEADERS  += mainwindow.h \
+    serial_write_func.h \
     gps_nmea.h
 
 FORMS    += mainwindow.ui

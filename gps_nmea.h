@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "serial_write_func.h"
 
 /** @file gps_nmea.h
  * NMEA protocol specific code.
@@ -91,6 +92,7 @@ struct GpsState {
   int num_gps;
   int num_beidou;
 
+  bool bestvela_wr_flag;
 
 /*
   int16_t gspeed;                ///< norm of 2d ground speed in cm/s
@@ -110,6 +112,7 @@ struct GpsState {
   uint32_t last_fix_ticks;       ///< cpu time ticks at last valid fix
   uint32_t last_fix_time;        ///< cpu time in sec at last valid fix
   uint16_t reset;                ///< hotstart, warmstart, coldstart
+
   */
 };
 

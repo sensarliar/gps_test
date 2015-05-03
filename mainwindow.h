@@ -6,6 +6,9 @@
 #include <qsocketnotifier.h>
 #include <qfile.h>
 #include <qfiledialog.h>
+#include "serial_write_func.h"
+
+//extern void write_to_serial();
 
 namespace Ui {
 class MainWindow;
@@ -19,6 +22,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void initial_next();
+
 
 private:
     Ui::MainWindow *ui;
@@ -37,6 +41,7 @@ protected slots:
     void DisconnectButtonClicked();
     void enableLogging(bool);
     void chooseLogFile();
+    void write_to_serial();
 
 
 protected:
@@ -50,6 +55,8 @@ protected:
     QFileDialog *m_fileDlg;
     QFile m_detectUFile;
     int delayNum;
+
+ //friend void write_to_serial();
 
 
 };
