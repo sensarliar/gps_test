@@ -19,10 +19,12 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     gps_nmea.cpp \
-    utc_convert.cpp
+    utc_convert.cpp \
+    init_group_broadcast.cpp
 
 HEADERS  += mainwindow.h \
-    gps_nmea.h
+    gps_nmea.h \
+    group_broadcast.h
 
 FORMS    += mainwindow.ui
     target.path += /home/root

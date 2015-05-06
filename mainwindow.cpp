@@ -46,6 +46,8 @@
 #include <math.h>
 #include <stdlib.h>
 
+#include "group_broadcast.h"
+
 extern int utc2bj_time(int utc_hour, struct GpsState* gps_p);
 
 //struct GpsState gps;
@@ -96,6 +98,7 @@ MainWindow::MainWindow(QWidget *parent) :
       ui->label->setFont(font);
       ui->label->resize(320,50);
 */
+      init_group_broadcast();
 }
 
 void MainWindow::initial_next(){
@@ -574,9 +577,9 @@ void MainWindow::serial_wr_func()
 {
 
     char buff_wr[2048];
-    //char* buff_wr_p=buff_wr;
+    char* buff_wr_p=buff_wr;
 
-    /*
+
 
 buff_wr_p = strcpy(buff_wr,"$GAOMING,");
 buff_wr_p += 9;
@@ -645,16 +648,19 @@ strcpy(buff_wr_p,"\r\n");
 // int bytesWrite=write(m_fd, buff_wr, strlen(buff_wr));
 write(m_fd, buff_wr, strlen(buff_wr));
 
+/*
  int wbuff_len = strlen(buff_wr);
-  while (wbuff_len>0)
+ wbuff_len--;
+  while (wbuff_len>=0)
   {
       buff_wr[wbuff_len--]=0;
   }
-
+  //clear all data
 */
+
  /*------------------clear all buff_wr--------------*/
 
-
+/*
   int time_length;
   time_length=strlen(gps.time_ch);
 
@@ -795,7 +801,19 @@ write(m_fd, buff_wr, strlen(buff_wr));
  //  int bytesWrite=write(m_fd, buff_wr, (strlen(buff_wr)<1023)? strlen(buff_wr):1023);
   // bytesWrite = write(m_fd, buff_wr, 33);///do not use strlen
     write(m_fd, buff_wr, 33);///do not use strlen
-   }
+*/
+
+    int n =0;
+ //   n=sendto(soketfd,buff_wr,sizeof(buff_wr),0,(struct sockaddr *)&mcast_addr,sizeof(mcast_addr));
+    n=sendto(soketfd,buff_wr,strlen(buff_wr),0,(struct sockaddr *)&mcast_addr,sizeof(mcast_addr));
+    if(n<0)
+    {
+        perror("sendto()");
+       // return -2;
+        return;
+    }
+
+ }
 
 
 
@@ -963,6 +981,7 @@ void MainWindow::remoteDataIncoming()
       if(gps.bestvela_parse_ok)
       {
           serial_wr_func();
+
           gps.bestvela_parse_ok =0;
       }
 

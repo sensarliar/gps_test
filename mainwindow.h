@@ -53,6 +53,8 @@ protected:
     int delayNum;
 
 
+
+
 };
 
 #endif // MAINWINDOW_H
