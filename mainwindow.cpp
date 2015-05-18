@@ -134,6 +134,31 @@ void MainWindow::initial_next(){
       gps.speed_U = 0;
       gps.speed_H = 0;
 
+      gps.align_pos_av_ch[0]='\0';
+      gps.align_pos_av = 0;
+
+      gps.rel_pos_E_ch[0]='1';
+      gps.rel_pos_E_ch[1]='0';
+      gps.rel_pos_E_ch[2]='0';
+      gps.rel_pos_E_ch[3]='0';
+      gps.rel_pos_E_ch[4]='0';
+      gps.rel_pos_E_ch[5]='\0';
+
+
+      gps.rel_pos_N_ch[0]='1';
+      gps.rel_pos_N_ch[1]='0';
+      gps.rel_pos_N_ch[2]='0';
+      gps.rel_pos_N_ch[3]='0';
+      gps.rel_pos_N_ch[4]='0';
+      gps.rel_pos_N_ch[5]='\0';
+
+      gps.rel_pos_U_ch[0]='1';
+      gps.rel_pos_U_ch[1]='0';
+      gps.rel_pos_U_ch[2]='0';
+      gps.rel_pos_U_ch[3]='0';
+      gps.rel_pos_U_ch[4]='0';
+      gps.rel_pos_U_ch[5]='\0';
+
       gps.bestvela_parse_ok =0;
 
       m_fd_com4 = openSerialPort_com4();
@@ -601,7 +626,13 @@ buff_wr_p += strlen(gps.day_zda_ch);
 buff_wr_p++;
 if(gps_nmea.pos_available)
 {
-    *buff_wr_p = '1';
+    if(gps.align_pos_av){
+            *buff_wr_p = '2';
+    }else{
+            *buff_wr_p = '1';
+    }
+
+
 }else
 {
     *buff_wr_p = '0';
@@ -639,6 +670,21 @@ buff_wr_p++;
 gcvt(gps.speed_U,8,speed_buff);
 buff_wr_p = strcpy(buff_wr_p,speed_buff);
 buff_wr_p += strlen(speed_buff);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+buff_wr_p = strcpy(buff_wr_p,gps.rel_pos_E_ch);
+buff_wr_p += strlen(gps.rel_pos_E_ch);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+buff_wr_p = strcpy(buff_wr_p,gps.rel_pos_N_ch);
+buff_wr_p += strlen(gps.rel_pos_N_ch);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+buff_wr_p = strcpy(buff_wr_p,gps.rel_pos_U_ch);
+buff_wr_p += strlen(gps.rel_pos_U_ch);
 *buff_wr_p = ',';
 buff_wr_p++;
 
@@ -1101,8 +1147,13 @@ void MainWindow::remoteDataIncoming()
     ui->m_num_beidou->display(gps.num_beidou);
 
    if(gps_nmea.pos_available){
-       ui->m_label_available->setText(QString("OK"));
-       ui->m_label_available->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
+       if(gps.align_pos_av){
+        ui->m_label_available->setText(QString("REL_OK"));
+        ui->m_label_available->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
+       }else{
+           ui->m_label_available->setText(QString("SIG_OK"));
+           ui->m_label_available->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 180, 0);"));
+       }
 
      //  ui->m_location_N->display(temp_value.setNum(gps.lat,'g',11));
       // ui->m_location_N->display(temp_value((char *)gps.lat_ch));

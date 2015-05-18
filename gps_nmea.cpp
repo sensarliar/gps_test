@@ -468,6 +468,74 @@ void parse_nmea_GPZDA(void) {
 
 }
 
+/**
+ * parse ALIGNBSLNENUA, NOVATEL messages stored in
+ * gps_nmea.msg_buf .
+ * #ALIGNBSLNENUA,COM1,0,68.5,FINESTEERING,1802,459952.900,00000000,8c02,12832;SOL_COMPUTED,
+ */
+void parse_novatel_alignbslnenua(void) {
+  int i = 14;     // current position in the message, start after: bestvela,
+//  char* endptr;  // end of parsed substrings
+
+
+  // attempt to reject empty packets right away
+  if(gps_nmea.msg_buf[i]==',' && gps_nmea.msg_buf[i+1]==',') {
+    NMEA_PRINT("p_GPGGA() - skipping empty message\n\r");
+    return;
+  }
+
+  while(gps_nmea.msg_buf[i++] != ';') {              // next field:12832;;;
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field:SOL_COMPUTED
+    if (i >= gps_nmea.msg_len)
+      return;
+  }
+
+  int j=0;
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field:NARROW_INT
+    if (i >= gps_nmea.msg_len)
+      return;
+    gps.align_pos_av_ch[j++]=gps_nmea.msg_buf[i-1];
+  }
+  gps.align_pos_av_ch[j]='\0';
+
+  j=0;
+  while(gps_nmea.msg_buf[i++] != ',') {              // next field:EAST
+    if (i >= gps_nmea.msg_len)
+      return;
+    gps.rel_pos_E_ch[j++]=gps_nmea.msg_buf[i-1];
+  }
+   gps.rel_pos_E_ch[j]='\0';
+
+
+   j=0;
+   while(gps_nmea.msg_buf[i++] != ',') {              // next field:EAST
+     if (i >= gps_nmea.msg_len)
+       return;
+     gps.rel_pos_N_ch[j++]=gps_nmea.msg_buf[i-1];
+   }
+    gps.rel_pos_N_ch[j]='\0';
+
+    j=0;
+    while(gps_nmea.msg_buf[i++] != ',') {              // next field:EAST
+      if (i >= gps_nmea.msg_len)
+        return;
+      gps.rel_pos_U_ch[j++]=gps_nmea.msg_buf[i-1];
+    }
+     gps.rel_pos_U_ch[j]='\0';
+
+   if((strlen(gps.align_pos_av_ch) > 9)&&!strncmp(gps.align_pos_av_ch , "NARROW_INT", 10)){
+        gps.align_pos_av = 1;
+    }else
+    {
+        gps.align_pos_av = 0;
+    }
+
+}
+
 
 /**
  * parse BESTVELA, NOVATEL messages stored in
@@ -617,7 +685,7 @@ void parse_novatel_bestvela(void) {
 
 
 /**
- * parse BESTVELA, NOVATEL messages stored in
+ * parse BESTSATSA, NOVATEL messages stored in
  * gps_nmea.msg_buf .
  * #BESTSATSA,COM1,0,68.5,FINESTEERING,1802,459952.900,00000000,8c02,12832;SOL_COMPUTED,DOPPLER_VELOCITY,0.150,0.000,0.0505,12.520238,-0.0537,0.0*18021b75
  */
@@ -738,10 +806,15 @@ void nmea_parse_msg( void ) {
                       gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
                       parse_novatel_bestsatsa();
 
-                  } else{
-                    gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
-                    NMEA_PRINT("ignoring: len=%i \n\r \"%s\" \n\r", gps_nmea.msg_len, gps_nmea.msg_buf);
-                  }
+                  } else if(gps_nmea.msg_len > 14 && !strncmp(gps_nmea.msg_buf , "ALIGNBSLNENUA", 14)) {
+                      gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
+                      parse_novatel_alignbslnenua();
+
+                          } else{
+
+                            gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
+                            NMEA_PRINT("ignoring: len=%i \n\r \"%s\" \n\r", gps_nmea.msg_len, gps_nmea.msg_buf);
+                          }
               }
           }
       }
