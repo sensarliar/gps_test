@@ -168,6 +168,9 @@ void MainWindow::initial_next(){
       gps.rel_ant2plane_pos = gps.rel_ant_pos;
       gps.rel_tail2plane_pos = gps.rel_ant_pos;
       gps.rel_tail2head_pos = gps.rel_ant_pos;
+      gps.rel_ant_last_pos = gps.rel_ant_pos;
+      gps.rel_speed_enu = gps.rel_ant_pos;
+      gps.rel_speed_xyz = gps.rel_ant_pos;
 
       m_fd_com4 = openSerialPort_com4();
       if (m_fd_com4 < 0) {
@@ -698,7 +701,8 @@ buff_wr_p++;
 */
 /* calc the pos of tail of jiayou to the head of shouyou plane*/
 
-calc_xyz_plane_ordinator();
+calc_enu2xyz_plane_ordinator(&(gps.rel_ant2plane_pos),&(gps.rel_ant_pos));
+//calc_xyz_plane_ordinator();
 calc_tail2plane_pos();
 calc_tail2head_pos();
 char rel_pos_buff[20];
@@ -717,6 +721,26 @@ buff_wr_p++;
 gcvt(gps.rel_tail2head_pos.z,8,rel_pos_buff);
 buff_wr_p = strcpy(buff_wr_p,rel_pos_buff);
 buff_wr_p += strlen(rel_pos_buff);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+calc_rel_speed_method1();
+char rel_speed_buff[20];
+gcvt(gps.rel_speed_xyz.x,8,rel_speed_buff);
+buff_wr_p = strcpy(buff_wr_p,rel_speed_buff);
+buff_wr_p += strlen(rel_speed_buff);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+gcvt(gps.rel_speed_xyz.y,8,rel_speed_buff);
+buff_wr_p = strcpy(buff_wr_p,rel_speed_buff);
+buff_wr_p += strlen(rel_speed_buff);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+gcvt(gps.rel_speed_xyz.z,8,rel_speed_buff);
+buff_wr_p = strcpy(buff_wr_p,rel_speed_buff);
+buff_wr_p += strlen(rel_speed_buff);
 *buff_wr_p = ',';
 buff_wr_p++;
 

@@ -651,7 +651,7 @@ background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 0, 0);</string>
+     <string notr="true">background-color: rgb(0, 255, 0);</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit_1588">

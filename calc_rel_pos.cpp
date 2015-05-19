@@ -22,8 +22,9 @@ the position value of head to the ant at shouyou plane.
 
 
 /* rotate the enu cordinator to the xyz cordinator(shouyou plane ant as original,shouyou plane head as oridinator x,vertical as z,right hand ordinator)
+ *should consider the latancy of bestvela message.
 */
-
+/*
 void calc_xyz_plane_ordinator()
 {
     double rot_angle = 90+gps.speed_angle;//if>360??
@@ -32,6 +33,18 @@ void calc_xyz_plane_ordinator()
     gps.rel_ant2plane_pos.z = gps.rel_ant_pos.z;
 
 }
+*/
+
+void calc_enu2xyz_plane_ordinator(struct point_3d *dest,struct point_3d *src)
+{
+    double rot_angle = 90+gps.speed_angle;//if>360??
+    (*dest).x = (*src).x * cos(rot_angle) + (*src).y * sin(rot_angle);
+   (*dest).y = (*src).y * cos(rot_angle) - (*src).x * sin(rot_angle);
+    (*dest).z = (*src).z;
+
+}
+
+
 /*the odinator was not changed.
 */
 void calc_tail2plane_pos()
@@ -50,4 +63,17 @@ void calc_tail2head_pos()
         gps.rel_tail2head_pos.z = gps.rel_tail2plane_pos.z - POS_HEAD2ANT_SHOUYOU_Z;
 }
 
+/*calculate the relative speed method 1:
+ *distance/time = speed ,
+ *then convert from enu to xyz plane.
+*/
 
+void calc_rel_speed_method1()
+{
+    gps.rel_speed_enu.x = (gps.rel_ant_pos.x - gps.rel_ant_last_pos.x)/0.05;
+    gps.rel_speed_enu.y = (gps.rel_ant_pos.y - gps.rel_ant_last_pos.y)/0.05;
+    gps.rel_speed_enu.z = (gps.rel_ant_pos.z - gps.rel_ant_last_pos.z)/0.05;
+
+    calc_enu2xyz_plane_ordinator(&(gps.rel_speed_xyz),&(gps.rel_speed_enu));
+
+}
