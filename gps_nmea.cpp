@@ -475,7 +475,7 @@ void parse_nmea_GPZDA(void) {
  */
 void parse_novatel_alignbslnenua(void) {
   int i = 14;     // current position in the message, start after: bestvela,
-//  char* endptr;  // end of parsed substrings
+  char* endptr;  // end of parsed substrings
 
 
   // attempt to reject empty packets right away
@@ -510,6 +510,8 @@ void parse_novatel_alignbslnenua(void) {
   }
    gps.rel_pos_E_ch[j]='\0';
 
+ gps.rel_ant_pos.x = strtod(&gps.rel_pos_E_ch[0],&endptr);
+
 
    j=0;
    while(gps_nmea.msg_buf[i++] != ',') {              // next field:EAST
@@ -519,6 +521,8 @@ void parse_novatel_alignbslnenua(void) {
    }
     gps.rel_pos_N_ch[j]='\0';
 
+     gps.rel_ant_pos.y = strtod(&gps.rel_pos_N_ch[0],&endptr);
+
     j=0;
     while(gps_nmea.msg_buf[i++] != ',') {              // next field:EAST
       if (i >= gps_nmea.msg_len)
@@ -526,6 +530,8 @@ void parse_novatel_alignbslnenua(void) {
       gps.rel_pos_U_ch[j++]=gps_nmea.msg_buf[i-1];
     }
      gps.rel_pos_U_ch[j]='\0';
+
+      gps.rel_ant_pos.z = strtod(&gps.rel_pos_U_ch[0],&endptr);
 
    if((strlen(gps.align_pos_av_ch) > 9)&&!strncmp(gps.align_pos_av_ch , "NARROW_INT", 10)){
         gps.align_pos_av = 1;
@@ -647,7 +653,7 @@ void parse_novatel_bestvela(void) {
   gps.speed_angle_ch[j]='\0';
 
   double speed_angle = strtod(&gps.speed_angle_ch[0],&endptr);
-
+  gps.speed_angle = speed_angle;
 
       gps.speed_E= gps.speed_H*sin(speed_angle);
       gps.speed_N= gps.speed_H*cos(speed_angle);

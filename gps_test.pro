@@ -20,11 +20,13 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     gps_nmea.cpp \
     utc_convert.cpp \
-    init_group_broadcast.cpp
+    init_group_broadcast.cpp \
+    calc_rel_pos.cpp
 
 HEADERS  += mainwindow.h \
     gps_nmea.h \
-    group_broadcast.h
+    group_broadcast.h \
+    calc_rel_pos.h
 
 FORMS    += mainwindow.ui
     target.path += /home/root

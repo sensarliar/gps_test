@@ -47,6 +47,7 @@
 #include <stdlib.h>
 
 #include "group_broadcast.h"
+#include "calc_rel_pos.h"
 
 extern int utc2bj_time(int utc_hour, struct GpsState* gps_p);
 
@@ -160,6 +161,13 @@ void MainWindow::initial_next(){
       gps.rel_pos_U_ch[5]='\0';
 
       gps.bestvela_parse_ok =0;
+
+      gps.speed_angle = 0;
+
+      gps.rel_ant_pos = {0,0,0};
+      gps.rel_ant2plane_pos = gps.rel_ant_pos;
+      gps.rel_tail2plane_pos = gps.rel_ant_pos;
+      gps.rel_tail2head_pos = gps.rel_ant_pos;
 
       m_fd_com4 = openSerialPort_com4();
       if (m_fd_com4 < 0) {
@@ -672,7 +680,7 @@ buff_wr_p = strcpy(buff_wr_p,speed_buff);
 buff_wr_p += strlen(speed_buff);
 *buff_wr_p = ',';
 buff_wr_p++;
-
+/*-------------ant jiayou  to ant shouyou -----------------------
 buff_wr_p = strcpy(buff_wr_p,gps.rel_pos_E_ch);
 buff_wr_p += strlen(gps.rel_pos_E_ch);
 *buff_wr_p = ',';
@@ -687,12 +695,37 @@ buff_wr_p = strcpy(buff_wr_p,gps.rel_pos_U_ch);
 buff_wr_p += strlen(gps.rel_pos_U_ch);
 *buff_wr_p = ',';
 buff_wr_p++;
+*/
+/* calc the pos of tail of jiayou to the head of shouyou plane*/
+
+calc_xyz_plane_ordinator();
+calc_tail2plane_pos();
+calc_tail2head_pos();
+char rel_pos_buff[20];
+gcvt(gps.rel_tail2head_pos.x,8,rel_pos_buff);
+buff_wr_p = strcpy(buff_wr_p,rel_pos_buff);
+buff_wr_p += strlen(rel_pos_buff);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+gcvt(gps.rel_tail2head_pos.y,8,rel_pos_buff);
+buff_wr_p = strcpy(buff_wr_p,rel_pos_buff);
+buff_wr_p += strlen(rel_pos_buff);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+gcvt(gps.rel_tail2head_pos.z,8,rel_pos_buff);
+buff_wr_p = strcpy(buff_wr_p,rel_pos_buff);
+buff_wr_p += strlen(rel_pos_buff);
+*buff_wr_p = ',';
+buff_wr_p++;
 
 strcpy(buff_wr_p,"\r\n");
 
 //  int bytesWrite=write(m_fd, buff_wr, (strlen(buff_wr)<1023)? strlen(buff_wr):1023);
 // int bytesWrite=write(m_fd, buff_wr, strlen(buff_wr));
-write(m_fd, buff_wr, strlen(buff_wr));
+//-----------to 422 port-------------------------------
+//write(m_fd, buff_wr, strlen(buff_wr));
 
 /*
  int wbuff_len = strlen(buff_wr);

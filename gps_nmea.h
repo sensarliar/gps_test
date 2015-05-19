@@ -37,6 +37,12 @@ struct GpsNmea {
   int msg_len;
 };
 
+struct point_3d {
+    double x;
+    double y;
+    double z;
+};
+
 /** data structure for GPS information */
 struct GpsState {
 //  int hmsl;                  ///< height above mean sea level in mm
@@ -63,6 +69,7 @@ struct GpsState {
   char direction_ch[12];
   char speed_ch[12];
   double gspeed;
+  double speed_angle;
 
   char speed_horizon_ch[12];
   char speed_angle_ch[12];
@@ -99,7 +106,13 @@ struct GpsState {
   char rel_pos_N_ch[16];
   char rel_pos_U_ch[16];
 
+  struct point_3d rel_ant_pos;// jiayou plane ant pos (shouyou plane ant as original)
 
+  struct point_3d rel_ant2plane_pos;// jiayou plane ant pos (shouyou plane ant as original,shouyou plane head as oridinator x,vertical as z,right hand ordinator)
+
+  struct point_3d rel_tail2plane_pos;// jiayou plane tail pos(shouyou plane ant as original,shouyou plane head as oridinator x,vertical as z,right hand ordinator)
+
+  struct point_3d rel_tail2head_pos;// jiayou plane tail pos(shouyou plane head as original,shouyou plane head as oridinator x,vertical as z,right hand ordinator)
 
 /*
   int16_t gspeed;                ///< norm of 2d ground speed in cm/s
