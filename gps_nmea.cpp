@@ -39,6 +39,9 @@
 struct GpsNmea gps_nmea;
 struct GpsState gps;
 
+struct GpsNmea gps_nmea2;
+struct GpsState gps2;
+
 //void parse_nmea_GPGSA(void);
 //void parse_nmea_GPRMC(void);
 void parse_nmea_NVVTG(void);
@@ -863,5 +866,31 @@ void nmea_parse_char( char c ) {
 
   if (gps_nmea.msg_len >= NMEA_MAXLEN - 1)
     gps_nmea.msg_available = TRUE;
+   //   gps_nmea.msg_available = FALSE;
+}
+
+
+void nmea_parse_char2( char c ) {
+  //reject empty lines
+  if (gps_nmea2.msg_len == 0) {
+    if (c == '\r' || c == '\n' || c == '#'|| c == '$')
+      return;
+  }
+
+  // fill the buffer, unless it's full
+  if (gps_nmea2.msg_len < NMEA_MAXLEN - 1) {
+
+    // messages end with a linefeed
+    //AD: TRUNK:       if (c == '\r' || c == '\n')
+    if (c == '\r' || c == '\n') {
+      gps_nmea2.msg_available = TRUE;
+    } else {
+      gps_nmea2.msg_buf[gps_nmea2.msg_len] = c;
+      gps_nmea2.msg_len ++;
+    }
+  }
+
+  if (gps_nmea2.msg_len >= NMEA_MAXLEN - 1)
+    gps_nmea2.msg_available = TRUE;
    //   gps_nmea.msg_available = FALSE;
 }

@@ -148,6 +148,8 @@ struct GpsState {
 extern struct GpsNmea gps_nmea;
 extern struct GpsState gps;
 
+extern struct GpsNmea gps_nmea2;
+extern struct GpsState gps2;
 
 /*
  * This part is used by the autopilot to read data from a uart
@@ -166,6 +168,8 @@ extern void gps_impl_init( void );
 extern void nmea_parse_char(char c);
 
 extern void nmea_parse_msg(void);
+
+extern void nmea_parse_char2( char c );
 
 
 #define gps_nmea_Reset(_val) { }
