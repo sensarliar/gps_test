@@ -815,7 +815,7 @@ void nmea_parse_msg( void ) {
                       gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
                       parse_novatel_bestsatsa();
 
-                  } else if(gps_nmea.msg_len > 14 && !strncmp(gps_nmea.msg_buf , "ALIGNBSLNENUA", 14)) {
+                  } else if(gps_nmea.msg_len > 13 && !strncmp(gps_nmea.msg_buf , "ALIGNBSLNENUA", 13)) {
                       gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
                       parse_novatel_alignbslnenua();
 
