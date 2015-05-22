@@ -52,6 +52,8 @@ protected:
     QFile m_detectUFile;
     int delayNum;
 
+    QString file_store_name2;
+    QFile m_logFile2;
 
 
 

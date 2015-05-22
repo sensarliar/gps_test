@@ -905,15 +905,20 @@ strcpy(buff_wr_p,"\r\n");
   // bytesWrite = write(m_fd, buff_wr, 33);///do not use strlen
     write(m_fd, buff_wr, 33);///do not use strlen
 */
-
+    int len_buff_wr = strlen(buff_wr);
     int n =0;
  //   n=sendto(soketfd,buff_wr,sizeof(buff_wr),0,(struct sockaddr *)&mcast_addr,sizeof(mcast_addr));
-    n=sendto(soketfd,buff_wr,strlen(buff_wr),0,(struct sockaddr *)&mcast_addr,sizeof(mcast_addr));
+    n=sendto(soketfd,buff_wr,len_buff_wr,0,(struct sockaddr *)&mcast_addr,sizeof(mcast_addr));
     if(n<0)
     {
         perror("sendto()");
        // return -2;
         return;
+    }
+
+    if (m_logFile2.isOpen())
+    {
+       m_logFile2.write(buff_wr, len_buff_wr);
     }
 
  }
@@ -1197,6 +1202,9 @@ void MainWindow::remoteDataIncoming()
 //    temp_value+=QChar('0');
     ui->m_time_ms->display(temp_value);
 
+if((gps.time_ch[time_length-2]=='3'||gps.time_ch[time_length-2]=='8')&&(gps.time_ch[time_length-1]!='0'))
+{
+
   //  ui->m_time_ms->display(temp_value.setNum(fmod(gps.tow,1000)));
 
   //  ui->m_time->display(temp_value.setNum(gps.tow,'g',11));
@@ -1286,11 +1294,17 @@ void MainWindow::remoteDataIncoming()
     QString file_store_name("/media/sda1/range");
     file_store_name+=time_stamp_list;
     file_store_name+=(".bin");
+
+    file_store_name2 = "/media/sda1/message" ;
+    file_store_name2+=time_stamp_list;
+    file_store_name2+=(".txt");
+
       ui->m_logFileLe->setText(file_store_name);
       gps.file_name_flag=1;
-    }
+     }
+   }
 
-   }//if(gps.time_ch[4]=='1'||gps.time_ch[4]=='6')
+  }//if(gps.time_ch[4]=='1'||gps.time_ch[4]=='6')
 
 //QString disp_hight;
 //QString disp_num_sv;
@@ -1402,6 +1416,8 @@ void MainWindow::enableLogging(bool on)
 
        //  mode=mode | QIODevice::Append;
 
+         m_logFile2.setFileName(file_store_name2);
+
 
       if (!m_logFile.open(mode))
       {
@@ -1415,10 +1431,17 @@ void MainWindow::enableLogging(bool on)
          ui->m_logFileFileDialog->setEnabled(false);
       //   saveSettings();
       }
+
+      if (!m_logFile2.open(mode))
+      {
+         QMessageBox::information(this, tr("Opening file failed"), tr("Could not open file %1 for writing").arg(file_store_name2));
+      }
+
    }
    else
    {
       m_logFile.close();
+      m_logFile2.close();
 
   //    m_logAppendCb->setEnabled(true);
       ui->m_logFileLe->setEnabled(true);

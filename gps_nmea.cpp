@@ -236,7 +236,7 @@ void parse_nmea_GPGGA(void) {
 
   //while(gps_nmea.msg_buf[i++] != '*');              // next field: checksum
 
-
+       gps.bestvela_parse_ok =1;  //align at the last one
 
 }
 
@@ -543,6 +543,8 @@ void parse_novatel_alignbslnenua(void) {
         gps.align_pos_av = 0;
     }
 
+
+
 }
 
 
@@ -686,7 +688,7 @@ void parse_novatel_bestvela(void) {
 
     gps.speed_H=(double((int)(gps.speed_H*10)))/10;//nomalize the speed_H
 
-    gps.bestvela_parse_ok =1;
+
 
 
 
