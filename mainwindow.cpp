@@ -172,6 +172,8 @@ void MainWindow::initial_next(){
       gps.rel_speed_enu = gps.rel_ant_pos;
       gps.rel_speed_xyz = gps.rel_ant_pos;
 
+
+
       m_fd_com4 = openSerialPort_com4();
       if (m_fd_com4 < 0) {
           QMessageBox::warning(this, tr("Error"), tr("Fail to open serial port!"));
@@ -683,7 +685,7 @@ buff_wr_p = strcpy(buff_wr_p,speed_buff);
 buff_wr_p += strlen(speed_buff);
 *buff_wr_p = ',';
 buff_wr_p++;
-/*-------------ant jiayou  to ant shouyou -----------------------
+/*-------------ant jiayou  to ant shouyou -----------------------*/
 buff_wr_p = strcpy(buff_wr_p,gps.rel_pos_E_ch);
 buff_wr_p += strlen(gps.rel_pos_E_ch);
 *buff_wr_p = ',';
@@ -698,9 +700,35 @@ buff_wr_p = strcpy(buff_wr_p,gps.rel_pos_U_ch);
 buff_wr_p += strlen(gps.rel_pos_U_ch);
 *buff_wr_p = ',';
 buff_wr_p++;
-*/
-/* calc the pos of tail of jiayou to the head of shouyou plane*/
 
+/* calc the pos of tail of jiayou to the head of shouyou plane*/
+buff_wr_p = strcpy(buff_wr_p,gps.speed_angle_ch);
+buff_wr_p += strlen(gps.speed_angle_ch);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+
+
+char rel_pos_buff[20];
+gcvt(gps.rel_ant_last_pos.x,8,rel_pos_buff);
+buff_wr_p = strcpy(buff_wr_p,rel_pos_buff);
+buff_wr_p += strlen(rel_pos_buff);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+gcvt(gps.rel_ant_last_pos.y,8,rel_pos_buff);
+buff_wr_p = strcpy(buff_wr_p,rel_pos_buff);
+buff_wr_p += strlen(rel_pos_buff);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+gcvt(gps.rel_ant_last_pos.z,8,rel_pos_buff);
+buff_wr_p = strcpy(buff_wr_p,rel_pos_buff);
+buff_wr_p += strlen(rel_pos_buff);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+/*
 calc_enu2xyz_plane_ordinator(&(gps.rel_ant2plane_pos),&(gps.rel_ant_pos));
 //calc_xyz_plane_ordinator();
 calc_tail2plane_pos();
@@ -743,7 +771,7 @@ buff_wr_p = strcpy(buff_wr_p,rel_speed_buff);
 buff_wr_p += strlen(rel_speed_buff);
 *buff_wr_p = ',';
 buff_wr_p++;
-
+*/
 strcpy(buff_wr_p,"\r\n");
 
 //  int bytesWrite=write(m_fd, buff_wr, (strlen(buff_wr)<1023)? strlen(buff_wr):1023);
@@ -1091,6 +1119,8 @@ void MainWindow::remoteDataIncoming()
           serial_wr_func();
 
           gps.bestvela_parse_ok =0;
+
+
       }
 
       //buff_cont_len = 0;

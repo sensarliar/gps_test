@@ -122,6 +122,8 @@ struct GpsState {
   struct point_3d rel_speed_enu;
   struct point_3d rel_speed_xyz;
 
+
+
 //
 
 /*
