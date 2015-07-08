@@ -122,7 +122,8 @@ struct GpsState {
   struct point_3d rel_speed_enu;
   struct point_3d rel_speed_xyz;
 
-
+  int no_align_count;
+  bool align_flag;
 
 //
 

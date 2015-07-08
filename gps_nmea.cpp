@@ -543,7 +543,7 @@ void parse_novatel_alignbslnenua(void) {
         gps.align_pos_av = 0;
     }
 
-
+      gps.align_flag = 1;
 
 }
 
