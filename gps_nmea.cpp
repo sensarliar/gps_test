@@ -579,10 +579,13 @@ void parse_novatel_bestvela(void) {
   gps.speed_angle_ch[j]='\0';
 
   double speed_angle = strtod(&gps.speed_angle_ch[0],&endptr);
+  const double pi = 4.0*atan(1.0);
+  double speed_angle_rad = speed_angle*pi/180;
 
-
-      gps.speed_E= gps.speed_H*sin(speed_angle);
-      gps.speed_N= gps.speed_H*cos(speed_angle);
+       gps.speed_E= gps.speed_H*sin(speed_angle_rad);
+       gps.speed_N= gps.speed_H*cos(speed_angle_rad);
+ //     gps.speed_E= gps.speed_H*sin(speed_angle);
+ //     gps.speed_N= gps.speed_H*cos(speed_angle);
 
 
 
