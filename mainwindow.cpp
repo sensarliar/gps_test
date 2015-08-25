@@ -938,7 +938,7 @@ strcpy(buff_wr_p,"\r\n");
 
     //----------master send to uart1 port,send to shouyou plane-------------------------------
     //-----------need some jumping wire-------------------------------
-    write(m_fd, buff_wr, len_buff_wr);
+  //  write(m_fd, buff_wr, len_buff_wr);
 
     int n =0;
  //   n=sendto(soketfd,buff_wr,sizeof(buff_wr),0,(struct sockaddr *)&mcast_addr,sizeof(mcast_addr));

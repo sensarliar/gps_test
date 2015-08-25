@@ -38,8 +38,13 @@ void calc_xyz_plane_ordinator()
 void calc_enu2xyz_plane_ordinator(struct point_3d *dest,struct point_3d *src)
 {
     double rot_angle = 90+gps.speed_angle;//if>360??
-    (*dest).x = (*src).x * cos(rot_angle) + (*src).y * sin(rot_angle);
-   (*dest).y = (*src).y * cos(rot_angle) - (*src).x * sin(rot_angle);
+
+    const double pi = 4.0*atan(1.0);
+    double rot_angle_rad = rot_angle*pi/180;
+
+
+    (*dest).x = (*src).x * cos(rot_angle_rad) + (*src).y * sin(rot_angle_rad);
+   (*dest).y = (*src).y * cos(rot_angle_rad) - (*src).x * sin(rot_angle_rad);
     (*dest).z = (*src).z;
 
 }
