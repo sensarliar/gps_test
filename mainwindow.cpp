@@ -1302,9 +1302,12 @@ if((gps.time_ch[time_length-2]=='3'||gps.time_ch[time_length-2]=='8')&&(gps.time
        ui->m_hight->display((char *)gps.alt_ch);
 
         //ui->m_speed_U->display((char *)gps.speed_U_ch);
-        ui->m_speed_U->display(gps.speed_U);
-        ui->m_speed_E->display(gps.speed_E);
-        ui->m_speed_N->display(gps.speed_N);
+        //ui->m_speed_U->display(gps.speed_U);
+        ui->m_speed_U->display((double((int)(gps.speed_U*10)))/10);
+ //       ui->m_speed_E->display(gps.speed_E);
+ //       ui->m_speed_N->display(gps.speed_N);
+        ui->m_speed_E->display((double((int)(gps.speed_E*10)))/10);
+        ui->m_speed_N->display((double((int)(gps.speed_N*10)))/10);
     }
    else{
        ui->m_label_available->setText(QString("N/A"));
