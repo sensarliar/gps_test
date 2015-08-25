@@ -125,6 +125,12 @@ struct GpsState {
   int no_align_count;
   bool align_flag;
 
+  char time_ch_jy[12];
+
+  char speed_E_ch_jy[12];
+  char speed_N_ch_jy[12];
+  char speed_U_ch_jy[12];
+
 //
 
 /*
@@ -151,6 +157,9 @@ struct GpsState {
 extern struct GpsNmea gps_nmea;
 extern struct GpsState gps;
 
+extern struct GpsNmea gps_nmea_jy;
+//extern struct GpsState gps_jy;
+
 
 /*
  * This part is used by the autopilot to read data from a uart
@@ -167,8 +176,10 @@ extern void gps_impl_init( void );
 
 /** The function to be called when a characted friom the device is available */
 extern void nmea_parse_char(char c);
-
 extern void nmea_parse_msg(void);
+
+extern void nmea_parse_char_jy(char c);
+extern void nmea_parse_msg_jy(void);
 
 
 #define gps_nmea_Reset(_val) { }

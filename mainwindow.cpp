@@ -126,6 +126,22 @@ void MainWindow::initial_next(){
       gps.time_ch[8]='8';
       gps.time_ch[9]='\0';
 
+
+      gps.time_ch_jy[0]='0';
+      gps.time_ch_jy[1]='0';
+      gps.time_ch_jy[2]='0';
+      gps.time_ch_jy[3]='0';
+      gps.time_ch_jy[4]='0';
+      gps.time_ch_jy[5]='0';
+      gps.time_ch_jy[6]='.';
+      gps.time_ch_jy[7]='0';
+      gps.time_ch_jy[8]='0';
+      gps.time_ch_jy[9]='\0';
+
+      gps.speed_E_ch_jy[0]='\0';
+      gps.speed_N_ch_jy[0]='\0';
+      gps.speed_U_ch_jy[0]='\0';
+
       gps.num_sats = 0;
       gps.num_gps = 0;
       gps.num_beidou = 0;
@@ -541,69 +557,112 @@ void MainWindow::remoteDataIncoming_com2()
 
 void MainWindow::remoteDataIncoming_com4()
 {
-    static bool set_time_flag=0;
-    unsigned int fpga_state=0;
-    unsigned int fpga_temp;
-    unsigned char buff_com4[40];
-    int bytesRead=read(m_fd_com4, buff_com4, 20);
-    if (bytesRead<1) {
-        QMessageBox::warning(this, tr("Error"), tr("Receive error!"));
-        return;
-    }
+ //-----------using this com4 port receive the jiayou plane speed infomation---------------------
 
-    int i;
-    int index_f5af=0;
-    for(i=0;(i<10)&&(i<bytesRead);i++)
-    {
-        if((buff_com4[i]==0xF5)&&(buff_com4[i+1]==0xAF))
+
+        static char buff_com4[2*140+30];//140
+        char* buff_cont_p = buff_com4;
+        static int buff_com4_cont_len=0;
+
+
+        int bytesRead = 0;
+
+
+        if((buff_com4_cont_len>150)||(buff_com4_cont_len<0))
         {
-            if(bytesRead-i>=10)
+            QMessageBox::warning(this, tr("Error"), tr("Receive error1 com4!"));
+            buff_com4_cont_len = 0;
+            return;
+        }
+        buff_cont_p=&buff_com4[buff_com4_cont_len];
+        if(buff_cont_p==NULL)
+        {
+            QMessageBox::warning(this, tr("Error"), tr("Receive error2 com4!"));
+            return;
+        }
+            bytesRead=read(m_fd, buff_cont_p, 2*140-buff_com4_cont_len);
+            if (bytesRead<1) {
+                QMessageBox::warning(this, tr("Error"), tr("Receive error3 com4!"));
+                return;
+            }
+
+        bytesRead += buff_com4_cont_len;
+
+
+
+
+
+    int count_i=0;
+
+    //gps_impl_init();
+    gps_nmea_jy.msg_available = FALSE;
+    int temp_count_i = 0;
+    char* dest_p =buff_com4;
+    char* src_p = buff_com4;
+
+ while(count_i<bytesRead)
+{
+     // buff_cont_p = &nmea_parse_char(buff[count_i];
+     temp_count_i = count_i;
+
+     src_p = &buff_com4[count_i];
+// ui->m_receiveEdit->append(QString("\nstart deal with ..."));
+     while (count_i<bytesRead&&!gps_nmea_jy.msg_available)
+     { nmea_parse_char_jy(buff_com4[count_i]); ////thread or not??? voilate??
+         count_i++;
+     }
+// ui->m_receiveEdit->append(QString("\nread buff over ..."));
+    if (gps_nmea_jy.msg_available) {
+      nmea_parse_msg_jy();  ////thread or not??? voilate??
+
+      gps_nmea_jy.msg_available = FALSE;
+
+
+      //buff_com4_cont_len = 0;
+    }
+    else
+      {
+
+        if(temp_count_i>0)
+        {
+            buff_com4_cont_len = bytesRead - temp_count_i;
+           int buff_com4_cont_len_temp = buff_com4_cont_len;
+            if(src_p>dest_p)
             {
-                uart4_message_ok=1;
-                index_f5af=i;
-          /*      if(!set_time_flag&&(buff[index_f5af+4]||buff[index_f5af+5]||buff[index_f5af+6])){
-                    tmrtc->tm_sec=((buff[index_f5af+4]&0xF0)>>4)*10+(buff[index_f5af+4]&0x0F);
-                    tmrtc->tm_min=((buff[index_f5af+5]&0xF0)>>4)*10+(buff[index_f5af+5]&0x0F);
-                    tmrtc->tm_hour=((buff[index_f5af+6]&0xF0)>>4)*10+(buff[index_f5af+6]&0x0F);
 
-                    if(uart4_message_ok)
-                  {
-                    tmnow->tm_hour=tmrtc->tm_hour;
-                    tmnow->tm_min=tmrtc->tm_min;
-                    tmnow->tm_sec=tmrtc->tm_sec;
-                    t_store=mktime(tmnow);
-                    stime(&t_store);  //set system time
-                    set_time_flag=1;
-                  }
+                   if (*src_p == '\r'||*src_p == '\n') {
+                       src_p++;
+                       buff_com4_cont_len_temp--;
+                       buff_com4_cont_len--;
+                   }
+                while(buff_com4_cont_len_temp>0)
+                {
+                    *dest_p++ = *src_p++;
+                    buff_com4_cont_len_temp--;
                 }
-                */
-                  //  fpga_state=(unsigned int)buff[index_f5af+9];
-                    fpga_state=buff_com4[index_f5af+9];
-                    if(fpga_state&1)
-                    ui->lineEdit_bdc->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
-                    else
-                    ui->lineEdit_bdc->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 0, 0);"));
-                        fpga_temp=fpga_state&(unsigned int)(0x01<<1);
-                    if(fpga_temp)
-                    ui->lineEdit_bac->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
-                    else
-                    ui->lineEdit_bac->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 0, 0);"));
-
-                    if(fpga_state&1<<2)
-                    ui->lineEdit_1588->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
-                    else
-                    ui->lineEdit_1588->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 0, 0);"));
-
-                    if(fpga_state&1<<3)
-                    ui->lineEdit_ntp->setStyleSheet(QString::fromUtf8("background-color: rgb(0, 255, 0);"));
-                    else
-                    ui->lineEdit_ntp->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 0, 0);"));
 
 
             }
+            gps_nmea_jy.msg_len = 0;
         }
-    }
+        else if (temp_count_i==0)
+        {
+            buff_com4_cont_len = bytesRead;
+            gps_nmea_jy.msg_len = 0;
+            return;
+        }
+        else
+        {
 
+            buff_com4_cont_len =0;
+            gps_nmea_jy.msg_len = 0;
+             return;
+
+        }
+
+    }//else
+//  ui->m_receiveEdit->append(QString("\nparse gps over ..."));
+  }//while(count_i<bytesRead)
 
 
 

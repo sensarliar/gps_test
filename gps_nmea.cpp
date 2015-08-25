@@ -39,6 +39,9 @@
 struct GpsNmea gps_nmea;
 struct GpsState gps;
 
+struct GpsNmea gps_nmea_jy;
+//struct GpsState gps_jy;
+
 //void parse_nmea_GPGSA(void);
 //void parse_nmea_GPRMC(void);
 void parse_nmea_NVVTG(void);
@@ -782,6 +785,103 @@ int beidou_num_temp = 0;
 
 
 /**
+ * parse GAOMING,  messages stored in
+ * gps_nmea.msg_buf . ABSTRACT the speed infomation from jiayou plane.
+ * $GAOMING,083614.35,2015,08,19,2,3413.4725N,10853.0071E,404.14,-0.3,-0.1,-0.7,-0.7364,-0.9269,-0.0370,161.234975,-0.7331,-0.9281,-0.0356,
+ */
+void parse_gaoming_jy(void) {
+  int i = 8;     // current position in the message, start after: bestvela,
+
+
+
+  // attempt to reject empty packets right away
+  if(gps_nmea_jy.msg_buf[i]==',' && gps_nmea_jy.msg_buf[i+1]==',') {
+    NMEA_PRINT("p_GPGGA() - skipping empty message\n\r");
+    return;
+  }
+
+  int j=0;
+  while(gps_nmea_jy.msg_buf[i++] != ',') {              // next field: time_jy  083614.35
+    if (i >= gps_nmea_jy.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      return;
+    }
+    gps.time_ch_jy[j++]=gps_nmea_jy.msg_buf[i-1];
+  }
+  gps.time_ch_jy[j]='\0';
+
+  while(gps_nmea_jy.msg_buf[i++] != ',') {              // next field: 2015,
+    if (i >= gps_nmea_jy.msg_len)
+      return;
+  }
+
+  while(gps_nmea_jy.msg_buf[i++] != ',') {              // next field: 08,
+    if (i >= gps_nmea_jy.msg_len)
+      return;
+  }
+
+  while(gps_nmea_jy.msg_buf[i++] != ',') {              // next field: 19,
+    if (i >= gps_nmea_jy.msg_len)
+      return;
+  }
+
+  while(gps_nmea_jy.msg_buf[i++] != ',') {              // next field: 2, available or not relative
+    if (i >= gps_nmea_jy.msg_len)
+      return;
+  }
+
+  while(gps_nmea_jy.msg_buf[i++] != ',') {              // next field: 3413.4725N,
+    if (i >= gps_nmea_jy.msg_len)
+      return;
+  }
+
+  while(gps_nmea_jy.msg_buf[i++] != ',') {              // next field: 10853.0071E
+    if (i >= gps_nmea_jy.msg_len)
+      return;
+  }
+
+  while(gps_nmea_jy.msg_buf[i++] != ',') {              // next field: 404.14,
+    if (i >= gps_nmea_jy.msg_len)
+      return;
+  }
+
+
+
+  j=0;
+  while(gps_nmea_jy.msg_buf[i++] != ',') {              // next field: speed_E_ch_jy  -0.3,
+    if (i >= gps_nmea_jy.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      return;
+    }
+    gps.speed_E_ch_jy[j++]=gps_nmea_jy.msg_buf[i-1];
+  }
+  gps.speed_E_ch_jy[j]='\0';
+
+
+  j=0;
+  while(gps_nmea_jy.msg_buf[i++] != ',') {              // next field: speed_N_ch_jy -0.1,
+    if (i >= gps_nmea_jy.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      return;
+    }
+    gps.speed_N_ch_jy[j++]=gps_nmea_jy.msg_buf[i-1];
+  }
+  gps.speed_N_ch_jy[j]='\0';
+
+  j=0;
+  while(gps_nmea_jy.msg_buf[i++] != ',') {              // next field: speed_U_ch_jy  -0.7,
+    if (i >= gps_nmea_jy.msg_len) {
+      NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
+      return;
+    }
+    gps.speed_U_ch_jy[j++]=gps_nmea_jy.msg_buf[i-1];
+  }
+  gps.speed_U_ch_jy[j]='\0';
+
+}
+
+
+/**
  * parse_nmea_char() has a complete line.
  * Find out what type of message it is and
  * hand it to the parser for that type.
@@ -841,6 +941,31 @@ void nmea_parse_msg( void ) {
 }
 
 
+
+/**
+ * parse_nmea_char() has a complete line.
+ * Find out what type of message it is and
+ * hand it to the parser for that type.
+ */
+void nmea_parse_msg_jy( void ) {
+
+    if(gps_nmea_jy.msg_len > 7 && !strncmp(gps_nmea_jy.msg_buf , "GAOMING", 7)) {
+      gps_nmea_jy.msg_buf[gps_nmea_jy.msg_len] = 0;
+      NMEA_PRINT("parse_gps_msg() - parsing GGA gps-message \"%s\" \n\r",gps_nmea_jy.msg_buf);
+      NMEA_PRINT("GGA");
+     // parse_nmea_GPGGA();
+      parse_gaoming_jy();
+    }
+    else {
+
+        gps_nmea_jy.msg_buf[gps_nmea_jy.msg_len] = 0;
+        NMEA_PRINT("ignoring: len=%i \n\r \"%s\" \n\r", gps_nmea_jy.msg_len, gps_nmea_jy.msg_buf);
+              }
+  // reset message-buffer
+  gps_nmea_jy.msg_len = 0;
+}
+
+
 /**
  * This is the actual parser.
  * It reads one character at a time
@@ -871,3 +996,34 @@ void nmea_parse_char( char c ) {
     gps_nmea.msg_available = TRUE;
    //   gps_nmea.msg_available = FALSE;
 }
+
+/**
+ * This is the actual parser.
+ * it is for jiayou plane.
+ */
+void nmea_parse_char_jy( char c ) {
+  //reject empty lines
+  if (gps_nmea_jy.msg_len == 0) {
+    if (c == '\r' || c == '\n' || c == '#'|| c == '$')
+      return;
+  }
+
+  // fill the buffer, unless it's full
+  if (gps_nmea_jy.msg_len < NMEA_MAXLEN - 1) {
+
+    // messages end with a linefeed
+    //AD: TRUNK:       if (c == '\r' || c == '\n')
+    if (c == '\r' || c == '\n') {
+      gps_nmea_jy.msg_available = TRUE;
+    } else {
+      gps_nmea_jy.msg_buf[gps_nmea_jy.msg_len] = c;
+      gps_nmea_jy.msg_len ++;
+    }
+  }
+
+  if (gps_nmea_jy.msg_len >= NMEA_MAXLEN - 1)
+    gps_nmea_jy.msg_available = TRUE;
+   //   gps_nmea.msg_available = FALSE;
+}
+
+
