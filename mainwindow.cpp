@@ -788,6 +788,29 @@ buff_wr_p += strlen(rel_pos_buff);
 *buff_wr_p = ',';
 buff_wr_p++;
 
+// send speed infomation of jiayou plane to shouyou plane, with timestamp
+
+buff_wr_p = strcpy(buff_wr_p,gps.time_ch_jy);
+buff_wr_p += strlen(gps.time_ch_jy);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+
+buff_wr_p = strcpy(buff_wr_p,gps.speed_E_ch_jy);
+buff_wr_p += strlen(gps.speed_E_ch_jy);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+buff_wr_p = strcpy(buff_wr_p,gps.speed_N_ch_jy);
+buff_wr_p += strlen(gps.speed_N_ch_jy);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+buff_wr_p = strcpy(buff_wr_p,gps.speed_U_ch_jy);
+buff_wr_p += strlen(gps.speed_U_ch_jy);
+*buff_wr_p = ',';
+buff_wr_p++;
+
 /*
 calc_enu2xyz_plane_ordinator(&(gps.rel_ant2plane_pos),&(gps.rel_ant_pos));
 //calc_xyz_plane_ordinator();
