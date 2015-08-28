@@ -580,7 +580,7 @@ void MainWindow::remoteDataIncoming_com4()
             QMessageBox::warning(this, tr("Error"), tr("Receive error2 com4!"));
             return;
         }
-            bytesRead=read(m_fd, buff_cont_p, 2*140-buff_com4_cont_len);
+            bytesRead=read(m_fd_com4, buff_cont_p, 2*140-buff_com4_cont_len);
             if (bytesRead<1) {
                 QMessageBox::warning(this, tr("Error"), tr("Receive error3 com4!"));
                 return;
