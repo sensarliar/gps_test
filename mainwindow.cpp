@@ -1209,11 +1209,14 @@ void MainWindow::remoteDataIncoming()
           gps.bestvela_parse_ok =0;
           if(gps.align_flag == 1)
           {
-              gps.align_flag == 0;
+              gps.align_flag = 0;
               gps.no_align_count = 40;
 
           }else{
+              if(gps.no_align_count>0)
+              {
                 gps.no_align_count--;
+              }
           }
 
       }
