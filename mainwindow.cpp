@@ -938,8 +938,13 @@ strcpy(buff_wr_p,"\r\n");
 
     //----------master send to uart1 port,send to shouyou plane-------------------------------
     //-----------need some jumping wire-------------------------------
+    //bug fix: the electronic communicator will collapse, when send data to com1 at startup time;
+    //just do not send data to electronic communicator(AP) until it linkup with remote, get some data from com2 port.
+    if(gps.no_align_count >2)
+    {
     write(m_fd, buff_wr, len_buff_wr);
-
+    }
+/*
     int n =0;
  //   n=sendto(soketfd,buff_wr,sizeof(buff_wr),0,(struct sockaddr *)&mcast_addr,sizeof(mcast_addr));
     n=sendto(soketfd,buff_wr,len_buff_wr,0,(struct sockaddr *)&mcast_addr,sizeof(mcast_addr));
@@ -949,7 +954,7 @@ strcpy(buff_wr_p,"\r\n");
        // return -2;
         return;
     }
-
+*/
     if (m_logFile2.isOpen())
     {
        m_logFile2.write(buff_wr, len_buff_wr);
