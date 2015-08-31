@@ -940,7 +940,7 @@ strcpy(buff_wr_p,"\r\n");
     //-----------need some jumping wire-------------------------------
     //bug fix: the electronic communicator will collapse, when send data to com1 at startup time;
     //just do not send data to electronic communicator(AP) until it linkup with remote, get some data from com2 port.
-    if(gps.no_align_count >2)
+    if(gps.no_align_count >25)
     {
     write(m_fd, buff_wr, len_buff_wr);
     }
