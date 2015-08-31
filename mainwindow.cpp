@@ -560,7 +560,7 @@ void MainWindow::remoteDataIncoming_com4()
  //-----------using this com4 port receive the jiayou plane speed infomation---------------------
 
 
-        static char buff_com4[2*140+30];//140
+        static char buff_com4[2*150+30];//140
         char* buff_cont_p = buff_com4;
         static int buff_com4_cont_len=0;
 
@@ -580,7 +580,7 @@ void MainWindow::remoteDataIncoming_com4()
             QMessageBox::warning(this, tr("Error"), tr("Receive error2 com4!"));
             return;
         }
-            bytesRead=read(m_fd_com4, buff_cont_p, 2*140-buff_com4_cont_len);
+            bytesRead=read(m_fd_com4, buff_cont_p, 2*150-buff_com4_cont_len);
             if (bytesRead<1) {
                 QMessageBox::warning(this, tr("Error"), tr("Receive error3 com4!"));
                 return;

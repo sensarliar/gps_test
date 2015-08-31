@@ -941,6 +941,31 @@ void nmea_parse_msg( void ) {
 }
 
 
+bool verify_message_integrity( void )
+{
+    int i =0;
+    int count = 0;
+    while(i < gps_nmea_jy.msg_len)
+    {
+        if(gps_nmea_jy.msg_buf[i] == 0)
+        {
+            return false;
+        }
+        if(gps_nmea_jy.msg_buf[i] == ',')
+        {
+            count++;
+        }
+        i++;
+
+    }
+    if(count >= 12){
+        return true;
+    }
+    else{
+        return false;
+    }
+
+}
 
 /**
  * parse_nmea_char() has a complete line.
@@ -948,13 +973,21 @@ void nmea_parse_msg( void ) {
  * hand it to the parser for that type.
  */
 void nmea_parse_msg_jy( void ) {
+    if(verify_message_integrity())
+    {
+        if(gps_nmea_jy.msg_len > 7 && !strncmp(gps_nmea_jy.msg_buf , "GAOMING", 7)) {
+          gps_nmea_jy.msg_buf[gps_nmea_jy.msg_len] = 0;
+          NMEA_PRINT("parse_gps_msg() - parsing GGA gps-message \"%s\" \n\r",gps_nmea_jy.msg_buf);
+          NMEA_PRINT("GGA");
+         // parse_nmea_GPGGA();
 
-    if(gps_nmea_jy.msg_len > 7 && !strncmp(gps_nmea_jy.msg_buf , "GAOMING", 7)) {
-      gps_nmea_jy.msg_buf[gps_nmea_jy.msg_len] = 0;
-      NMEA_PRINT("parse_gps_msg() - parsing GGA gps-message \"%s\" \n\r",gps_nmea_jy.msg_buf);
-      NMEA_PRINT("GGA");
-     // parse_nmea_GPGGA();
-      parse_gaoming_jy();
+            parse_gaoming_jy();
+        }
+        else {
+
+            gps_nmea_jy.msg_buf[gps_nmea_jy.msg_len] = 0;
+            NMEA_PRINT("ignoring: len=%i \n\r \"%s\" \n\r", gps_nmea_jy.msg_len, gps_nmea_jy.msg_buf);
+                  }
     }
     else {
 
@@ -1021,7 +1054,7 @@ void nmea_parse_char_jy( char c ) {
     }
   }
 
-  if (gps_nmea_jy.msg_len >= NMEA_MAXLEN - 1)
+  if (gps_nmea_jy.msg_len >= 200)   //modify the maximum buff length,to avoid unuseful data interference.
     gps_nmea_jy.msg_available = TRUE;
    //   gps_nmea.msg_available = FALSE;
 }
