@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <qlist.h>
+
 
 /** @file gps_nmea.h
  * NMEA protocol specific code.
@@ -153,6 +155,23 @@ struct GpsState {
   uint16_t reset;                ///< hotstart, warmstart, coldstart
   */
 };
+
+struct SpeedInfo{
+/*char time_ch_x[12];
+char speed_E_ch_x[12];
+char speed_N_ch_x[12];
+char speed_U_ch_x[12];
+*/
+char time_ch_jy[12];
+
+char speed_E_ch_jy[12];
+char speed_N_ch_jy[12];
+char speed_U_ch_jy[12];
+
+};
+
+extern QList <SpeedInfo> list;
+extern struct SpeedInfo info_jy;
 
 extern struct GpsNmea gps_nmea;
 extern struct GpsState gps;

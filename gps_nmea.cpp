@@ -42,6 +42,9 @@ struct GpsState gps;
 struct GpsNmea gps_nmea_jy;
 //struct GpsState gps_jy;
 
+QList <SpeedInfo> list;
+struct SpeedInfo info_jy;
+
 //void parse_nmea_GPGSA(void);
 //void parse_nmea_GPRMC(void);
 void parse_nmea_NVVTG(void);
@@ -806,9 +809,9 @@ void parse_gaoming_jy(void) {
       NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
       return;
     }
-    gps.time_ch_jy[j++]=gps_nmea_jy.msg_buf[i-1];
+    info_jy.time_ch_jy[j++]=gps_nmea_jy.msg_buf[i-1];
   }
-  gps.time_ch_jy[j]='\0';
+  info_jy.time_ch_jy[j]='\0';
 
   while(gps_nmea_jy.msg_buf[i++] != ',') {              // next field: 2015,
     if (i >= gps_nmea_jy.msg_len)
@@ -853,9 +856,9 @@ void parse_gaoming_jy(void) {
       NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
       return;
     }
-    gps.speed_E_ch_jy[j++]=gps_nmea_jy.msg_buf[i-1];
+    info_jy.speed_E_ch_jy[j++]=gps_nmea_jy.msg_buf[i-1];
   }
-  gps.speed_E_ch_jy[j]='\0';
+  info_jy.speed_E_ch_jy[j]='\0';
 
 
   j=0;
@@ -864,9 +867,9 @@ void parse_gaoming_jy(void) {
       NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
       return;
     }
-    gps.speed_N_ch_jy[j++]=gps_nmea_jy.msg_buf[i-1];
+    info_jy.speed_N_ch_jy[j++]=gps_nmea_jy.msg_buf[i-1];
   }
-  gps.speed_N_ch_jy[j]='\0';
+  info_jy.speed_N_ch_jy[j]='\0';
 
   j=0;
   while(gps_nmea_jy.msg_buf[i++] != ',') {              // next field: speed_U_ch_jy  -0.7,
@@ -874,9 +877,20 @@ void parse_gaoming_jy(void) {
       NMEA_PRINT("p_GPGGA() - skipping incomplete message\n\r");
       return;
     }
-    gps.speed_U_ch_jy[j++]=gps_nmea_jy.msg_buf[i-1];
+    info_jy.speed_U_ch_jy[j++]=gps_nmea_jy.msg_buf[i-1];
   }
-  gps.speed_U_ch_jy[j]='\0';
+  info_jy.speed_U_ch_jy[j]='\0';
+
+    list.append(info_jy);
+  //  list.insert(0,info_jy);
+//    QList<SpeedInfo>::iterator k;
+
+  //  list.count
+    if(list.size() >3)
+    {
+        list.removeFirst();
+    }
+
 
 }
 

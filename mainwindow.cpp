@@ -49,6 +49,8 @@
 #include "group_broadcast.h"
 #include "calc_rel_pos.h"
 
+#include <qlist.h>
+
 extern int utc2bj_time(int utc_hour, struct GpsState* gps_p);
 
 //struct GpsState gps;
@@ -801,8 +803,37 @@ buff_wr_p += strlen(rel_pos_buff);
 *buff_wr_p = ',';
 buff_wr_p++;
 
-// send speed infomation of jiayou plane to shouyou plane, with timestamp
 
+
+// send speed infomation of jiayou plane to shouyou plane, with timestamp
+for(int k = 0;k<list.size();k++)
+{
+buff_wr_p = strcpy(buff_wr_p,(list.at(k)).time_ch_jy);
+//buff_wr_p += strlen(((SpeedInfo *)list.at(k)).time_ch_jy);
+buff_wr_p += strlen((list.at(k)).time_ch_jy);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+buff_wr_p = strcpy(buff_wr_p,(list.at(k)).speed_E_ch_jy);
+buff_wr_p += strlen((list.at(k)).speed_E_ch_jy);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+buff_wr_p = strcpy(buff_wr_p,(list.at(k)).speed_N_ch_jy);
+buff_wr_p += strlen((list.at(k)).speed_N_ch_jy);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+buff_wr_p = strcpy(buff_wr_p,(list.at(k)).speed_U_ch_jy);
+buff_wr_p += strlen((list.at(k)).speed_U_ch_jy);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+}
+
+
+
+/*
 buff_wr_p = strcpy(buff_wr_p,gps.time_ch_jy);
 buff_wr_p += strlen(gps.time_ch_jy);
 *buff_wr_p = ',';
@@ -823,6 +854,7 @@ buff_wr_p = strcpy(buff_wr_p,gps.speed_U_ch_jy);
 buff_wr_p += strlen(gps.speed_U_ch_jy);
 *buff_wr_p = ',';
 buff_wr_p++;
+*/
 
 /*
 calc_enu2xyz_plane_ordinator(&(gps.rel_ant2plane_pos),&(gps.rel_ant_pos));
