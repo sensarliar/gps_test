@@ -560,17 +560,18 @@ void MainWindow::remoteDataIncoming_com4()
  //-----------using this com4 port receive the jiayou plane speed infomation---------------------
 
 
-        static char buff_com4[2*150+30];//140
+        static char buff_com4[2*200+30];//140
         char* buff_cont_p = buff_com4;
         static int buff_com4_cont_len=0;
+        int temp_bytes = 0;
 
 
         int bytesRead = 0;
 
 
-        if((buff_com4_cont_len>150)||(buff_com4_cont_len<0))
+        if((buff_com4_cont_len>200)||(buff_com4_cont_len<0))
         {
-            QMessageBox::warning(this, tr("Error"), tr("Receive error1 com4!"));
+         //   QMessageBox::warning(this, tr("Error"), tr("Receive error1 com4!"));
             buff_com4_cont_len = 0;
             return;
         }
@@ -580,13 +581,25 @@ void MainWindow::remoteDataIncoming_com4()
             QMessageBox::warning(this, tr("Error"), tr("Receive error2 com4!"));
             return;
         }
-            bytesRead=read(m_fd_com4, buff_cont_p, 2*150-buff_com4_cont_len);
-            if (bytesRead<1) {
+            bytesRead=read(m_fd_com4, buff_cont_p, 2*200-buff_com4_cont_len);
+            if (bytesRead<0) {
                 QMessageBox::warning(this, tr("Error"), tr("Receive error3 com4!"));
                 return;
             }
 
         bytesRead += buff_com4_cont_len;
+
+        temp_bytes = bytesRead;
+        while((temp_bytes > 0) && (buff_com4[temp_bytes-1] != 0))
+        {
+            temp_bytes--;
+        }
+
+        if(temp_bytes != 0)
+        {
+            buff_com4_cont_len=0;
+            return;
+        }
 
 
 
