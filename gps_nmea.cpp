@@ -881,14 +881,16 @@ void parse_gaoming_jy(void) {
   }
   info_jy.speed_U_ch_jy[j]='\0';
 
-    list.append(info_jy);
+  //  list.append(info_jy);
+    list.push_front(info_jy);
   //  list.insert(0,info_jy);
 //    QList<SpeedInfo>::iterator k;
 
   //  list.count
     if(list.size() >3)
     {
-        list.removeFirst();
+     //   list.removeFirst();
+        list.removeLast();
     }
 
 

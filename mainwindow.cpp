@@ -190,6 +190,22 @@ void MainWindow::initial_next(){
       gps.rel_speed_enu = gps.rel_ant_pos;
       gps.rel_speed_xyz = gps.rel_ant_pos;
 
+      info_jy.time_ch_jy[0]='0';
+      info_jy.time_ch_jy[1]='\0';
+
+      info_jy.speed_E_ch_jy[0]='0';
+      info_jy.speed_E_ch_jy[1]='\0';
+      info_jy.speed_N_ch_jy[0]='0';
+      info_jy.speed_N_ch_jy[1]='\0';
+      info_jy.speed_U_ch_jy[0]='0';
+      info_jy.speed_U_ch_jy[1]='\0';
+
+      list.append(info_jy);
+      list.append(info_jy);
+      list.append(info_jy);
+
+
+
       gps.no_align_count = 40;
       gps.align_flag = 0;
 
