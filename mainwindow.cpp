@@ -1332,7 +1332,7 @@ void MainWindow::remoteDataIncoming()
 
  //char* src_p_w=buff;//error
 
- if(gps.no_align_count < 2)
+ if(gps.no_align_count < 38)
  {
      gps.align_pos_av = 0;
  }
