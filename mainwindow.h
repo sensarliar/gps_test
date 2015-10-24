@@ -38,6 +38,7 @@ protected slots:
     void enableLogging(bool);
     void chooseLogFile();
     void serial_wr_func();
+    void nmea_parse_msg( void );
 
 
 protected:

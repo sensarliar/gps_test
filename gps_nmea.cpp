@@ -781,65 +781,6 @@ int beidou_num_temp = 0;
 }
 
 
-/**
- * parse_nmea_char() has a complete line.
- * Find out what type of message it is and
- * hand it to the parser for that type.
- */
-void nmea_parse_msg( void ) {
-
-
-    if(gps_nmea.msg_len > 5 && !strncmp(gps_nmea.msg_buf , "GPGGA", 5)) {
-      gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
-      NMEA_PRINT("parse_gps_msg() - parsing GGA gps-message \"%s\" \n\r",gps_nmea.msg_buf);
-      NMEA_PRINT("GGA");
-      parse_nmea_GPGGA();
-    }
-    else {
-      if(gps_nmea.msg_len > 5 && !strncmp(gps_nmea.msg_buf , "GPVTG", 5)) {
-        gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
-        NMEA_PRINT("GSA: \"%s\" \n\r",gps_nmea.msg_buf);
-        NMEA_PRINT("GSA");
-        parse_nmea_NVVTG();
-
-      } else {
-          if(gps_nmea.msg_len > 8 && !strncmp(gps_nmea.msg_buf , "BESTVELA", 8)) {
-              gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
-              NMEA_PRINT("GSA: \"%s\" \n\r",gps_nmea.msg_buf);
-              NMEA_PRINT("GSA");
-              //parse_nmea_NVDVI();
-              parse_novatel_bestvela();
-              //        parse_nmea_GPGSA();
-          } else {
-
-              if(!gps.file_name_flag && gps_nmea.msg_len > 5 && !strncmp(gps_nmea.msg_buf , "GPZDA", 5)) {
-                  gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
-                  parse_nmea_GPZDA();
-
-              } else{
-                  if(gps_nmea.msg_len > 9 && !strncmp(gps_nmea.msg_buf , "BESTSATSA", 9)) {
-                      gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
-                      parse_novatel_bestsatsa();
-
-                  } else if(gps_nmea.msg_len > 13 && !strncmp(gps_nmea.msg_buf , "ALIGNBSLNENUA", 13)) {
-                      gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
-                      parse_novatel_alignbslnenua();
-
-                          } else{
-
-                            gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
-                            NMEA_PRINT("ignoring: len=%i \n\r \"%s\" \n\r", gps_nmea.msg_len, gps_nmea.msg_buf);
-                          }
-              }
-          }
-      }
-    }
-
-
-  // reset message-buffer
-  gps_nmea.msg_len = 0;
-}
-
 
 /**
  * This is the actual parser.
