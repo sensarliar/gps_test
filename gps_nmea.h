@@ -103,7 +103,7 @@ struct GpsState {
   bool bestvela_parse_ok;
 
   char align_pos_av_ch[16];
-  bool align_pos_av;
+  int align_pos_av;
   char rel_pos_E_ch[16];
   char rel_pos_N_ch[16];
   char rel_pos_U_ch[16];

@@ -536,9 +536,20 @@ void parse_novatel_alignbslnenua(void) {
       gps.rel_ant_last_pos.z =  gps.rel_ant_pos.z;
       gps.rel_ant_pos.z = strtod(&gps.rel_pos_U_ch[0],&endptr);
 
-   if((strlen(gps.align_pos_av_ch) > 9)&&!strncmp(gps.align_pos_av_ch , "NARROW_INT", 10)){
-        gps.align_pos_av = 1;
-    }else
+   int len_align_pos_av_ch = strlen(gps.align_pos_av_ch);
+   if((len_align_pos_av_ch > 9)&&!strncmp(gps.align_pos_av_ch , "NARROW_INT", 10)){
+        gps.align_pos_av = 2;
+   }
+   else if((len_align_pos_av_ch > 11)&&!strncmp(gps.align_pos_av_ch , "NARROW_FLOAT", 12)){
+       gps.align_pos_av = 3;
+   }
+   else if((len_align_pos_av_ch > 5)&&!strncmp(gps.align_pos_av_ch , "L1_INT", 6)){
+       gps.align_pos_av = 4;
+   }
+   else if((len_align_pos_av_ch > 7)&&!strncmp(gps.align_pos_av_ch , "L1_FLOAT", 8)){
+       gps.align_pos_av = 5;
+   }
+   else
     {
         gps.align_pos_av = 0;
     }
