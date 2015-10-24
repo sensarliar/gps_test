@@ -16,6 +16,7 @@
 #include <unistd.h>
 #include <cstring>
 #include <stdio.h>
+#include "mainwindow.h"
 
 //#define FALSE 0
 //#define TRUE 1
@@ -901,7 +902,7 @@ void parse_gaoming_jy(void) {
  * parse_nmea_char() has a complete line.
  * Find out what type of message it is and
  * hand it to the parser for that type.
- */
+
 void nmea_parse_msg( void ) {
 
 
@@ -909,6 +910,35 @@ void nmea_parse_msg( void ) {
       gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
       NMEA_PRINT("parse_gps_msg() - parsing GGA gps-message \"%s\" \n\r",gps_nmea.msg_buf);
       NMEA_PRINT("GGA");
+
+      if(gps.bestvela_parse_ok)
+      {
+
+
+          gps.bestvela_parse_ok =0;
+          if(gps.align_flag == 1)
+          {
+              gps.align_flag = 0;
+              gps.no_align_count = 40;
+
+          }else{
+              if(gps.no_align_count>0)
+              {
+                gps.no_align_count--;
+              }
+          }
+
+          if(gps.no_align_count < 40)
+          {
+              gps.align_pos_av = 0;
+          }
+
+         serial_wr_func();
+          //serial_wr_func();
+         // MainWindow::serial_wr_func();
+
+      }
+
       parse_nmea_GPGGA();
     }
     else {
@@ -955,7 +985,7 @@ void nmea_parse_msg( void ) {
   // reset message-buffer
   gps_nmea.msg_len = 0;
 }
-
+ */
 
 bool verify_message_integrity( void )
 {

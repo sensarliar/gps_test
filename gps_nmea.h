@@ -195,11 +195,17 @@ extern void gps_impl_init( void );
 
 /** The function to be called when a characted friom the device is available */
 extern void nmea_parse_char(char c);
-extern void nmea_parse_msg(void);
+//extern void nmea_parse_msg(void);
 
 extern void nmea_parse_char_jy(char c);
 extern void nmea_parse_msg_jy(void);
 
+extern void parse_nmea_GPGGA(void);
+extern void parse_nmea_NVVTG(void);
+extern void parse_novatel_bestvela(void);
+extern void parse_nmea_GPZDA(void);
+extern void parse_novatel_bestsatsa(void);
+extern void parse_novatel_alignbslnenua(void);
 
 #define gps_nmea_Reset(_val) { }
 

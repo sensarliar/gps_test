@@ -11,6 +11,8 @@ namespace Ui {
 class MainWindow;
 }
 
+//extern void serial_wr_func();
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -38,6 +40,7 @@ protected slots:
     void enableLogging(bool);
     void chooseLogFile();
     void serial_wr_func();
+    void nmea_parse_msg( void );
 
 
 protected:

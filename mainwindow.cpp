@@ -701,7 +701,7 @@ void MainWindow::remoteDataIncoming_com4()
 }
 
 
-
+//void serial_wr_func()
 void MainWindow::serial_wr_func()
 {
 
@@ -1102,6 +1102,95 @@ strcpy(buff_wr_p,"\r\n");
 
 
 
+/**
+ * parse_nmea_char() has a complete line.
+ * Find out what type of message it is and
+ * hand it to the parser for that type.
+ */
+void MainWindow::nmea_parse_msg( void ) {
+
+
+    if(gps_nmea.msg_len > 5 && !strncmp(gps_nmea.msg_buf , "GPGGA", 5)) {
+      gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
+      NMEA_PRINT("parse_gps_msg() - parsing GGA gps-message \"%s\" \n\r",gps_nmea.msg_buf);
+      NMEA_PRINT("GGA");
+
+      if(gps.bestvela_parse_ok)
+      {
+
+
+          gps.bestvela_parse_ok =0;
+          if(gps.align_flag == 1)
+          {
+              gps.align_flag = 0;
+              gps.no_align_count = 40;
+
+          }else{
+              if(gps.no_align_count>0)
+              {
+                gps.no_align_count--;
+              }
+          }
+
+          if(gps.no_align_count < 40)
+          {
+              gps.align_pos_av = 0;
+          }
+
+         serial_wr_func();
+          //serial_wr_func();
+         // MainWindow::serial_wr_func();
+
+      }
+
+      parse_nmea_GPGGA();
+    }
+    else {
+      if(gps_nmea.msg_len > 5 && !strncmp(gps_nmea.msg_buf , "GPVTG", 5)) {
+        gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
+        NMEA_PRINT("GSA: \"%s\" \n\r",gps_nmea.msg_buf);
+        NMEA_PRINT("GSA");
+        parse_nmea_NVVTG();
+
+      } else {
+          if(gps_nmea.msg_len > 8 && !strncmp(gps_nmea.msg_buf , "BESTVELA", 8)) {
+              gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
+              NMEA_PRINT("GSA: \"%s\" \n\r",gps_nmea.msg_buf);
+              NMEA_PRINT("GSA");
+              //parse_nmea_NVDVI();
+              parse_novatel_bestvela();
+              //        parse_nmea_GPGSA();
+          } else {
+
+              if(!gps.file_name_flag && gps_nmea.msg_len > 5 && !strncmp(gps_nmea.msg_buf , "GPZDA", 5)) {
+                  gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
+                  parse_nmea_GPZDA();
+
+              } else{
+                  if(gps_nmea.msg_len > 9 && !strncmp(gps_nmea.msg_buf , "BESTSATSA", 9)) {
+                      gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
+                      parse_novatel_bestsatsa();
+
+                  } else if(gps_nmea.msg_len > 13 && !strncmp(gps_nmea.msg_buf , "ALIGNBSLNENUA", 13)) {
+                      gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
+                      parse_novatel_alignbslnenua();
+
+                          } else{
+
+                            gps_nmea.msg_buf[gps_nmea.msg_len] = 0;
+                            NMEA_PRINT("ignoring: len=%i \n\r \"%s\" \n\r", gps_nmea.msg_len, gps_nmea.msg_buf);
+                          }
+              }
+          }
+      }
+    }
+
+
+  // reset message-buffer
+  gps_nmea.msg_len = 0;
+}
+
+
 
 
 
@@ -1263,6 +1352,7 @@ void MainWindow::remoteDataIncoming()
       nmea_parse_msg();
 
       gps_nmea.msg_available = FALSE;
+/*
       if(gps.bestvela_parse_ok)
       {
 
@@ -1288,7 +1378,7 @@ void MainWindow::remoteDataIncoming()
          serial_wr_func();
 
       }
-
+*/
       //buff_cont_len = 0;
     }
     else
