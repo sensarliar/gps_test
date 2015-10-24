@@ -1134,7 +1134,7 @@ void MainWindow::nmea_parse_msg( void ) {
               }
           }
 
-          if(gps.no_align_count < 38)
+          if(gps.no_align_count < 40)
           {
               gps.align_pos_av = 0;
           }
