@@ -1127,7 +1127,7 @@ void MainWindow::remoteDataIncoming()
       gps_nmea.msg_available = FALSE;
       if(gps.bestvela_parse_ok)
       {
-          serial_wr_func();
+
 
           gps.bestvela_parse_ok =0;
           if(gps.align_flag == 1)
@@ -1141,6 +1141,13 @@ void MainWindow::remoteDataIncoming()
                 gps.no_align_count--;
               }
           }
+
+          if(gps.no_align_count < 40)
+          {
+              gps.align_pos_av = 0;
+          }
+
+         serial_wr_func();
 
       }
 
@@ -1194,10 +1201,7 @@ void MainWindow::remoteDataIncoming()
 
  //char* src_p_w=buff;//error
 
- if(gps.no_align_count < 38)
- {
-     gps.align_pos_av = 0;
- }
+
 /*if there is no align message output for long time, set align pos flag to unlock for rel_pos; ie. the electronic telecom equipment is not working */
 
 //   ui->m_receiveEdit->append(QString("\nfull loop is over ..."));
