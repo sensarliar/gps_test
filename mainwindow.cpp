@@ -730,8 +730,10 @@ buff_wr_p += strlen(gps.day_zda_ch);
 buff_wr_p++;
 if(gps_nmea.pos_available)
 {
-    if(gps.align_pos_av){
-            *buff_wr_p = '2';
+    if((gps.align_pos_av>1)&&(gps.align_pos_av<6)){
+           // *buff_wr_p = '2';
+       // *buff_wr_p = itoa(gps.align_pos_av);
+        *buff_wr_p = gps.align_pos_av+0x30;
     }else{
             *buff_wr_p = '1';
     }
@@ -1132,7 +1134,7 @@ void MainWindow::nmea_parse_msg( void ) {
               }
           }
 
-          if(gps.no_align_count < 40)
+          if(gps.no_align_count < 38)
           {
               gps.align_pos_av = 0;
           }
