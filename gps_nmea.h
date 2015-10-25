@@ -124,6 +124,8 @@ struct GpsState {
   struct point_3d rel_speed_enu;
   struct point_3d rel_speed_xyz;
 
+//  struct point_3d rel_pacc_enu;
+
   int no_align_count;
   bool align_flag;
 
@@ -132,6 +134,10 @@ struct GpsState {
   char speed_E_ch_jy[12];
   char speed_N_ch_jy[12];
   char speed_U_ch_jy[12];
+
+  char rel_pacc_E_ch[12];
+  char rel_pacc_N_ch[12];
+  char rel_pacc_U_ch[12];
 
 //
 

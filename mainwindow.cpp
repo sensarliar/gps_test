@@ -155,7 +155,7 @@ void MainWindow::initial_next(){
 
       gps.align_pos_av_ch[0]='\0';
       gps.align_pos_av = 0;
-
+/*
       gps.rel_pos_E_ch[0]='1';
       gps.rel_pos_E_ch[1]='0';
       gps.rel_pos_E_ch[2]='0';
@@ -177,6 +177,27 @@ void MainWindow::initial_next(){
       gps.rel_pos_U_ch[3]='0';
       gps.rel_pos_U_ch[4]='0';
       gps.rel_pos_U_ch[5]='\0';
+*/
+ ///rel pos init
+      gps.rel_pos_E_ch[0]='0';
+      gps.rel_pos_E_ch[1]='\0';
+
+
+      gps.rel_pos_N_ch[0]='0';
+      gps.rel_pos_N_ch[1]='\0';
+
+      gps.rel_pos_U_ch[0]='0';
+      gps.rel_pos_U_ch[1]='\0';
+  ///pacc init
+      gps.rel_pacc_E_ch[0]='9';
+      gps.rel_pacc_E_ch[1]='\0';
+
+
+      gps.rel_pacc_N_ch[0]='9';
+      gps.rel_pacc_N_ch[1]='\0';
+
+      gps.rel_pacc_U_ch[0]='9';
+      gps.rel_pacc_U_ch[1]='\0';
 
       gps.bestvela_parse_ok =0;
 
@@ -801,7 +822,23 @@ buff_wr_p += strlen(gps.speed_angle_ch);
 buff_wr_p++;
 
 
+/*-------------rel_pos_enu pacc-----------------------*/
+buff_wr_p = strcpy(buff_wr_p,gps.rel_pacc_E_ch);
+buff_wr_p += strlen(gps.rel_pacc_E_ch);
+*buff_wr_p = ',';
+buff_wr_p++;
 
+buff_wr_p = strcpy(buff_wr_p,gps.rel_pacc_N_ch);
+buff_wr_p += strlen(gps.rel_pacc_N_ch);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+buff_wr_p = strcpy(buff_wr_p,gps.rel_pacc_U_ch);
+buff_wr_p += strlen(gps.rel_pacc_U_ch);
+*buff_wr_p = ',';
+buff_wr_p++;
+
+/*
 char rel_pos_buff[20];
 gcvt(gps.rel_ant_last_pos.x,8,rel_pos_buff);
 buff_wr_p = strcpy(buff_wr_p,rel_pos_buff);
@@ -820,7 +857,7 @@ buff_wr_p = strcpy(buff_wr_p,rel_pos_buff);
 buff_wr_p += strlen(rel_pos_buff);
 *buff_wr_p = ',';
 buff_wr_p++;
-
+*/
 
 
 // send speed infomation of jiayou plane to shouyou plane, with timestamp

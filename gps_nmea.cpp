@@ -522,7 +522,7 @@ void parse_novatel_alignbslnenua(void) {
 
 
    j=0;
-   while(gps_nmea.msg_buf[i++] != ',') {              // next field:EAST
+   while(gps_nmea.msg_buf[i++] != ',') {              // next field:NORTH
      if (i >= gps_nmea.msg_len)
        return;
      gps.rel_pos_N_ch[j++]=gps_nmea.msg_buf[i-1];
@@ -533,7 +533,7 @@ void parse_novatel_alignbslnenua(void) {
      gps.rel_ant_pos.y = strtod(&gps.rel_pos_N_ch[0],&endptr);
 
     j=0;
-    while(gps_nmea.msg_buf[i++] != ',') {              // next field:EAST
+    while(gps_nmea.msg_buf[i++] != ',') {              // next field:up
       if (i >= gps_nmea.msg_len)
         return;
       gps.rel_pos_U_ch[j++]=gps_nmea.msg_buf[i-1];
@@ -542,6 +542,38 @@ void parse_novatel_alignbslnenua(void) {
 
       gps.rel_ant_last_pos.z =  gps.rel_ant_pos.z;
       gps.rel_ant_pos.z = strtod(&gps.rel_pos_U_ch[0],&endptr);
+
+
+      j=0;
+      while(gps_nmea.msg_buf[i++] != ',') {              // next field:EAST PACC
+        if (i >= gps_nmea.msg_len)
+          return;
+        gps.rel_pacc_E_ch[j++]=gps_nmea.msg_buf[i-1];
+      }
+       gps.rel_pacc_E_ch[j]='\0';
+
+
+
+
+       j=0;
+       while(gps_nmea.msg_buf[i++] != ',') {              // next field:NORTH pacc
+         if (i >= gps_nmea.msg_len)
+           return;
+         gps.rel_pacc_N_ch[j++]=gps_nmea.msg_buf[i-1];
+       }
+        gps.rel_pacc_N_ch[j]='\0';
+
+
+
+        j=0;
+        while(gps_nmea.msg_buf[i++] != ',') {              // next field:up pacc
+          if (i >= gps_nmea.msg_len)
+            return;
+          gps.rel_pacc_U_ch[j++]=gps_nmea.msg_buf[i-1];
+        }
+         gps.rel_pacc_U_ch[j]='\0';
+
+
 
    int len_align_pos_av_ch = strlen(gps.align_pos_av_ch);
    if((len_align_pos_av_ch > 9)&&!strncmp(gps.align_pos_av_ch , "NARROW_INT", 10)){
