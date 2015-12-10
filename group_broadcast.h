@@ -14,8 +14,10 @@
 #include <netinet/in.h>
 
 
-#define MCAST_PORT 31241
-#define LOCAL_PORT 56171
+//#define MCAST_PORT 31241
+//#define LOCAL_PORT 56171
+#define MCAST_PORT 6005
+#define LOCAL_PORT 7005
 #define MCAST_ADDR "224.1.2.3"
 #define LocalIPAddr "10.10.106.108"
 #define MCAST_DATA "111111222223333344444"
